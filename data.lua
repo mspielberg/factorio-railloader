@@ -7,12 +7,33 @@ local empty_sheet = {
 
 data:extend{
   {
+    type = "straight-rail",
+    name = "railloader-rail",
+    icon = "__base__/graphics/icons/rail.png",
+    icon_size = 32,
+    flags = {"placeable-neutral", "player-creation"},
+    minable = {mining_time = 4, result = "railloader"},
+    max_health = 800,
+    corpse = "straight-rail-remnants",
+    resistances =
+    {
+      {
+        type = "fire",
+        percent = 100
+      }
+    },
+    collision_box = {{-0.7, -2.8}, {0.7, 2.8}},
+    selection_box = {{-0.7, -2.8}, {0.7, 2.8}},
+    rail_category = "regular",
+    pictures = rail_pictures(),
+  },
+  {
     type = "container",
     name = "railloader",
     icon = "__base__/graphics/icons/steel-chest.png",
     icon_size = 32,
     flags = {"placeable-neutral", "player-creation"},
-    minable = {mining_time = 4, result = "railloader-proxy"},
+    minable = {mining_time = 4, result = "railloader"},
     max_health = 800,
     corpse = "small-remnants",
     open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
@@ -47,7 +68,10 @@ data:extend{
 
   {
     type = "simple-entity-with-force",
-    name = "railloader-overlay",
+    name = "railloader-proxy",
+    icon = "__base__/graphics/icons/steel-chest.png",
+    icon_size = 32,
+    flags = {"placeable-neutral", "player-creation"},
     render_layer = "higher-object-under",
     collision_mask = {},
     picture = {
@@ -88,42 +112,33 @@ data:extend{
 data:extend{
   {
     type = "item",
-    name = "railloader-overlay",
+    name = "railloader-proxy",
     icon = "__base__/graphics/icons/steel-chest.png",
     icon_size = 32,
-    flags = {"goes-to-quickbar"},
-    subgroup = "storage",
-    order = "a[items]-c[steel-chest]",
-    place_result = "railloader-overlay",
+    flags = {},
+    place_result = "railloader",
     stack_size = 5
   },
   {
     type = "item",
-    name = "railloader-proxy",
+    name = "railloader",
     icon = "__base__/graphics/icons/steel-chest.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "storage",
     order = "a[items]-c[steel-chest]",
-    place_result = "railloader",
+    place_result = "railloader-proxy",
     stack_size = 5
   },
-}
-
-data:extend{
   {
-    type = "selection-tool",
-    name = "railloader",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    type = "item",
+    name = "railloader-rail",
+    icon = "__base__/graphics/icons/rail.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
-    subgroup = "transport",
-    stack_size = 5,
-    selection_color = {r=1, g=1, b=0},
-    alt_selection_color = {r=1, g=1, b=0},
-    selection_mode = {"buildable-type", "matches-force"},
-    alt_selection_mode = {"buildable-type", "matches-force"},
-    selection_cursor_box_type = "entity",
-    alt_selection_cursor_box_type = "entity",
-  }
+    subgroup = "storage",
+    order = "a[items]-c[steel-chest]",
+    place_result = "railloader-rail",
+    stack_size = 5
+  },
 }
