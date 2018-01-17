@@ -53,13 +53,11 @@ end
 
 local function on_rail_ghost_built(event)
   local entity = event.created_entity
-  game.print(entity.unit_number)
   local colliding = entity.surface.find_entities_filtered{
     area = util.move_box(entity.bounding_box, entity.position),
   }
 
   for _, other in ipairs(colliding) do
-    game.print(other.unit_number)
     if entity.ghost_name == "railloader-placement-proxy" and
         other.unit_number ~= entity.unit_number then
       -- placing railloader over other rails
@@ -83,7 +81,6 @@ local function on_built(event)
   if entity.name ~= "railloader-placement-proxy" then
     return
   end
-  game.print(serpent.line(event))
 
   local surface = entity.surface
   local position = entity.position
@@ -135,17 +132,32 @@ local function on_built(event)
   }
 end
 
+local function on_mined(event)
+  local entity = event.entity
+  if entity.name ~= "railloader-chest" then
+    return
+  end
+
+  -- destroy rails
+end
+
 local function on_blueprint(event)
   local player = game.players[event.player_index]
   local bp = player.blueprint_to_setup
+  if event.alt then
+    bp = player.cursor_stack
+  end
   local entities = bp.get_blueprint_entities()
-  for _, e in ipairs(entities) do
-    if e.name == "railloader" then
+  for i, e in ipairs(entities) do
+    if e.name == "railloader-chest" then
       e.name = "railloader-proxy"
+    elseif e.name == "railloader-rail" then
+      entities[i] = nil
     end
   end
   bp.set_blueprint_entities(entities)
 end
 
-script.on_event(defines.events.on_built_entity, on_built)
+script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
+script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
