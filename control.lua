@@ -32,53 +32,106 @@ function util.move_box(box, offset)
 end
 
 local function abort_build(event)
-      local player = game.players[event.player_index]
-      if player.cursor_stack.valid_for_read then
-        player.cursor_stack.count = player.cursor_stack.count + 1
-      else
-        player.cursor_stack.set_stack{name = "railloader-proxy", count = 1}
-      end
+  local entity = event.created_entity
+  local item_name = next(entity.prototype.items_to_place_this)
+  if event.player_index then
+    local player = game.players[event.player_index]
+    local cursor = player.cursor_stack
+    if event.revived or cursor.valid_for_read and cursor.name == item_name then
+      -- nanobot build or cursor build
+      player.insert{name = item_name, count = 1}
+    else
+      -- last item in cursor, replace it
+      player.cursor_stack.set_stack{name = item_name, count = 1}
+    end
+    entity.destroy()
+  else
+    -- robot build
+    entity.order_deconstruction(entity.force)
+  end
+end
+
+local function on_rail_ghost_built(event)
+  local entity = event.created_entity
+  game.print(entity.unit_number)
+  local colliding = entity.surface.find_entities_filtered{
+    area = util.move_box(entity.bounding_box, entity.position),
+  }
+
+  for _, other in ipairs(colliding) do
+    game.print(other.unit_number)
+    if entity.ghost_name == "railloader-placement-proxy" and
+        other.unit_number ~= entity.unit_number then
+      -- placing railloader over other rails
+      entity.destroy()
+      return
+    end
+    if other.name == "railloader-rail" or
+        other.name == "entity-ghost" and other.ghost_name == "railloader-placement-proxy" then
+      -- placing other rails over railloader
+      entity.destroy()
+      return
+    end
+  end
 end
 
 local function on_built(event)
   local entity = event.created_entity
-  if entity.name ~= "railloader-proxy" then
+  if entity.name == "entity-ghost" and string.find(entity.ghost_type, "rail") then
+    return on_rail_ghost_built(event)
+  end
+  if entity.name ~= "railloader-placement-proxy" then
     return
   end
   game.print(serpent.line(event))
-  local rail = entity.surface.find_entities_filtered{
-    position = entity.position,
-    type = "straight-rail",
-    force = entity.force,
-  }[1]
-  entity.destroy()
 
-  if not rail then
-    game.print("no rail found")
-    abort_build(event)
-    return
-  end
+  local surface = entity.surface
+  local position = entity.position
+  local direction = entity.direction
+  local force = entity.force
 
-  local colliding_entities = rail.surface.find_entities_filtered{
-    area = util.move_box(game.entity_prototypes["railloader"].collision_box, rail.position),
+  local colliding = surface.find_entities_filtered{
+    area = util.move_box(entity.prototype.collision_box, position),
   }
-  for _, e in ipairs(colliding_entities) do
-    if e.type ~= "straight-rail" and e.name ~= "railloader-proxy" then
-      game.print("overlapping entity: ".. e.type)
+  for _, other in ipairs(colliding) do
+    if other.unit_number ~= entity.unit_number then
       abort_build(event)
       return
     end
   end
-  rail.surface.create_entity{
-    name = "railloader",
-    position = rail.position,
-    force = rail.force,
+
+  entity.destroy()
+
+  -- place rails
+  for i=-1,1 do
+    local placed = surface.create_entity{
+      name = "railloader-rail",
+      position = util.moveposition(position, util.offset(direction, i*2, 0)),
+      direction = direction,
+      force = force,
+    }
+  end
+
+  -- place chest
+  surface.create_entity{
+    name = "railloader-chest",
+    position = position,
+    force = force,
   }
-  rail.surface.create_entity{
+
+  -- place inserters
+  surface.create_entity{
     name = "railloader-inserter",
-    position = rail.position,
-    direction = rail.direction,
-    force = rail.force,
+    position = position,
+    direction = direction,
+    force = force,
+  }
+
+  -- place structure
+  surface.create_entity{
+    name = "railloader-structure",
+    position = position,
+    force = force,
   }
 end
 
