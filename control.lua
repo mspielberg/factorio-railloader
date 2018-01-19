@@ -26,13 +26,6 @@ function util.offset(direction, longitudinal, orthogonal)
 	end
 end
 
-function util.move_box(box, offset)
-	return {
-		left_top = util.moveposition(box.left_top, offset),
-		right_bottom = util.moveposition(box.right_bottom, offset),
-	}
-end
-
 -- constants
 
 local train_types = {
