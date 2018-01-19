@@ -34,7 +34,7 @@ data:extend{
     render_layer = "higher-object-under",
     collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
     picture = {
-      filename = "__base__/graphics/entity/steel-chest/steel-chest.png",
+      filename = "__railloader__/graphics/railloader.png",
       priority = "extra-high",
       width = 48,
       height = 34,
@@ -84,7 +84,7 @@ data:extend{
   {
     type = "container",
     name = "railloader-chest",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    icon = "__railloader__/graphics/icons/railloader.png",
     icon_size = 32,
     flags = {"player-creation"},
     minable = {mining_time = 4, result = "railloader"},
@@ -111,7 +111,7 @@ data:extend{
     inventory_size = 80,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = {
-      filename = "__base__/graphics/entity/steel-chest/steel-chest.png",
+      filename = "__railloader__/graphics/railloader.png",
       priority = "extra-high",
       width = 48,
       height = 34,

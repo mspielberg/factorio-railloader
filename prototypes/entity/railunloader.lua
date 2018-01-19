@@ -21,7 +21,7 @@ data:extend{
     collision_box = {{-1.8, -2.8}, {1.8, 2.8}},
     selection_box = {{-1.8, -2.8}, {1.8, 2.8}},
     rail_category = "regular",
-    pictures = pictures.railloader_placement_proxy_pictures,
+    pictures = pictures.railunloader_placement_proxy_pictures,
   },
 
   {
@@ -65,7 +65,7 @@ data:extend{
   {
     type = "container",
     name = "railunloader-chest",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"player-creation"},
     minable = {mining_time = 4, result = "railunloader"},
@@ -91,7 +91,7 @@ data:extend{
     inventory_size = 80,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = {
-      filename = "__base__/graphics/entity/steel-chest/steel-chest.png",
+      filename = "__railloader__/graphics/railunloader.png",
       priority = "extra-high",
       width = 48,
       height = 34,

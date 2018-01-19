@@ -117,6 +117,37 @@ M.railloader_placement_proxy_pictures = rail_pictures_internal{
   {"segment_visualisation_continuing_back", "segment-visualisation-continuing-2"}
 }
 
+M.railloader_placement_proxy_pictures["straight_rail_horizontal"].metals.filename =
+  "__railloader__/graphics/railloader-placement-proxy/railloader-horizontal-metals.png"
+M.railloader_placement_proxy_pictures["straight_rail_horizontal"].metals.hr_version.filename =
+  "__railloader__/graphics/railloader-placement-proxy/hr-railloader-horizontal-metals.png"
+M.railloader_placement_proxy_pictures["straight_rail_vertical"].metals.filename =
+  "__railloader__/graphics/railloader-placement-proxy/railloader-vertical-metals.png"
+M.railloader_placement_proxy_pictures["straight_rail_vertical"].metals.hr_version.filename =
+  "__railloader__/graphics/railloader-placement-proxy/hr-railloader-vertical-metals.png"
+
+M.railunloader_placement_proxy_pictures = rail_pictures_internal{
+  {"metals", "metals", mipmap = true},
+  {"backplates", "backplates", mipmap = true},
+  {"ties", "ties", variations = 1},
+  {"stone_path", "stone-path", variations = 1},
+  {"stone_path_background", "stone-path-background", variations = 1},
+  {"segment_visualisation_middle", "segment-visualisation-middle"},
+  {"segment_visualisation_ending_front", "segment-visualisation-ending-1"},
+  {"segment_visualisation_ending_back", "segment-visualisation-ending-2"},
+  {"segment_visualisation_continuing_front", "segment-visualisation-continuing-1"},
+  {"segment_visualisation_continuing_back", "segment-visualisation-continuing-2"}
+}
+
+M.railunloader_placement_proxy_pictures["straight_rail_horizontal"].metals.filename =
+  "__railloader__/graphics/railloader-placement-proxy/railunloader-horizontal-metals.png"
+M.railunloader_placement_proxy_pictures["straight_rail_horizontal"].metals.hr_version.filename =
+  "__railloader__/graphics/railloader-placement-proxy/hr-railunloader-horizontal-metals.png"
+M.railunloader_placement_proxy_pictures["straight_rail_vertical"].metals.filename =
+  "__railloader__/graphics/railloader-placement-proxy/railunloader-vertical-metals.png"
+M.railunloader_placement_proxy_pictures["straight_rail_vertical"].metals.hr_version.filename =
+  "__railloader__/graphics/railloader-placement-proxy/hr-railunloader-vertical-metals.png"
+
 M.empty_sheet = {
   filename = "__core__/graphics/empty.png",
   priority = "very-low",

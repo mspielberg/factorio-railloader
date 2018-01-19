@@ -3,7 +3,7 @@ data:extend{
   {
     type = "item",
     name = "railunloader",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "storage",
@@ -16,7 +16,7 @@ data:extend{
   {
     type = "item",
     name = "railunloader-blueprint-proxy",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
     subgroup = "storage",
