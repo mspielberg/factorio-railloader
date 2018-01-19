@@ -117,6 +117,7 @@ local function on_built(event)
       direction = direction,
       force = force,
     }
+    placed.destructible = false
   end
 
   -- place chest
@@ -126,21 +127,23 @@ local function on_built(event)
     force = force,
   }
 
-  -- place inserters
-  surface.create_entity{
+  -- place inserter
+  local inserter = surface.create_entity{
     name = "rail" .. type .. "-inserter",
     position = position,
     direction = direction,
     force = force,
   }
+  inserter.destructible = false
 
   -- place structure
   if type == "loader" then
-    surface.create_entity{
+    local placed = surface.create_entity{
       name = "railloader-structure",
       position = position,
       force = force,
     }
+    placed.destructible = false
   end
 end
 
@@ -262,7 +265,7 @@ local function on_train_changed_state(event)
 end
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
-script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
+script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity, defines.events.on_entity_died}, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_selected_entity_changed, on_selection_changed)
 script.on_event(defines.events.on_train_changed_state, on_train_changed_state)

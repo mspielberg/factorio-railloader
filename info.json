@@ -2,7 +2,7 @@
 	"name": "railloader",
 	"version": "0.1.0",
 	"factorio_version": "0.16",
-	"title": "Bulk Railloader",
+	"title": "Bulk Rail Loader",
 	"author": "Therax",
 	"homepage": "https://forums.factorio.com/viewtopic.php?f=93&t=54343",
 	"description": "Bulk train loader/unloader with buffer.",

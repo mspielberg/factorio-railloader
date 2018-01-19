@@ -27,9 +27,11 @@ data:extend{
   {
     type = "inserter",
     name = "railunloader-inserter",
-    icon = "__base__/graphics/icons/steel-chest.png",
+    icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
+    flags = {"hide-alt-info"},
     stack = true,
+    max_health = 800,
     collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
     selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
     selectable_in_game = false,

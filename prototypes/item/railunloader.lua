@@ -6,8 +6,8 @@ data:extend{
     icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
-    subgroup = "storage",
-    order = "a[items]-c[steel-chest]",
+    subgroup = "transport",
+    order = "a[train-system]-j[railunloader]",
     place_result = "railunloader-placement-proxy",
     stack_size = 5
   },
@@ -19,8 +19,8 @@ data:extend{
     icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"goes-to-quickbar"},
-    subgroup = "storage",
-    order = "a[items]-c[steel-chest]",
+    subgroup = "transport",
+    order = "a[train-system]-j[railunloader]",
     place_result = "railunloader-chest",
     stack_size = 5
   }
