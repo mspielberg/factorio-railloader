@@ -171,6 +171,34 @@ local function on_mined(event)
   end
 end
 
+local function on_entity_died(event)
+  local entity = event.entity
+  local type = string.match(entity.name, "^rail(.*)%-chest$")
+  if not type then
+    return
+  end
+
+  local entities = entity.surface.find_entities_filtered{
+    area = entity.bounding_box,
+  }
+  for _, ent in ipairs(entities) do
+    if train_types[ent.type] then
+      if event.cause then
+        ent.die(event.force, event.cause)
+      else
+        ent.die(event.force)
+      end
+    elseif ent.name == "railloader-rail" then
+      ent.surface.create_entity{
+        name = "straight-rail-remnants",
+        position = ent.position,
+        direction = ent.direction,
+      }
+    end
+  end
+  on_mined(event)
+end
+
 local function on_blueprint(event)
   local player = game.players[event.player_index]
   local bp = player.blueprint_to_setup
@@ -265,7 +293,8 @@ local function on_train_changed_state(event)
 end
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
-script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity, defines.events.on_entity_died}, on_mined)
+script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
+script.on_event(defines.events.on_entity_died, on_entity_died)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_selected_entity_changed, on_selection_changed)
 script.on_event(defines.events.on_train_changed_state, on_train_changed_state)
