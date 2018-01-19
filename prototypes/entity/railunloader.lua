@@ -7,6 +7,7 @@ data:extend{
     name = "railunloader-placement-proxy",
     icon = "__base__/graphics/icons/rail.png",
     icon_size = 32,
+    minable = { mining_time = 0.1, result = "railunloader" },
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
     corpse = "straight-rail-remnants",

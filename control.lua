@@ -1,3 +1,5 @@
+local bulk = require "bulk"
+
 local util = {}
 
 -- Position adjustments
@@ -62,20 +64,24 @@ end
 local function on_rail_ghost_built(event)
   local entity = event.created_entity
   local colliding = entity.surface.find_entities_filtered{
-    area = util.move_box(entity.bounding_box, entity.position),
+    area = entity.bounding_box,
   }
 
   for _, other in ipairs(colliding) do
+    log("colliding entity: "..other.name)
     if string.find(entity.ghost_name, "^rail(.*)%-placement%-proxy") and
         other.unit_number ~= entity.unit_number then
-      -- placing railloader over other rails
+      -- placing other rails over railloader
+      log("found railloader")
       entity.destroy()
       return
     end
     if other.name == "railloader-rail" or
         other.name == "entity-ghost" and
-        string.find(other.ghost_name, "^rail(.*)%-placement%-proxy$") then
-      -- placing other rails over railloader
+        string.find(other.ghost_name, "^rail(.*)%-placement%-proxy$") and
+        other.unit_number ~= entity.unit_number then
+      -- placing railloader over other rails
+      log("found railloader")
       entity.destroy()
       return
     end
@@ -98,10 +104,11 @@ local function on_built(event)
   local force = entity.force
 
   local colliding = surface.find_entities_filtered{
-    area = util.move_box(entity.prototype.collision_box, position),
+    area = entity.bounding_box,
   }
   for _, other in ipairs(colliding) do
-    if other.unit_number ~= entity.unit_number then
+    if string.find(other.type, "rail") and other.unit_number ~= entity.unit_number then
+      game.print("found other rail: "..other.name)
       abort_build(event)
       return
     end
@@ -151,9 +158,8 @@ local function on_mined(event)
     return
   end
 
-  local box = util.move_box(entity.prototype.collision_box, entity.position)
   local entities = entity.surface.find_entities_filtered{
-    area = box,
+    area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
     if ent.name == "railloader-rail" then
@@ -186,37 +192,29 @@ local function on_blueprint(event)
   local directions = {}
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
-      game.print(container.name)
       local rail = player.surface.find_entity("railloader-rail", container.position)
       if rail then
-        game.print("found rail")
         directions[#directions+1] = rail.direction
       end
     end
   end
 
-
   local entities = bp.get_blueprint_entities()
-  game.print(serpent.line(entities))
   local loader_index = 1
   for i, e in ipairs(entities) do
     if e.name == "railloader-chest" then
       e.name = "railloader-placement-proxy"
       e.direction = directions[loader_index]
-      e.position.x = e.position.x + 0.5
-      e.position.y = e.position.y + 0.5
-      game.print('set loader direction to '..e.direction)
       loader_index = loader_index + 1
     elseif e.name == "railunloader-chest" then
       e.name = "railunloader-placement-proxy"
       e.direction = directions[loader_index]
-      game.print('set unloader direction to '..e.direction)
       loader_index = loader_index + 1
     elseif e.name == "railloader-rail" then
       entities[i] = nil
     end
   end
-  game.print(serpent.line(entities))
+
   bp.set_blueprint_entities(entities)
 end
 
@@ -228,7 +226,7 @@ local function on_selection_changed(event)
 
   -- look for train in the way
   local entities = entity.surface.find_entities_filtered{
-    area = util.move_box(entity.prototype.collision_box, entity.position),
+    area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
     if train_types[ent.type] then
@@ -239,7 +237,39 @@ local function on_selection_changed(event)
   entity.minable = true
 end
 
+local function enable_inserter(inserter, wagon)
+  local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
+  if inserter.name == "railloader-inserter" then
+    local chest = inserter.surface.find_entity("railloader-chest", inserter.position)
+    inventory = chest.get_inventory(defines.inventory.chest)
+  end
+  local item = bulk.first_acceptable_item(inventory)
+  inserter.set_filter(1, item)
+end
+
+local function disable_inserter(inserter)
+  inserter.set_filter(1, nil)
+end
+
+local function on_train_changed_state(event)
+  local train = event.train
+  for _, wagon in ipairs(train.cargo_wagons) do
+    local inserter = wagon.surface.find_entities_filtered{
+      type = "inserter",
+      position = wagon.position,
+    }[1]
+    if inserter then
+      if train.state == defines.train_state.wait_station then
+        enable_inserter(inserter, wagon)
+      else
+        disable_inserter(inserter)
+      end
+    end
+  end
+end
+
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_selected_entity_changed, on_selection_changed)
+script.on_event(defines.events.on_train_changed_state, on_train_changed_state)

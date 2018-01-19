@@ -7,6 +7,7 @@ data:extend{
     name = "railloader-placement-proxy",
     icon = "__base__/graphics/icons/rail.png",
     icon_size = 32,
+    minable = { mining_time = 0.1, result = "railloader" },
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
     corpse = "straight-rail-remnants",
@@ -91,6 +92,7 @@ data:extend{
     corpse = "small-remnants",
     open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
     close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
+    building_grid_bit_shift = 1,
     resistances =
     {
       {
