@@ -1,4 +1,3 @@
-require "prototypes.entity.common"
 require "prototypes.entity.railloader"
 require "prototypes.entity.railunloader"
 

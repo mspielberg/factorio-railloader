@@ -26,6 +26,20 @@ function util.offset(direction, longitudinal, orthogonal)
 	end
 end
 
+function util.box_centered_at(position, radius)
+  return {
+    left_top = util.moveposition(position, util.offset(defines.direction.north, radius, -radius)),
+    right_bottom = util.moveposition(position, util.offset(defines.direction.south, radius, -radius)),
+  }
+end
+
+function util.orthogonal_direction(direction)
+  if direction < 6 then
+    return direction + 2
+  end
+  return 0
+end
+
 -- constants
 
 local train_types = {
@@ -92,33 +106,27 @@ local function on_built(event)
   end
 
   local surface = entity.surface
-  local position = entity.position
   local direction = entity.direction
+  local position = util.moveposition(entity.position, util.offset(direction, 1.5, 0))
   local force = entity.force
 
-  local colliding = surface.find_entities_filtered{
-    area = entity.bounding_box,
-  }
-  for _, other in ipairs(colliding) do
-    if string.find(other.type, "rail") and other.unit_number ~= entity.unit_number then
-      game.print("found other rail: "..other.name)
-      abort_build(event)
-      return
-    end
+  local rail = surface.find_entities_filtered{
+    area = util.box_centered_at(position, 0.5),
+    type = "straight-rail",
+  }[1]
+  if not rail then
+    abort_build(event)
+    return
+  end
+
+  -- center over the rail
+  if rail.direction == defines.direction.north then
+    position.x = rail.position.x
+  else
+    position.y = rail.position.y
   end
 
   entity.destroy()
-
-  -- place rails
-  for i=-1,1 do
-    local placed = surface.create_entity{
-      name = "railloader-rail",
-      position = util.moveposition(position, util.offset(direction, i*2, 0)),
-      direction = direction,
-      force = force,
-    }
-    placed.destructible = false
-  end
 
   -- place chest
   surface.create_entity{
@@ -158,9 +166,7 @@ local function on_mined(event)
     area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
-    if ent.name == "railloader-rail" then
-      ent.destroy()
-    elseif ent.name == "rail" .. type .. "-inserter" then
+    if ent.name == "rail" .. type .. "-inserter" then
       if event.buffer then
         event.buffer.insert(ent.held_stack)
       end
@@ -169,34 +175,6 @@ local function on_mined(event)
       ent.destroy()
     end
   end
-end
-
-local function on_entity_died(event)
-  local entity = event.entity
-  local type = string.match(entity.name, "^rail(.*)%-chest$")
-  if not type then
-    return
-  end
-
-  local entities = entity.surface.find_entities_filtered{
-    area = entity.bounding_box,
-  }
-  for _, ent in ipairs(entities) do
-    if train_types[ent.type] then
-      if event.cause then
-        ent.die(event.force, event.cause)
-      else
-        ent.die(event.force)
-      end
-    elseif ent.name == "railloader-rail" then
-      ent.surface.create_entity{
-        name = "straight-rail-remnants",
-        position = ent.position,
-        direction = ent.direction,
-      }
-    end
-  end
-  on_mined(event)
 end
 
 local function on_blueprint(event)
@@ -216,7 +194,10 @@ local function on_blueprint(event)
   local directions = {}
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
-      local rail = player.surface.find_entity("railloader-rail", container.position)
+      local rail = player.surface.find_entities_filtered{
+        name = "straight-rail",
+        area = util.box_centered_at(container.position, 0.5),
+      }[1]
       if rail then
         directions[#directions+1] = rail.direction
       end
@@ -225,17 +206,17 @@ local function on_blueprint(event)
 
   local entities = bp.get_blueprint_entities()
   local loader_index = 1
-  for i, e in ipairs(entities) do
+  for _, e in ipairs(entities) do
     if e.name == "railloader-chest" then
       e.name = "railloader-placement-proxy"
-      e.direction = directions[loader_index]
+      e.position = util.moveposition(e.position, util.offset(directions[loader_index], 0, -1.5))
+      e.direction = util.orthogonal_direction(directions[loader_index])
       loader_index = loader_index + 1
     elseif e.name == "railunloader-chest" then
       e.name = "railunloader-placement-proxy"
-      e.direction = directions[loader_index]
+      e.position = util.moveposition(e.position, util.offset(directions[loader_index], 0, -1.5))
+      e.direction = util.orthogonal_direction(directions[loader_index])
       loader_index = loader_index + 1
-    elseif e.name == "railloader-rail" then
-      entities[i] = nil
     end
   end
 
@@ -294,7 +275,7 @@ end
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
-script.on_event(defines.events.on_entity_died, on_entity_died)
+script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_selected_entity_changed, on_selection_changed)
 script.on_event(defines.events.on_train_changed_state, on_train_changed_state)

@@ -3,25 +3,24 @@ local pictures = require "prototypes.entity.pictures"
 data:extend{
   -- buildable entity, immediately replaced by scripting
   {
-    type = "straight-rail",
+    type = "pump",
     name = "railloader-placement-proxy",
     icon = "__base__/graphics/icons/rail.png",
     icon_size = 32,
     minable = { mining_time = 0.1, result = "railloader" },
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
-    corpse = "straight-rail-remnants",
-    resistances =
-    {
-      {
-        type = "fire",
-        percent = 100
-      }
+    collision_box = {{-2.6, -0.3}, {2.6, 0.3}},
+    picture = pictures.empty_sheet,
+    fluid_box = {
+      pipe_connections = {},
     },
-    collision_box = {{-1.8, -2.8}, {1.8, 2.8}},
-    selection_box = {{-1.8, -2.8}, {1.8, 2.8}},
-    rail_category = "regular",
-    pictures = pictures.railloader_placement_proxy_pictures,
+    energy_usage = "0kW",
+    energy_source = {
+      usage_priority = "secondary-input",
+    },
+    pumping_speed = 0,
+    animations = pictures.railloader_proxy_animations,
   },
 
   -- decorative entity to show structure above train
