@@ -48,9 +48,10 @@ From Bob's mods:
 
 From Angel's mods:
 
-* All 6 primary ores from Angel's Refining, including processed variants up to
+* All 6 primary ores from Angel's Refining, including refined variants up to
   purified crystals
-* A variety of solid chemical intermediates from Angel's Petrochem.
+* Processed ores from Angel's Smelting
+* A variety of solid chemical intermediates from Angel's Petrochem
 
 If you feel something that meets the above generic description is not included,
 let me know.  You can also edit `bulk.lua` if you would like to change the set
