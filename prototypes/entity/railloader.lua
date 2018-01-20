@@ -59,6 +59,7 @@ data:extend{
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
+      drain = "5kW",
     },
     extension_speed = 1,
     rotation_speed = 1,
