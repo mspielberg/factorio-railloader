@@ -1,44 +1,5 @@
 local bulk = require "bulk"
-
-local util = {}
-
--- Position adjustments
-
-function util.moveposition(position, offset)
-	return {x=position.x + offset.x, y=position.y + offset.y}
-end
-
-function util.offset(direction, longitudinal, orthogonal)
-	if direction == defines.direction.north then
-		return {x=orthogonal, y=-longitudinal}
-	end
-
-	if direction == defines.direction.south then
-		return {x=-orthogonal, y=longitudinal}
-	end
-
-	if direction == defines.direction.east then
-		return {x=longitudinal, y=orthogonal}
-	end
-
-	if direction == defines.direction.west then
-		return {x=-longitudinal, y=-orthogonal}
-	end
-end
-
-function util.box_centered_at(position, radius)
-  return {
-    left_top = util.moveposition(position, util.offset(defines.direction.north, radius, -radius)),
-    right_bottom = util.moveposition(position, util.offset(defines.direction.south, radius, -radius)),
-  }
-end
-
-function util.orthogonal_direction(direction)
-  if direction < 6 then
-    return direction + 2
-  end
-  return 0
-end
+local util = require "util"
 
 -- constants
 
@@ -68,38 +29,8 @@ local function abort_build(event)
   end
 end
 
-local function on_rail_ghost_built(event)
-  local entity = event.created_entity
-  local colliding = entity.surface.find_entities_filtered{
-    area = entity.bounding_box,
-  }
-
-  for _, other in ipairs(colliding) do
-    log("colliding entity: "..other.name)
-    if string.find(entity.ghost_name, "^rail(.*)%-placement%-proxy") and
-        other.unit_number ~= entity.unit_number then
-      -- placing other rails over railloader
-      log("found railloader")
-      entity.destroy()
-      return
-    end
-    if other.name == "railloader-rail" or
-        other.name == "entity-ghost" and
-        string.find(other.ghost_name, "^rail(.*)%-placement%-proxy$") and
-        other.unit_number ~= entity.unit_number then
-      -- placing railloader over other rails
-      log("found railloader")
-      entity.destroy()
-      return
-    end
-  end
-end
-
 local function on_built(event)
   local entity = event.created_entity
-  if entity.name == "entity-ghost" and string.find(entity.ghost_type, "rail") then
-    return on_rail_ghost_built(event)
-  end
   local type = string.match(entity.name, "^rail(.*)%-placement%-proxy$")
   if not type then
     return
@@ -110,11 +41,24 @@ local function on_built(event)
   local position = util.moveposition(entity.position, util.offset(direction, 1.5, 0))
   local force = entity.force
 
+  -- check that rail is in the correct place
   local rail = surface.find_entities_filtered{
     area = util.box_centered_at(position, 0.5),
     type = "straight-rail",
   }[1]
   if not rail then
+    abort_build(event)
+    return
+  end
+
+  -- check that the opposite side is also free
+  local opposite_side_clear = surface.can_place_entity{
+    name = entity.name,
+    position = util.moveposition(entity.position, util.offset(direction, 3, 0)),
+    direction = direction,
+    force = force,
+  }
+  if not opposite_side_clear then
     abort_build(event)
     return
   end
@@ -136,10 +80,14 @@ local function on_built(event)
   }
 
   -- place inserter
+  local inserter_direction = defines.direction.north
+  if direction == defines.direction.north or direction == defines.direction.south then
+    inserter_direction = defines.direction.east
+  end
   local inserter = surface.create_entity{
     name = "rail" .. type .. "-inserter",
     position = position,
-    direction = direction,
+    direction = inserter_direction,
     force = force,
   }
   inserter.destructible = false
@@ -162,11 +110,13 @@ local function on_mined(event)
     return
   end
 
+  local inserter_name = "rail" .. type .. "-inserter"
+
   local entities = entity.surface.find_entities_filtered{
     area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
-    if ent.name == "rail" .. type .. "-inserter" then
+    if ent.name == inserter_name then
       if event.buffer then
         event.buffer.insert(ent.held_stack)
       end
@@ -196,10 +146,10 @@ local function on_blueprint(event)
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
       local rail = player.surface.find_entities_filtered{
         name = "straight-rail",
-        area = util.box_centered_at(container.position, 0.5),
+        area = util.box_centered_at(container.position, 0.6),
       }[1]
       if rail then
-        directions[#directions+1] = rail.direction
+        directions[#directions+1] = rail.directio
       end
     end
   end
@@ -223,25 +173,6 @@ local function on_blueprint(event)
   bp.set_blueprint_entities(entities)
 end
 
-local function on_selection_changed(event)
-  local entity = game.players[event.player_index].selected
-  if not entity or (entity.name ~= "railloader-chest" and entity.name ~= "railunloader-chest") then
-    return
-  end
-
-  -- look for train in the way
-  local entities = entity.surface.find_entities_filtered{
-    area = entity.bounding_box,
-  }
-  for _, ent in ipairs(entities) do
-    if train_types[ent.type] then
-      entity.minable = false
-      return
-    end
-  end
-  entity.minable = true
-end
-
 local function enable_inserter(inserter, wagon)
   local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
   if inserter.name == "railloader-inserter" then
@@ -261,7 +192,7 @@ local function on_train_changed_state(event)
   for _, wagon in ipairs(train.cargo_wagons) do
     local inserter = wagon.surface.find_entities_filtered{
       type = "inserter",
-      position = wagon.position,
+      area = util.box_centered_at(wagon.position, 0.5),
     }[1]
     if inserter then
       if train.state == defines.train_state.wait_station then
@@ -277,5 +208,4 @@ script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_e
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
-script.on_event(defines.events.on_selected_entity_changed, on_selection_changed)
 script.on_event(defines.events.on_train_changed_state, on_train_changed_state)
