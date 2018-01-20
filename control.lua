@@ -9,6 +9,10 @@ local train_types = {
   ["fluid-wagon"] = true,
 }
 
+local function on_load()
+  bulk.check_settings()
+end
+
 local function abort_build(event)
   local entity = event.created_entity
   local item_name = next(entity.prototype.items_to_place_this)
@@ -204,8 +208,17 @@ local function on_train_changed_state(event)
   end
 end
 
+local function on_setting_changed(event)
+  bulk.check_settings()
+end
+
+script.on_init(on_load)
+script.on_load(on_load)
+
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_train_changed_state, on_train_changed_state)
+
+script.on_event(defines.events.on_runtime_mod_setting_changed, on_setting_changed)
