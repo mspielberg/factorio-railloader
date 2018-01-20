@@ -1,4 +1,5 @@
 local bulk = require "bulk"
+local inserter_config = require "inserterconfig"
 local util = require "util"
 
 -- constants
@@ -8,6 +9,11 @@ local train_types = {
   ["cargo-wagon"] = true,
   ["fluid-wagon"] = true,
 }
+
+local function on_init()
+  inserter_config.on_init()
+  bulk.check_settings()
+end
 
 local function on_load()
   bulk.check_settings()
@@ -44,6 +50,7 @@ local function on_built(event)
   local direction = entity.direction
   local position = util.moveposition(entity.position, util.offset(direction, 1.5, 0))
   local force = entity.force
+  local last_user = entity.last_user
 
   -- check that rail is in the correct place
   local rail = surface.find_entities_filtered{
@@ -77,11 +84,12 @@ local function on_built(event)
   entity.destroy()
 
   -- place chest
-  surface.create_entity{
+  local chest = surface.create_entity{
     name = "rail" .. type .. "-chest",
     position = position,
     force = force,
   }
+  chest.last_user = last_user
 
   -- place inserter
   local inserter_direction = defines.direction.north
@@ -95,6 +103,9 @@ local function on_built(event)
     force = force,
   }
   inserter.destructible = false
+  inserter.last_user = last_user
+
+  inserter_config.register_inserter(inserter)
 
   -- place structure
   if type == "loader" then
@@ -177,48 +188,19 @@ local function on_blueprint(event)
   bp.set_blueprint_entities(entities)
 end
 
-local function enable_inserter(inserter, wagon)
-  local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
-  if inserter.name == "railloader-inserter" then
-    local chest = inserter.surface.find_entity("railloader-chest", inserter.position)
-    inventory = chest.get_inventory(defines.inventory.chest)
-  end
-  local item = bulk.first_acceptable_item(inventory)
-  inserter.set_filter(1, item)
-end
-
-local function disable_inserter(inserter)
-  inserter.set_filter(1, nil)
-end
-
-local function on_train_changed_state(event)
-  local train = event.train
-  for _, wagon in ipairs(train.cargo_wagons) do
-    local inserter = wagon.surface.find_entities_filtered{
-      type = "inserter",
-      area = util.box_centered_at(wagon.position, 0.5),
-    }[1]
-    if inserter then
-      if train.state == defines.train_state.wait_station then
-        enable_inserter(inserter, wagon)
-      else
-        disable_inserter(inserter)
-      end
-    end
-  end
-end
-
 local function on_setting_changed(event)
   bulk.check_settings()
 end
 
-script.on_init(on_load)
+-- setup event handlers
+
+script.on_init(on_init)
 script.on_load(on_load)
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
-script.on_event(defines.events.on_train_changed_state, on_train_changed_state)
+script.on_event(defines.events.on_train_changed_state, inserter_config.on_train_changed_state)
 
 script.on_event(defines.events.on_runtime_mod_setting_changed, on_setting_changed)
