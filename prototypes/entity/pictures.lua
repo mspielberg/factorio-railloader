@@ -37,28 +37,28 @@ M.railunloader_proxy_animations = {
     width = 224,
     height = 224,
     frame_count = 1,
-    shift = util.by_pixel(-48, 0),
+    shift = util.by_pixel(0, -48),
   },
   east = {
     filename = "__railloader__/graphics/railunloader-placement-proxy/vertical.png",
     width = 224,
     height = 224,
     frame_count = 1,
-    shift = util.by_pixel(0, 48),
+    shift = util.by_pixel(48, 0),
   },
   south = {
     filename = "__railloader__/graphics/railunloader-placement-proxy/horizontal.png",
     width = 224,
     height = 224,
     frame_count = 1,
-    shift = util.by_pixel(48, 0),
+    shift = util.by_pixel(0, 48),
   },
   west = {
     filename = "__railloader__/graphics/railunloader-placement-proxy/vertical.png",
     width = 224,
     height = 224,
     frame_count = 1,
-    shift = util.by_pixel(0, -48),
+    shift = util.by_pixel(-48, 0),
   },
 }
 
