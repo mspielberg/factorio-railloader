@@ -6,14 +6,15 @@ directly over the track drops granular solids into the top of a hopper car,
 and at the destination the bottom of the car is opened and the cargo pours out
 through metal grates and onto conveyors.
 
+Loaders benefit from inserter stack size bonus.  When fully researched they will
+fill or empty a cargo wagon in about 5 seconds.
+
 ![Bulk Rail Loaders in action](https://github.com/mspielberg/factorio-railloader/raw/master/demo.mp4)
 
-Graphics are placeholder.  If you would like to make pretty graphics, or know
-someone who would like to, see my
-[request thread](https://forums.factorio.com/viewtopic.php?f=15&t=56820).
-
 This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
-any you find to the mod thread.
+any you find to the mod thread. Graphics are placeholder.
+If you would like to make pretty graphics, or know someone who would like to, see
+my [request thread](https://forums.factorio.com/viewtopic.php?f=15&t=56820).
 
 ## How to use
 
@@ -32,11 +33,12 @@ wagon, then would fit through a metal grate, and would survive a trip up a
 [screw conveyor](https://en.wikipedia.org/wiki/Screw_conveyor).
 
 By default, this does not include plates, but a setting is available to enable
-them if you wish, or even to enable Bulk Rail Loaders to handle any item at all.
+them if you wish to abandon realism. You can even enable Bulk Rail Loaders to
+handle any item at all.
 
 From vanilla:
 
-* Mined coal, stone, copper ore, iron ore
+* Coal, stone, copper ore, iron ore
 * Landfill
 * Sulfur
 
