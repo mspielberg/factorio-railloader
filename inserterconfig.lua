@@ -87,7 +87,6 @@ function M.on_tick(event)
     return
   end
   if not inserter.valid then
-    game.print("removing invalid inserter reference")
     table.remove(global.unconfigured_inserters, unconfigured_inserters_iter)
     return
   end

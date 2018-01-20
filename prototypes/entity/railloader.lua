@@ -110,7 +110,7 @@ data:extend{
     selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
     selection_priority = 255,
     fast_replaceable_group = "railloader",
-    inventory_size = 80,
+    inventory_size = 320,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = {
       filename = "__railloader__/graphics/railloader.png",
