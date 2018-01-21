@@ -11,6 +11,7 @@ data:extend{
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
     collision_box = {{-2.6, -0.3}, {2.6, 0.3}},
+    selection_box = {{-2, -3.5}, {2, 0.5}},
     picture = pictures.empty_sheet,
     fluid_box = {
       pipe_connections = {},
@@ -21,6 +22,42 @@ data:extend{
     },
     pumping_speed = 0,
     animations = pictures.railunloader_proxy_animations,
+  },
+
+  -- decorative entities to show structure above tracks
+  {
+    type = "simple-entity",
+    name = "railunloader-structure-horizontal",
+    icon = "__base__/graphics/icons/steel-chest.png",
+    icon_size = 32,
+    flags = {},
+    -- above floor, below corpses
+    render_layer = "transport-belt-endings",
+    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
+    picture = {
+      filename = "__railloader__/graphics/railunloader/structure-horizontal.png",
+      priority = "extra-high",
+      width = 384,
+      height = 256,
+      scale = 0.5,
+    },
+  },
+  {
+    type = "simple-entity",
+    name = "railunloader-structure-vertical",
+    icon = "__base__/graphics/icons/steel-chest.png",
+    icon_size = 32,
+    flags = {},
+    -- above floor, below corpses
+    render_layer = "transport-belt-endings",
+    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
+    picture = {
+      filename = "__railloader__/graphics/railunloader/structure-vertical.png",
+      priority = "extra-high",
+      width = 256,
+      height = 384,
+      scale = 0.5,
+    },
   },
 
   {
@@ -51,16 +88,6 @@ data:extend{
     hand_base_picture = pictures.empty_sheet,
     hand_open_picture = pictures.empty_sheet,
     hand_closed_picture = pictures.empty_sheet,
-    working_sound = {
-      match_progress_to_activity = true,
-      sound =
-      {
-        {
-          filename = "__base__/sound/inserter-working.ogg",
-          volume = 0.75
-        },
-      },
-    }
   },
 
   -- interactable inventory
@@ -92,14 +119,7 @@ data:extend{
     fast_replaceable_group = "railloader",
     inventory_size = 320,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-    picture = {
-      filename = "__railloader__/graphics/railunloader.png",
-      priority = "extra-high",
-      width = 48,
-      height = 34,
-      shift = {0.9, 0},
-      scale = 4,
-    },
+    picture = pictures.empty_sheet,
     circuit_wire_connection_point = circuit_connector_definitions["chest"].points,
     circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
     circuit_wire_max_distance = default_circuit_wire_max_distance

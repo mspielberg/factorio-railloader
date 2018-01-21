@@ -108,14 +108,16 @@ local function on_built(event)
   inserter_config.register_inserter(inserter)
 
   -- place structure
-  if type == "loader" then
-    local placed = surface.create_entity{
-      name = "railloader-structure",
-      position = position,
-      force = force,
-    }
-    placed.destructible = false
+  local structure_name = "rail" .. type .. "-structure-horizontal"
+  if rail.direction == defines.direction.north then
+    structure_name = "rail" .. type .. "-structure-vertical"
   end
+  local placed = surface.create_entity{
+    name = structure_name,
+    position = position,
+    force = force,
+  }
+  placed.destructible = false
 end
 
 local function on_mined(event)
@@ -136,7 +138,7 @@ local function on_mined(event)
         event.buffer.insert(ent.held_stack)
       end
       ent.destroy()
-    elseif ent.name == "railloader-structure" then
+    elseif string.find(ent.name, "^railu?n?loader%-structure") then
       ent.destroy()
     end
   end

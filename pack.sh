@@ -35,7 +35,7 @@ END
 )
 
 
-dirs=$(ls -d "$canon_name"/*/ | grep -vF "$canon_name/$canon_name")
+dirs=$(ls -d "$canon_name"/*/ | grep -vF "$canon_name/$canon_name" | grep -vF resources)
 
 echo "Zipping to $zipfile:"
 for f in $include $dirs
