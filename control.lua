@@ -148,8 +148,10 @@ local function on_blueprint(event)
   if event.alt then
     bp = player.cursor_stack
   end
-
-  -- find bp center coordinate
+  local entities = bp.get_blueprint_entities()
+  if not entities then
+    return
+  end
 
   -- find (un)loaders and their directions
   local containers = player.surface.find_entities_filtered{
@@ -164,12 +166,11 @@ local function on_blueprint(event)
         area = util.box_centered_at(container.position, 0.6),
       }[1]
       if rail then
-        directions[#directions+1] = rail.directio
+        directions[#directions+1] = rail.direction
       end
     end
   end
 
-  local entities = bp.get_blueprint_entities()
   local loader_index = 1
   for _, e in ipairs(entities) do
     if e.name == "railloader-chest" then
