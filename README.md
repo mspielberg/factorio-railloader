@@ -70,6 +70,10 @@ of supported items for your own use.
   allows robots to eventually complete blueprint construction even if they run
   out of rails or similar.
 
+## Acknowledgements
+
+* Arch666Angel for the loader graphics.
+
 ## Version History
 * 0.1.0 (2018-01-20):
   * Initial preview release.
