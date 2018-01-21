@@ -36,6 +36,14 @@ local function abort_build(event)
   else
     -- robot build
     entity.order_deconstruction(entity.force)
+    local ghost = entity.surface.create_entity{
+      name = "entity-ghost",
+      inner_name = entity.name,
+      position = entity.position,
+      direction = entity.direction,
+      force = entity.force,
+    }
+    ghost.last_user = entity.last_user
   end
 end
 

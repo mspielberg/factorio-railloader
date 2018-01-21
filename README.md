@@ -45,13 +45,14 @@ From vanilla:
 From Bob's mods:
 
 * All ores, including quartz
+* Solid chemical intermediates (salt, lithium chloride, etc.)
 
 From Angel's mods:
 
 * All 6 primary ores from Angel's Refining, including refined variants up to
   purified crystals
 * Processed ores from Angel's Smelting
-* A variety of solid chemical intermediates from Angel's Petrochem
+* Solid chemical intermediates from Angel's Petrochem
 
 If you feel something that meets the above generic description is not included,
 let me know.  You can also edit `bulk.lua` if you would like to change the set
@@ -59,9 +60,21 @@ of supported items for your own use.
 
 ## Known Issues
 
+* Loaders cannot be selected with the pipette tool (`Q` by default), but they
+  can be blueprinted.
 * Loader configuration is not preserved when blueprinted.
 * Loader circuit connections are not recreated when building from a blueprint.
+* Loader ghosts can be placed in locations they cannot be built, either by
+  blueprint or by shift-clicking.  Robots will make repeated trips attempting to
+  build the loader until they are successful or the ghost is removed.  This
+  allows robots to eventually complete blueprint construction even if they run
+  out of rails or similar.
 
 ## Version History
 * 0.1.0 (2018-01-20):
-    * Initial preview release.
+  * Initial preview release.
+* 0.2.0 (2018-01-21):
+  * Add improved graphics.
+  * Fix some blueprinting crashes.
+  * Improve robot handling when trying to build a loader before the rails are
+    built.
