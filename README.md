@@ -9,7 +9,7 @@ through metal grates and onto conveyors.
 Loaders benefit from inserter stack size bonus.  When fully researched they will
 fill or empty a cargo wagon in about 5 seconds.
 
-![Bulk Rail Loaders in action](https://github.com/mspielberg/factorio-railloader/raw/master/demo.mp4)
+![Bulk Rail Loaders in action](https://github.com/mspielberg/factorio-railloader/raw/master/resources/snapshot.jpg)
 
 This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
 any you find to the mod thread. Graphics are placeholder.
