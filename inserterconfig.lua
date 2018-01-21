@@ -17,14 +17,11 @@ local function configure_inserter_from_inventory(inserter, inventory)
       type = "railunloader"
     end
     local msg = {"railloader." .. type .. "-configured", {"item-name." .. item}}
-    local last_user = inserter.last_user
-    if last_user then
-      if last_user.connected then
-        last_user.print(msg)
-      else
-        last_user.force.print(msg)
-      end
-    end
+    inserter.surface.create_entity{
+      name = "flying-text",
+      position = inserter.position,
+      text = msg,
+    }
 
     for i, e in ipairs(global.unconfigured_inserters) do
       if e.unit_number == inserter.unit_number then

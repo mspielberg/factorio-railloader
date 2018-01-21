@@ -82,3 +82,5 @@ of supported items for your own use.
   * Fix some blueprinting crashes.
   * Improve robot handling when trying to build a loader before the rails are
     built.
+  * Use flying-text instead of console notifications when inserters lock in an
+    item.
