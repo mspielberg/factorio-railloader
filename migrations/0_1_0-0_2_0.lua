@@ -1,6 +1,10 @@
 for _, surface in pairs(game.surfaces) do
   for _, e in ipairs(surface.find_entities_filtered{name="railloader-structure-vertical"}) do
-    local rail = surface.find_entity("straight-rail", e.position)
+    local position = e.position
+    local rail = surface.find_entities_filtered{
+      name = "straight-rail",
+      area = {{ position.x - 0.6, position.y - 0.6}, { position.x + 0.6, position.y + 0.6 }},
+    }[1]
     if rail.direction == defines.direction.east then
       surface.create_entity{
         name = "railloader-structure-horizontal",
@@ -11,7 +15,11 @@ for _, surface in pairs(game.surfaces) do
     end
   end
   for _, e in ipairs(surface.find_entities_filtered{name="railunloader-chest"}) do
-    local rail = surface.find_entity("straight-rail", e.position)
+    local position = e.position
+    local rail = surface.find_entities_filtered{
+      name = "straight-rail",
+      area = {{ position.x - 0.6, position.y - 0.6}, { position.x + 0.6, position.y + 0.6 }},
+    }[1]
     if rail.direction == defines.direction.east then
       surface.create_entity{
         name = "railunloader-structure-horizontal",

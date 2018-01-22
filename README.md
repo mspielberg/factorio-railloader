@@ -84,3 +84,5 @@ of supported items for your own use.
     built.
   * Use flying-text instead of console notifications when inserters lock in an
     item.
+* 0.2.1 (2018-01-21):
+  * Fix bad migration.
