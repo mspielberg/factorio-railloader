@@ -62,7 +62,7 @@ local function on_built(event)
 
   -- check that rail is in the correct place
   local rail = surface.find_entities_filtered{
-    area = util.box_centered_at(position, 0.5),
+    area = util.box_centered_at(position, 0.6),
     type = "straight-rail",
   }[1]
   if not rail then
@@ -164,10 +164,19 @@ local function on_blueprint(event)
   end
 
   -- find (un)loaders and their directions
-  local containers = player.surface.find_entities_filtered{
-    area = event.area,
-    type = "container",
-  }
+  local containers
+  if util.is_empty_box(event.area) then
+    containers = player.surface.find_entities_filtered{
+      position = event.area.top_left,
+      type = "container",
+    }
+  else
+    containers = player.surface.find_entities_filtered{
+      area = event.area,
+      type = "container",
+    }
+  end
+
   local directions = {}
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then

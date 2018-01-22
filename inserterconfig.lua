@@ -42,7 +42,7 @@ local function configure_inserter(inserter)
   else
     local wagon = inserter.surface.find_entities_filtered{
       type = "cargo-wagon",
-      area = util.box_centered_at(inserter.position, 0.5),
+      area = util.box_centered_at(inserter.position, 0.6),
       force = inserter.force,
     }[1]
     if wagon then
@@ -62,7 +62,7 @@ function M.on_train_changed_state(event)
   for _, wagon in ipairs(train.cargo_wagons) do
     local inserter = wagon.surface.find_entities_filtered{
       type = "inserter",
-      area = util.box_centered_at(wagon.position, 0.5),
+      area = util.box_centered_at(wagon.position, 0.6),
     }[1]
     if inserter and inserter.get_filter(1) == nil then
       configure_inserter(inserter)
