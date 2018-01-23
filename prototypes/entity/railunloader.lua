@@ -31,9 +31,9 @@ data:extend{
     icon = "__base__/graphics/icons/steel-chest.png",
     icon_size = 32,
     flags = {},
+    collision_mask = {},
     -- above floor, below corpses
     render_layer = "transport-belt-endings",
-    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
     picture = {
       filename = "__railloader__/graphics/railunloader/structure-horizontal.png",
       priority = "extra-high",
@@ -48,9 +48,9 @@ data:extend{
     icon = "__base__/graphics/icons/steel-chest.png",
     icon_size = 32,
     flags = {},
+    collision_mask = {},
     -- above floor, below corpses
     render_layer = "transport-belt-endings",
-    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
     picture = {
       filename = "__railloader__/graphics/railunloader/structure-vertical.png",
       priority = "extra-high",
@@ -66,11 +66,9 @@ data:extend{
     icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"hide-alt-info"},
+    collision_mask = {},
     stack = true,
     max_health = 800,
-    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
-    selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
-    selectable_in_game = false,
     filter_count = 1,
     energy_per_movement = 4000,
     energy_per_rotation = 4000,
@@ -115,6 +113,7 @@ data:extend{
     },
     collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
     selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
+    collision_mask = {"item-layer", "object-layer", "water-tile"},
     selection_priority = 255,
     fast_replaceable_group = "railloader",
     inventory_size = 320,
