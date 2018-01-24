@@ -111,8 +111,8 @@ data:extend{
         percent = 60
       }
     },
-    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
-    selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
+    collision_box = {{-2, -2}, {2, 2}},
+    selection_box = {{-2, -2}, {2, 2}},
     collision_mask = {"item-layer", "object-layer", "water-tile"},
     selection_priority = 255,
     fast_replaceable_group = "railloader",
