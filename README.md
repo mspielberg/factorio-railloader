@@ -74,19 +74,19 @@ of supported items for your own use.
 
 ## Version History
 * 0.1.0 (2018-01-20):
-  * Initial preview release.
+    * Initial preview release.
 * 0.2.0 (2018-01-21):
-  * Add improved graphics.
-  * Fix some blueprinting crashes.
-  * Improve robot handling when trying to build a loader before the rails are
-    built.
-  * Use flying-text instead of console notifications when inserters lock in an
-    item.
+    * Add improved graphics.
+    * Fix some blueprinting crashes.
+    * Improve robot handling when trying to build a loader before the rails are
+      built.
+    * Use flying-text instead of console notifications when inserters lock in an
+      item.
 * 0.2.1 (2018-01-21):
-  * Fix bad migration.
+    * Fix bad migration.
 * 0.2.2 (2018-01-23):
-  * Enable walking and driving vehicles through loaders.
-  * Enable using the pipette feature (Q) with loaders.
-  * Fix crash when clicking a single point to create a blueprint.
-  * Fix misleading loader placement guide.
-  * Shrink placement collision box.
+    * Enable walking and driving vehicles through loaders.
+    * Enable using the pipette feature (Q) with loaders.
+    * Fix crash when clicking a single point to create a blueprint.
+    * Fix misleading loader placement guide.
+    * Shrink placement collision box.
