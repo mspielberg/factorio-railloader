@@ -36,7 +36,7 @@ data:extend{
     picture = {
       filename = "__railloader__/graphics/railloader/structure-horizontal.png",
       priority = "extra-high",
-      width = 190,
+      width = 188,
       height = 210,
       scale = 1,
     },
@@ -52,7 +52,7 @@ data:extend{
     picture = {
       filename = "__railloader__/graphics/railloader/structure-vertical.png",
       priority = "extra-high",
-      width = 190,
+      width = 188,
       height = 210,
       scale = 1,
     },
@@ -94,6 +94,7 @@ data:extend{
     icon_size = 32,
     flags = {"player-creation"},
     minable = {mining_time = 4, result = "railloader"},
+    placeable_by = {item = "railloader", count = 1},
     max_health = 800,
     corpse = "small-remnants",
     open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },

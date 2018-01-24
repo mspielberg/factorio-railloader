@@ -86,3 +86,7 @@ of supported items for your own use.
     item.
 * 0.2.1 (2018-01-21):
   * Fix bad migration.
+* 0.2.2 (2018-01-23):
+  * Enable walking and driving vehicles through loaders.
+  * Enable using the pipette feature (Q) with loaders.
+  * Fix misleading loader placement guide in vertical orientation.

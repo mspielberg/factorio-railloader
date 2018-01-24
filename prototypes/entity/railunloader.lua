@@ -96,6 +96,7 @@ data:extend{
     icon_size = 32,
     flags = {"player-creation"},
     minable = {mining_time = 4, result = "railunloader"},
+    placeable_by = {item = "railunloader", count = 1},
     max_health = 800,
     corpse = "small-remnants",
     open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
