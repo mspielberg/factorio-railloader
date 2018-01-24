@@ -87,5 +87,6 @@ of supported items for your own use.
 * 0.2.2 (2018-01-23):
   * Enable walking and driving vehicles through loaders.
   * Enable using the pipette feature (Q) with loaders.
+  * Fix crash when clicking a single point to create a blueprint.
   * Fix misleading loader placement guide.
   * Shrink placement collision box.
