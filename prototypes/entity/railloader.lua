@@ -10,7 +10,7 @@ data:extend{
     minable = { mining_time = 0.1, result = "railloader" },
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
-    collision_box = {{-2.6, -0.3}, {2.6, 0.3}},
+    collision_box = {{-1.8, -0.3}, {1.8, 0.3}},
     selection_box = {{-2, -3.5}, {2, 0.5}},
     picture = pictures.empty_sheet,
     fluid_box = {

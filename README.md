@@ -60,8 +60,6 @@ of supported items for your own use.
 
 ## Known Issues
 
-* Loaders cannot be selected with the pipette tool (`Q` by default), but they
-  can be blueprinted.
 * Loader configuration is not preserved when blueprinted.
 * Loader circuit connections are not recreated when building from a blueprint.
 * Loader ghosts can be placed in locations they cannot be built, either by
@@ -89,4 +87,5 @@ of supported items for your own use.
 * 0.2.2 (2018-01-23):
   * Enable walking and driving vehicles through loaders.
   * Enable using the pipette feature (Q) with loaders.
-  * Fix misleading loader placement guide in vertical orientation.
+  * Fix misleading loader placement guide.
+  * Shrink placement collision box.
