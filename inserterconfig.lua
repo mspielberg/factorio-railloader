@@ -24,7 +24,7 @@ local function configure_inserter_from_inventory(inserter, inventory)
     }
 
     for i, e in ipairs(global.unconfigured_inserters) do
-      if e.unit_number == inserter.unit_number then
+      if not e.valid or e.unit_number == inserter.unit_number then
         table.remove(global.unconfigured_inserters, i)
         return
       end
