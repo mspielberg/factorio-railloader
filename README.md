@@ -23,8 +23,12 @@ will show a preview of the (un)loader and an image of a cargo wagon, to help
 position the loader correctly.
 
 The loader locks in the first item it sees of a supported type.  If you want to
-change what item a loader is handling, mine and rebuild it.  Loaders are
-circuit-connectable chest entities, ready for use with Logistic Train Network.
+change what item a loader is handling, mine and rebuild it.  Note that if the
+mod options are changed to allow loaders to handle any type of item, the locking
+behavior is also disabled.
+
+Loaders are circuit-connectable chest entities, ready for use with Logistic
+Train Network.
 
 ## What items are supported?
 
@@ -38,7 +42,7 @@ handle any item at all.
 
 From vanilla:
 
-* Coal, stone, copper ore, iron ore
+* Coal, stone, copper ore, iron ore, uranium ore
 * Landfill
 * Sulfur
 
@@ -90,3 +94,8 @@ of supported items for your own use.
     * Fix crash when clicking a single point to create a blueprint.
     * Fix misleading loader placement guide.
     * Shrink placement collision box.
+* 0.2.3 (2018-02-02):
+    * You must now actually research the technology to unlock rail loaders and unloaders.
+    * Fix crash when creating a blueprint with a GUI open in Factorio versions before 0.16.21.
+    * Fix crash after mining a loader under certain circumstances.
+    * Loaders do not lock in an item if set to accept all items.

@@ -1,4 +1,3 @@
-local bulk = require "bulk"
 local inserter_config = require "inserterconfig"
 local util = require "util"
 
@@ -10,13 +9,10 @@ local train_types = {
   ["fluid-wagon"] = true,
 }
 
+local allowed_items_setting = settings.global["railloader-allowed-items"].value
+
 local function on_init()
   inserter_config.on_init()
-  bulk.check_settings()
-end
-
-local function on_load()
-  bulk.check_settings()
 end
 
 local function abort_build(event)
@@ -100,12 +96,14 @@ local function on_built(event)
   chest.last_user = last_user
 
   -- place inserter
+  local inserter_name =
+    "rail" .. type .. (allowed_items_setting == "all" and "-universal" or "") .. "-inserter"
   local inserter_direction = defines.direction.north
   if direction == defines.direction.north or direction == defines.direction.south then
     inserter_direction = defines.direction.east
   end
   local inserter = surface.create_entity{
-    name = "rail" .. type .. "-inserter",
+    name = inserter_name,
     position = position,
     direction = inserter_direction,
     force = force,
@@ -135,13 +133,11 @@ local function on_mined(event)
     return
   end
 
-  local inserter_name = "rail" .. type .. "-inserter"
-
   local entities = entity.surface.find_entities_filtered{
     area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
-    if ent.name == inserter_name then
+    if ent.type == "inserter" then
       if event.buffer then
         event.buffer.insert(ent.held_stack)
       end
@@ -212,13 +208,13 @@ local function on_blueprint(event)
 end
 
 local function on_setting_changed(event)
-  bulk.check_settings()
+  allowed_items_setting = settings.global["railloader-allowed-items"].value
+  inserter_config.on_setting_changed(event)
 end
 
 -- setup event handlers
 
 script.on_init(on_init)
-script.on_load(on_load)
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)

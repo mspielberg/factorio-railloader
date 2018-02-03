@@ -45,7 +45,7 @@ end
 
 -- runtime variables
 
-local allowed_items_setting = "ore"
+local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function item_matches_patterns(item_name, group)
   for _, pat in ipairs(patterns[group]) do
@@ -84,7 +84,7 @@ function M.first_acceptable_item(inventory)
   return nil
 end
 
-function M.check_settings()
+function M.on_setting_changed()
   allowed_items_setting = settings.global["railloader-allowed-items"].value
   acceptable_item_cache = {}
 end

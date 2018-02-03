@@ -125,3 +125,8 @@ data:extend{
     circuit_wire_max_distance = default_circuit_wire_max_distance
   },
 }
+
+local univ = util.table.deepcopy(data.raw["inserter"]["railunloader-inserter"])
+univ.name = "railunloader-universal-inserter"
+univ.filter_count = 0
+data:extend{univ}

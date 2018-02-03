@@ -3,3 +3,28 @@ for _, f in pairs(game.forces) do
   f.recipes["railloader"].enabled = researched
   f.recipes["railunloader"].enabled = researched
 end
+
+local function replace_all_inserters()
+  for _, s in pairs(game.surfaces) do
+    for _, type in ipairs{"railloader", "railunloader"} do
+      local to_match = type .. "-inserter"
+      local replace_with = type .. "-universal-inserter"
+      for _, e in ipairs(s.find_entities_filtered{name=to_match}) do
+        local replacement = s.create_entity{
+          name = replace_with,
+          position = e.position,
+          direction = e.direction,
+          force = e.force,
+        }
+        replacement.destructible = false
+        replacement.last_user = e.last_user
+        replacement.held_stack.swap_stack(e.held_stack)
+        e.destroy()
+      end
+    end
+  end
+end
+
+if settings.global["railloader-allowed-items"].value == "any" then
+  replace_all_inserters()
+end

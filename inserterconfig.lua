@@ -5,6 +5,7 @@ local M = {}
 
 local INTERVAL = 60
 
+local allowed_items_setting = settings.global["railloader-allowed-items"].value
 local unconfigured_inserters_iter
 
 local function configure_inserter_from_inventory(inserter, inventory)
@@ -55,6 +56,10 @@ local function configure_inserter(inserter)
 end
 
 function M.on_train_changed_state(event)
+  if allowed_items_setting == "any" then
+    return
+  end
+
   local train = event.train
   if train.state ~= defines.train_state.wait_station then
     return
@@ -100,6 +105,47 @@ function M.register_inserter(inserter)
   -- reset iterator after adding a new item
   unconfigured_inserters_iter = nil
   script.on_event(defines.events.on_tick, M.on_tick)
+end
+
+local function replace_all_inserters(universal)
+  local from_qualifier = universal and "" or "-universal"
+  local to_qualifier = universal and "-universal" or ""
+
+  for _, s in pairs(game.surfaces) do
+    for _, type in ipairs{"railloader", "railunloader"} do
+      local to_match = type .. from_qualifier .. "-inserter"
+      local replace_with = type .. to_qualifier .. "-inserter"
+      for _, e in ipairs(s.find_entities_filtered{name=to_match}) do
+        local replacement = s.create_entity{
+          name = replace_with,
+          position = e.position,
+          direction = e.direction,
+          force = e.force,
+        }
+        replacement.destructible = false
+        replacement.last_user = e.last_user
+        replacement.held_stack.swap_stack(e.held_stack)
+        if not universal then
+          M.register_inserter(replacement)
+        end
+        e.destroy()
+      end
+    end
+  end
+end
+
+function M.on_setting_changed(event)
+  if event.setting ~= "railloader-allowed-items" then
+    return
+  end
+  local new_value = settings.global["railloader-allowed-items"].value
+  if new_value == "any" and allowed_items_setting ~= "any" then
+    replace_all_inserters(true)
+  elseif new_value ~= "any" and allowed_items_setting == "any" then
+    replace_all_inserters(false)
+  end
+  allowed_items_setting = new_value
+  bulk.on_setting_changed()
 end
 
 return M
