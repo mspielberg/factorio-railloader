@@ -2,6 +2,7 @@ data:extend{
   {
     type = "recipe",
     name = "railloader",
+    enabled = false,
     energy_required = 1,
     ingredients = {
       {"rail", 3},
