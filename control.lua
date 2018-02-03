@@ -155,8 +155,11 @@ end
 local function on_blueprint(event)
   local player = game.players[event.player_index]
   local bp = player.blueprint_to_setup
-  if event.alt then
+  if not bp or not bp.valid_for_read then
     bp = player.cursor_stack
+  end
+  if not bp or not bp.valid_for_read then
+    return
   end
   local entities = bp.get_blueprint_entities()
   if not entities then
