@@ -101,7 +101,7 @@ local function on_built(event)
 
   -- place inserter
   local inserter_name =
-    "rail" .. type .. (allowed_items_setting == "all" and "-universal" or "") .. "-inserter"
+    "rail" .. type .. (allowed_items_setting == "any" and "-universal" or "") .. "-inserter"
   local inserter_direction = defines.direction.north
   if direction == defines.direction.north or direction == defines.direction.south then
     inserter_direction = defines.direction.east
