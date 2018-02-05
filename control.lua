@@ -39,7 +39,11 @@ local function abort_build(event)
       direction = entity.direction,
       force = entity.force,
     }
-    ghost.last_user = entity.last_user
+    local last_user = entity.last_user
+    if last_user and last_user.valid then
+      ghost.last_user = last_user
+      last_user.add_custom_alert(ghost, {type="item", name=item_name}, {"railloader.invalid-construction-site"}, true)
+    end
   end
 end
 
