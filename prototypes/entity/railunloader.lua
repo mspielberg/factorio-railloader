@@ -1,3 +1,4 @@
+local circuitconnectors = require "prototypes.entity.circuitconnectors"
 local pictures = require "prototypes.entity.pictures"
 
 data:extend{
@@ -22,6 +23,9 @@ data:extend{
     },
     pumping_speed = 0,
     animations = pictures.railunloader_proxy_animations,
+    circuit_wire_connection_points = circuitconnectors["railloader-placement-proxy"].points,
+    circuit_connector_sprites = circuitconnectors["railloader-placement-proxy"].sprites,
+    circuit_wire_max_distance = default_circuit_wire_max_distance + 1.5,
   },
 
   -- decorative entities to show structure above tracks
@@ -120,7 +124,7 @@ data:extend{
     inventory_size = 320,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = pictures.empty_sheet,
-    circuit_wire_connection_point = circuit_connector_definitions["chest"].points,
+    circuit_wire_connection_points = circuit_connector_definitions["chest"].points,
     circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
     circuit_wire_max_distance = default_circuit_wire_max_distance
   },

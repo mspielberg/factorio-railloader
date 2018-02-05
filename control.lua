@@ -89,8 +89,6 @@ local function on_built(event)
     position.y = rail.position.y
   end
 
-  entity.destroy()
-
   -- place chest
   local chest = surface.create_entity{
     name = "rail" .. type .. "-chest",
@@ -98,6 +96,11 @@ local function on_built(event)
     force = force,
   }
   chest.last_user = last_user
+
+  -- recreate circuit connections
+  for _, ccd in ipairs(entity.circuit_connection_definitions) do
+    chest.connect_neighbour(ccd)
+  end
 
   -- place inserter
   local inserter_name =
@@ -128,6 +131,8 @@ local function on_built(event)
     force = force,
   }
   placed.destructible = false
+
+  entity.destroy()
 end
 
 local function on_mined(event)
