@@ -70,7 +70,8 @@ of supported items for your own use.
   blueprint or by shift-clicking.  Robots will make repeated trips attempting to
   build the loader until they are successful or the ghost is removed.  This
   allows robots to eventually complete blueprint construction even if they run
-  out of rails or similar.
+  out of rails or similar.  An alert will be added to the map to warn that
+  player intervention may be needed to complete construction.
 
 ## Acknowledgements
 
@@ -99,3 +100,7 @@ of supported items for your own use.
     * Fix crash when creating a blueprint with a GUI open in Factorio versions before 0.16.21.
     * Fix crash after mining a loader under certain circumstances.
     * Loaders do not lock in an item if set to accept all items.
+* 0.2.4 (2018-02-04):
+    * Fix bug building new non-locking loaders.
+    * Add partial support for preserving circuit connections in blueprints.
+    * Add alert to map when robots cannot build a loader due to missing rails or an obstruction.
