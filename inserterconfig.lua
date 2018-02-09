@@ -39,7 +39,7 @@ local function configure_inserter(inserter)
     if chest then
       inventory = chest.get_inventory(defines.inventory.chest)
     end
-  else
+  elseif inserter.name == "railunloader-inserter" then
     local wagon = inserter.surface.find_entities_filtered{
       type = "cargo-wagon",
       area = util.box_centered_at(inserter.position, 0.6),
@@ -68,7 +68,7 @@ function M.on_train_changed_state(event)
       type = "inserter",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
-    if inserter and inserter.get_filter(1) == nil then
+    if inserter and not util.is_universal_inserter(inserter) and inserter.get_filter(1) == nil then
       configure_inserter(inserter)
     end
   end
@@ -87,7 +87,7 @@ local function on_tick(event)
     end
     return
   end
-  if not inserter.valid then
+  if not inserter.valid or util.is_universal_inserter(inserter) then
     table.remove(global.unconfigured_inserters, global.unconfigured_inserters_iter)
     return
   end
@@ -105,6 +105,9 @@ function M.on_load()
 end
 
 function M.register_inserter(inserter)
+  if util.is_universal_inserter(inserter) then
+    return
+  end
   local t = global.unconfigured_inserters
   t[#t+1] = inserter
   -- reset iterator after adding a new item
