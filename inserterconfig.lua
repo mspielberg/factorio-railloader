@@ -6,7 +6,6 @@ local M = {}
 local INTERVAL = 60
 
 local allowed_items_setting = settings.global["railloader-allowed-items"].value
-local unconfigured_inserters_iter
 
 local function configure_inserter_from_inventory(inserter, inventory)
   local item = bulk.first_acceptable_item(inventory)
@@ -75,21 +74,21 @@ function M.on_train_changed_state(event)
   end
 end
 
-function M.on_tick(event)
+local function on_tick(event)
   if event.tick % INTERVAL ~= 0 then
     return
   end
 
   local inserter
-  unconfigured_inserters_iter, inserter = next(global.unconfigured_inserters, unconfigured_inserters_iter)
-  if not unconfigured_inserters_iter then
+  global.unconfigured_inserters_iter, inserter = next(global.unconfigured_inserters, global.unconfigured_inserters_iter)
+  if not global.unconfigured_inserters_iter then
     if not next(global.unconfigured_inserters) then
       script.on_event(defines.events.on_tick, nil)
     end
     return
   end
   if not inserter.valid then
-    table.remove(global.unconfigured_inserters, unconfigured_inserters_iter)
+    table.remove(global.unconfigured_inserters, global.unconfigured_inserters_iter)
     return
   end
   configure_inserter(inserter)
@@ -99,12 +98,18 @@ function M.on_init()
   global.unconfigured_inserters = {}
 end
 
+function M.on_load()
+  if next(global.unconfigured_inserters) then
+    script.on_event(defines.events.on_tick, on_tick)
+  end
+end
+
 function M.register_inserter(inserter)
   local t = global.unconfigured_inserters
   t[#t+1] = inserter
   -- reset iterator after adding a new item
-  unconfigured_inserters_iter = nil
-  script.on_event(defines.events.on_tick, M.on_tick)
+  global.unconfigured_inserters_iter = nil
+  script.on_event(defines.events.on_tick, on_tick)
 end
 
 local function replace_all_inserters(universal)

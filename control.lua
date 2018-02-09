@@ -15,6 +15,10 @@ local function on_init()
   inserter_config.on_init()
 end
 
+local function on_load()
+  inserter_config.on_load()
+end
+
 local function abort_build(event)
   local entity = event.created_entity
   local item_name = next(entity.prototype.items_to_place_this)
@@ -224,6 +228,7 @@ end
 -- setup event handlers
 
 script.on_init(on_init)
+script.on_load(on_load)
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
