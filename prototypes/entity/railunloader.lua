@@ -73,7 +73,7 @@ data:extend{
     collision_mask = {},
     stack = true,
     max_health = 800,
-    filter_count = 1,
+    filter_count = 5,
     energy_per_movement = 4000,
     energy_per_rotation = 4000,
     energy_source = {

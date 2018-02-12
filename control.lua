@@ -122,7 +122,7 @@ local function on_built(event)
   inserter.destructible = false
   inserter.last_user = last_user
 
-  inserter_config.register_inserter(inserter)
+  inserter_config.configure_or_register_inserter(inserter)
 
   -- place structure
   local structure_name = "rail" .. type .. "-structure-horizontal"

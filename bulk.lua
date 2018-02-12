@@ -74,14 +74,17 @@ local function is_acceptable_item(item_name)
   return acceptable_item_cache[item_name]
 end
 
-function M.first_acceptable_item(inventory)
-  for i=1,#inventory do
-    local stack = inventory[i]
-    if stack.valid_for_read and is_acceptable_item(stack.name) then
-      return stack.name
+function M.acceptable_items(inventory, limit)
+  local out = {}
+  for name in pairs(inventory.get_contents()) do
+    if is_acceptable_item(name) then
+      out[#out+1] = name
+      if #out >= limit then
+        return out
+      end
     end
   end
-  return nil
+  return out
 end
 
 function M.on_setting_changed()
