@@ -11,7 +11,7 @@ local show_configuration_messages_setting = settings.global["railloader-show-con
 local on_tick -- forward reference
 
 local function register_inserter(inserter)
-  if util.is_universal_inserter(inserter) then
+  if not util.is_filter_inserter(inserter) then
     return
   end
   local t = global.unconfigured_inserters
@@ -126,7 +126,7 @@ function M.on_train_changed_state(event)
       type = "inserter",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
-    if inserter and not util.is_universal_inserter(inserter) then
+    if inserter then
       M.configure_or_register_inserter(inserter)
     end
   end
@@ -145,7 +145,7 @@ on_tick = function(event)
     end
     return
   end
-  if not inserter.valid or util.is_universal_inserter(inserter) then
+  if not inserter.valid or not util.is_filter_inserter(inserter) then
     table.remove(global.unconfigured_inserters, global.unconfigured_inserters_iter)
     return
   end
@@ -163,6 +163,9 @@ function M.on_load()
 end
 
 function M.configure_or_register_inserter(inserter)
+  if not util.is_filter_inserter(inserter) then
+    return
+  end
   local success = configure_inserter(inserter)
   if not success then
     unregister_inserter(inserter)

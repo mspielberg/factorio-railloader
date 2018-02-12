@@ -44,8 +44,8 @@ function M.orthogonal_direction(direction)
   return 0
 end
 
-function M.is_universal_inserter(inserter)
-  return string.find(inserter.name, "%-universal%-inserter$") ~= nil
+function M.is_filter_inserter(inserter)
+  return string.find(inserter.name, "loader%-inserter$") ~= nil
 end
 
 return M

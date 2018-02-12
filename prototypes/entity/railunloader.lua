@@ -102,7 +102,7 @@ data:extend{
     minable = {mining_time = 4, result = "railunloader"},
     placeable_by = {item = "railunloader", count = 1},
     max_health = 800,
-    corpse = "small-remnants",
+    corpse = "big-remnants",
     open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
     close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
     resistances =
@@ -128,9 +128,45 @@ data:extend{
     circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
     circuit_wire_max_distance = default_circuit_wire_max_distance
   },
+
+  {
+    type = "container",
+    name = "railunloader-interface-chest",
+    icon = "__railloader__/graphics/icons/railunloader.png",
+    icon_size = 32,
+    flags = {"player-creation"},
+    max_health = 800,
+    corpse = "small-remnants",
+    open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
+    close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
+    resistances =
+    {
+      {
+        type = "fire",
+        percent = 90
+      },
+      {
+        type = "impact",
+        percent = 60
+      }
+    },
+    collision_box = {{-0.5, -0.5}, {0.5, 0.5}},
+    selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+    inventory_size = 1,
+    vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+    picture = data.raw["container"]["steel-chest"].picture,
+    circuit_wire_connection_points = circuit_connector_definitions["chest"].points,
+    circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
+    circuit_wire_max_distance = default_circuit_wire_max_distance
+  },
 }
 
 local univ = util.table.deepcopy(data.raw["inserter"]["railunloader-inserter"])
 univ.name = "railunloader-universal-inserter"
 univ.filter_count = 0
 data:extend{univ}
+
+local interface_inserter = util.table.deepcopy(univ)
+interface_inserter.name = "railunloader-interface-inserter"
+interface_inserter.allow_custom_vectors = true
+data:extend{interface_inserter}
