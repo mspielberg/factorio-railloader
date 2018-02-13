@@ -51,7 +51,37 @@ local function abort_build(event)
   end
 end
 
-local function create_entities(type, proxy, rail)
+local function sync_interface_inserters(loader, buffer)
+  local type = util.railloader_type(loader)
+  local interface_inserters = loader.surface.find_entities_filtered{name = "rail" .. type .. "-interface-inserter"}
+  for i, e in ipairs(interface_inserters) do
+    -- convert to set
+    interface_inserters[e.unit_number] = e
+    interface_inserters[i] = nil
+  end
+
+  local chests = util.find_chests_from_railloader(loader)
+  for _, chest in ipairs(chests) do
+    local inserter = util.find_inserter_for_interface(loader, chest)
+    if inserter then
+      interface_inserters[inserter.unit_number] = nil
+    else
+      local main_chest_position = M.loader_position_for_interface(loader, chest)
+      inserter = loader.surface.create_entity{
+        name = util.interface_inserter_name_for_loader(loader),
+        position = loader.position,
+        force = loader.force,
+      }
+      inserter.destructible = false
+      inserter.pickup_position = type == "loader" and chest.position or main_chest_position
+      inserter.drop_position = type == "unloader" and chest.position or main_chest_position
+      inserter.direction = inserter.direction
+    end
+  end
+end
+
+local function create_entities(proxy, rail)
+  local type = util.railloader_type(proxy)
   local surface = proxy.surface
   local direction = proxy.direction
   local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
@@ -105,60 +135,15 @@ local function create_entities(type, proxy, rail)
   }
   placed.destructible = false
 
-  -- place interface chests
-  local interface_offsets = {
-    { util.offset(rail_direction,  1.5,  1.5), util.offset(rail_direction,  2.5,  1.5) },
-    { util.offset(rail_direction, -1.5,  1.5), util.offset(rail_direction, -2.5,  1.5) },
-    { util.offset(rail_direction,  1.5, -1.5), util.offset(rail_direction,  2.5, -1.5) },
-    { util.offset(rail_direction, -1.5, -1.5), util.offset(rail_direction, -2.5, -1.5) },
-  }
-  for _, offsets in ipairs(interface_offsets) do
-    local main_chest_position = util.moveposition(position, offsets[1])
-    local interface_position = util.moveposition(position, offsets[2])
-
-    local interface_chest = surface.create_entity{
-      name = "rail" .. type .. "-interface-chest",
-      position = interface_position,
-      force = force,
-    }
-    chest.destructible = false
-
-    for _, wire_type in ipairs{defines.wire_type.red, defines.wire_type.green} do
-      interface_chest.connect_neighbour{
-        wire = wire_type,
-        target_entity = chest,
-      }
-    end
-
-    local inserter = surface.create_entity{
-      name = "rail" .. type .. "-interface-inserter",
-      position = position,
-      force = force,
-    }
-    inserter.destructible = false
-
-    if type == "unloader" then
-      inserter.pickup_position = main_chest_position
-      inserter.drop_position = interface_position
-    else
-      inserter.pickup_position = interface_position
-      inserter.drop_position = main_chest_position
-    end
-    inserter.direction = inserter.direction
-  end
+  -- place interface inserters for pre-existing chests
+  sync_interface_inserters(chest)
 end
 
-local function on_built(event)
-  local entity = event.created_entity
-  local type = string.match(entity.name, "^rail(.*)%-placement%-proxy$")
-  if not type then
-    return
-  end
-
-  local surface = entity.surface
-  local direction = entity.direction
-  local position = util.moveposition(entity.position, util.offset(direction, 1.5, 0))
-  local force = entity.force
+local function on_railloader_proxy_built(proxy)
+  local surface = proxy.surface
+  local direction = proxy.direction
+  local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
+  local force = proxy.force
 
   -- check that rail is in the correct place
   local rail = surface.find_entities_filtered{
@@ -174,8 +159,8 @@ local function on_built(event)
 
   -- check that the opposite side is also free
   local opposite_side_clear = surface.can_place_entity{
-    name = entity.name,
-    position = util.moveposition(entity.position, util.offset(direction, 3, 0)),
+    name = proxy.name,
+    position = util.moveposition(proxy.position, util.offset(direction, 3, 0)),
     direction = direction,
     force = force,
   }
@@ -184,26 +169,35 @@ local function on_built(event)
     return
   end
 
-  create_entities(type, entity, rail)
+  create_entities(proxy, rail)
 
-  entity.destroy()
+  proxy.destroy()
 end
 
-local function on_mined(event)
-  local entity = event.entity
-  local type = string.match(entity.name, "^rail(.*)%-chest$")
-  if not type then
-    return
+local function on_container_built(entity)
+  local loader = util.find_railloader_from_chest(entity)
+  if loader then
+    sync_interface_inserters(loader)
   end
-  local position = entity.position
+end
 
+local function on_built(event)
+  local entity = event.created_entity
+  local type = string.match("^rail(u?n?loader)%-placement%-proxy$")
+  if type then
+    return on_railloader_proxy_built(entity)
+  elseif type == "container" then
+    return on_container_built(entity)
+  end
+end
+
+local function on_railloader_mined(entity, type)
+  local position = entity.position
   local entities = entity.surface.find_entities_filtered{
     area = entity.bounding_box,
   }
-  local direction
   for _, ent in ipairs(entities) do
     if ent.type == "inserter" then
-      direction = ent.direction
       if event.buffer then
         event.buffer.insert(ent.held_stack)
       end
@@ -212,28 +206,22 @@ local function on_mined(event)
       ent.destroy()
     end
   end
+end
 
-  -- remove interface chests
-  local interface_positions = {
-    util.moveposition(position, util.offset(direction, 2.5, 1.5)),
-    util.moveposition(position, util.offset(direction, 2.5, -1.5)),
-    util.moveposition(position, util.offset(direction, -2.5, 1.5)),
-    util.moveposition(position, util.offset(direction, -2.5, -1.5)),
-  }
-  for _, interface_position in ipairs(interface_positions) do
-    local interface_chest = entity.surface.find_entity("rail" .. type .. "-interface-chest", interface_position)
-    if interface_chest then
-      if event.buffer then
-        local inv = interface_chest.get_inventory(defines.inventory.chest)
-        for i=1,#inv do
-          local stack = inv[i]
-          if stack.valid_for_read then
-            event.buffer.insert(stack)
-          end
-        end
-      end
-      interface_chest.destroy()
-    end
+local function on_container_mined(event)
+  local loader = util.find_railloader_from_chest(event.entity)
+  if loader then
+    sync_interface_inserters(loader, event.buffer)
+  end
+end
+
+local function on_mined(event)
+  local entity = event.entity
+  local type = util.railloader_type(entity)
+  if type then
+    return on_railloader_mined(entity, type)
+  elseif entity.type == "container" then
+    return on_container_mined(event)
   end
 end
 
