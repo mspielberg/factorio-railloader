@@ -10,41 +10,41 @@ local show_configuration_messages_setting = settings.global["railloader-show-con
 
 local on_tick -- forward reference
 
-local function register_inserter(inserter)
-  if not util.is_filter_inserter(inserter) then
+local function register_loader(loader)
+  if allowed_items_setting == "any" then
     return
   end
-  local t = global.unconfigured_inserters
-  t[#t+1] = inserter
+  local t = global.unconfigured_loaders
+  t[#t+1] = loader
   -- reset iterator after adding a new item
-  global.unconfigured_inserters_iter = nil
+  global.unconfigured_loaders_iter = nil
   script.on_event(defines.events.on_tick, on_tick)
 end
 
-local function unregister_inserter(inserter)
-  for i, e in ipairs(global.unconfigured_inserters) do
-    if e.valid and e.unit_number == inserter.unit_number then
-      table.remove(global.unconfigured_inserters, i)
+local function unregister_loader(loader)
+  for i, e in ipairs(global.unconfigured_loaders) do
+    if e.valid and e.unit_number == loader.unit_number then
+      table.remove(global.unconfigured_loaders, i)
       return
     end
   end
 end
 
-local function display_configuration_message(inserter, items)
+local function display_configuration_message(loader, items)
   if not next(items) then
     return
   end
   local type = "railloader"
-  if inserter.name == "railunloader-inserter" then
+  if loader.name == "railunloader-chest" then
     type = "railunloader"
   end
   local msg = {"railloader." .. type .. "-configured-" .. #items}
   for i, item in ipairs(items) do
     msg[i+1] = {"item-name." .. items[i]}
   end
-  inserter.surface.create_entity{
+  loader.surface.create_entity{
     name = "flying-text",
-    position = inserter.position,
+    position = loader.position,
     text = msg,
   }
 end
@@ -70,44 +70,44 @@ local function inserter_configuration_changes(inserter, items)
   return next(item_set) ~= nil
 end
 
-local function configure_inserter_from_inventory(inserter, inventory)
+local function configure_loader_from_inventory(loader, inventory)
   local items = bulk.acceptable_items(inventory, 5)
   if not next(items) then
     return false
   end
 
-  if show_configuration_messages_setting and inserter_configuration_changes(inserter, items) then
-    display_configuration_message(inserter, items)
+  local inserters = util.railloader_filter_inserters(loader)
+  if not next(inserters) then
+    return true
   end
 
-  for i=1,5 do
-    inserter.set_filter(i, items[i])
+  if show_configuration_messages_setting and inserter_configuration_changes(inserters[1], items) then
+    display_configuration_message(loader, items)
   end
 
-  unregister_inserter(inserter)
+  for _, inserter in ipairs(inserters) do
+    for i=1,5 do
+      inserter.set_filter(i, items[i])
+    end
+  end
 
   return true
 end
 
-local function configure_inserter(inserter)
-  local inventory
-  if inserter.name == "railloader-inserter" then
-    local chest = inserter.surface.find_entity("railloader-chest", inserter.position)
-    if chest then
-      inventory = chest.get_inventory(defines.inventory.chest)
-    end
-  elseif inserter.name == "railunloader-inserter" then
-    local wagon = inserter.surface.find_entities_filtered{
+local function configure_loader(loader)
+  local inventory = loader.get_inventory(defines.inventory.chest)
+  if loader.name == "railunloader-chest" then
+    local wagon = loader.surface.find_entities_filtered{
       type = "cargo-wagon",
-      area = util.box_centered_at(inserter.position, 0.6),
-      force = inserter.force,
+      area = util.box_centered_at(loader.position, 0.6),
+      force = loader.force,
     }[1]
     if wagon then
       inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
     end
   end
   if inventory then
-    return configure_inserter_from_inventory(inserter, inventory)
+    return configure_loader_from_inventory(loader, inventory)
   end
   return false
 end
@@ -122,12 +122,12 @@ function M.on_train_changed_state(event)
     return
   end
   for _, wagon in ipairs(train.cargo_wagons) do
-    local inserter = wagon.surface.find_entities_filtered{
-      type = "inserter",
+    local loader = wagon.surface.find_entities_filtered{
+      type = "container",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
     if inserter then
-      M.configure_or_register_inserter(inserter)
+      M.configure_or_register_loader(loader)
     end
   end
 end
@@ -137,39 +137,39 @@ on_tick = function(event)
     return
   end
 
-  local inserter
-  global.unconfigured_inserters_iter, inserter = next(global.unconfigured_inserters, global.unconfigured_inserters_iter)
-  if not global.unconfigured_inserters_iter then
-    if not next(global.unconfigured_inserters) then
+  local loader
+  global.unconfigured_loaders_iter, loader = next(global.unconfigured_loaders, global.unconfigured_loaders_iter)
+  if not global.unconfigured_loaders_iter then
+    if not next(global.unconfigured_loaders) then
       script.on_event(defines.events.on_tick, nil)
     end
     return
   end
-  if not inserter.valid or not util.is_filter_inserter(inserter) then
-    table.remove(global.unconfigured_inserters, global.unconfigured_inserters_iter)
+  if not loader.valid then
+    table.remove(global.unconfigured_loaders, global.unconfigured_loaders_iter)
     return
   end
-  configure_inserter(inserter)
+  local success = configure_loader(loader)
+  if success then
+    unregister_loader(loader)
+  end
 end
 
 function M.on_init()
-  global.unconfigured_inserters = {}
+  global.unconfigured_loaders = {}
 end
 
 function M.on_load()
-  if next(global.unconfigured_inserters) then
+  if global.unconfigured_loaders and next(global.unconfigured_loaders) then
     script.on_event(defines.events.on_tick, on_tick)
   end
 end
 
-function M.configure_or_register_inserter(inserter)
-  if not util.is_filter_inserter(inserter) then
-    return
-  end
-  local success = configure_inserter(inserter)
+function M.configure_or_register_loader(loader)
+  unregister_loader(loader)
+  local success = configure_loader(loader)
   if not success then
-    unregister_inserter(inserter)
-    register_inserter(inserter)
+    register_loader(loader)
   end
 end
 
@@ -192,7 +192,9 @@ local function replace_all_inserters(universal)
         replacement.last_user = e.last_user
         replacement.held_stack.swap_stack(e.held_stack)
         if not universal then
-          register_inserter(replacement)
+          local loader = replacement.surface.find_entity(type .. "-chest", e.position)
+          if not loader then error("no loader found") end
+          register_loader(loader)
         end
         e.destroy()
       end
@@ -204,11 +206,12 @@ function M.on_setting_changed(event)
   if event.setting == "railloader-allowed-items" then
     local new_value = settings.global["railloader-allowed-items"].value
     if new_value == "any" and allowed_items_setting ~= "any" then
+      allowed_items_setting = new_value
       replace_all_inserters(true)
     elseif new_value ~= "any" and allowed_items_setting == "any" then
+      allowed_items_setting = new_value
       replace_all_inserters(false)
     end
-    allowed_items_setting = new_value
     bulk.on_setting_changed()
   elseif event.setting == "railloader-show-configuration-messages" then
     show_configuration_messages_setting = settings.global["railloader-show-configuration-messages"].value

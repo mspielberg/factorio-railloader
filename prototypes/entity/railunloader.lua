@@ -70,6 +70,7 @@ data:extend{
     icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"hide-alt-info"},
+    collision_box = {{-1, -1}, {1, 1}},
     collision_mask = {},
     stack = true,
     max_health = 800,

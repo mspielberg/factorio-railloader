@@ -44,8 +44,34 @@ function M.orthogonal_direction(direction)
   return 0
 end
 
+function M.railloader_inserters(entity, pattern)
+  local out = {}
+  local inserters = entity.surface.find_entities_filtered{
+    type = "inserter",
+    position = entity.position,
+    force = entity.force,
+  }
+  if not pattern then
+    return inserters
+  end
+  for _, e in ipairs(inserters) do
+    if string.find(e.name, pattern) ~= nil then
+      out[#out+1] = e
+    end
+  end
+  return out
+end
+
+function M.railloader_filter_inserters(entity)
+  return M.railloader_inserters(entity, "^railu?n?loader%-inserter$")
+end
+
+function M.railloader_interface_inserters(entity)
+  return M.railloader_inserters(entity, "^railu?n?loader%-interface%-inserter$")
+end
+
 function M.is_railloader_chest(entity)
-  return string.find(entity.name, "^railu?n?loader-chest$") ~= nil
+  return string.find(entity.name, "^railu?n?loader%-chest$") ~= nil
 end
 
 function M.is_filter_inserter(inserter)
@@ -53,39 +79,34 @@ function M.is_filter_inserter(inserter)
 end
 
 local railloader_from_chest_offsets = {
-    M.offset(rail_direction,  1.5,  2.5),
-    M.offset(rail_direction,  2.5,  1.5),
-    M.offset(rail_direction, -1.5,  2.5),
-    M.offset(rail_direction, -2.5,  1.5),
-    M.offset(rail_direction,  1.5, -2.5),
-    M.offset(rail_direction,  2.5, -1.5),
-    M.offset(rail_direction, -1.5, -2.5),
-    M.offset(rail_direction, -2.5, -1.5),
+    M.offset(defines.direction.east,  1.5,  2.5),
+    M.offset(defines.direction.east,  2.5,  1.5),
+    M.offset(defines.direction.east, -1.5,  2.5),
+    M.offset(defines.direction.east, -2.5,  1.5),
+    M.offset(defines.direction.east,  1.5, -2.5),
+    M.offset(defines.direction.east,  2.5, -1.5),
+    M.offset(defines.direction.east, -1.5, -2.5),
+    M.offset(defines.direction.east, -2.5, -1.5),
 }
 
-function M.find_railloader_from_chest(chest)
-  for _, offset in ipairs(offsets) do
-    local position = M.moveposition(defines.direction.east, offset)
+function M.find_railloaders_from_chest(chest)
+  local out = {}
+  local chest_position = chest.position
+  for _, offset in ipairs(railloader_from_chest_offsets) do
+    local position = M.moveposition(chest_position, offset)
     local es = chest.surface.find_entities_filtered{
       type = "container",
       position = position,
       force = force,
     }
-    for _, e in es do
+    for _, e in ipairs(es) do
       if M.is_railloader_chest(e) then
-        return e
+        out[#out+1] = e
       end
     end
   end
-  return nil
+  return out
 end
-
-local chest_from_railloader_offsets = {
-    M.offset(rail_direction,  1.5, -2.5),
-    M.offset(rail_direction,  2.5, -1.5),
-    M.offset(rail_direction, -1.5, -2.5),
-    M.offset(rail_direction, -2.5, -1.5),
-}
 
 function M.railloader_type(loader)
   return string.match(loader.name, "^rail(u?n?loader)%-")
@@ -133,7 +154,7 @@ function M.find_chests_from_railloader(loader)
   local position = loader.position
   local rail = loader.surface.find_entities_filtered{
     name = "straight-rail",
-    area = util.box_centered_at(container.position, 0.6),
+    area = M.box_centered_at(position, 0.6),
   }[1]
   local is_horiz = rail.direction == defines.direction.east
   local area = {
@@ -160,6 +181,32 @@ function M.find_chests_from_railloader(loader)
   return out
 end
 
-function M.insert_or_spill(entity, stack, player, inventories)
+function M.insert_or_spill(entity, stack, inventories)
+  if not stack or not stack.valid_for_read then
+    return
+  end
+
+  if stack.prototype.stackable then
+    for _, inv in ipairs(inventories) do
+      local inserted = inv.insert(stack)
+      stack.count = stack.count - inserted
+      if not stack.valid_for_read then
+        return
+      end
+    end
+  else
+    for _, inv in ipairs(inventories) do
+      for slot=1,#inv do
+        if not inv[slot].valid_for_read then
+          inv[slot].swap_stack(stack)
+          return
+        end
+      end
+    end
+  end
+
+  entity.surface.spill_item_stack(entity.position, stack)
+  stack.clear()
+end
 
 return M

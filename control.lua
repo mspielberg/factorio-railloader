@@ -1,7 +1,10 @@
+local configchange = require "configchange"
 local inserter_config = require "inserterconfig"
 local util = require "util"
 
 -- constants
+
+local num_inserters = 2
 
 local train_types = {
   ["locomotive"] = true,
@@ -17,6 +20,13 @@ end
 
 local function on_load()
   inserter_config.on_load()
+end
+
+local function on_configuration_changed(configuration_changed_data)
+  local mod_change = configuration_changed_data.mod_changes["railloader"]
+  if mod_change and mod_change.old_version and mod_change.old_version ~= mod_change.new_version then
+    configchange.on_mod_version_changed(mod_change.old_version)
+  end
 end
 
 local function abort_build(event)
@@ -51,22 +61,13 @@ local function abort_build(event)
   end
 end
 
-local function sync_interface_inserters(loader, buffer)
+local function sync_interface_inserters(loader)
   local type = util.railloader_type(loader)
-  local interface_inserters = loader.surface.find_entities_filtered{name = "rail" .. type .. "-interface-inserter"}
-  for i, e in ipairs(interface_inserters) do
-    -- convert to set
-    interface_inserters[e.unit_number] = e
-    interface_inserters[i] = nil
-  end
-
   local chests = util.find_chests_from_railloader(loader)
   for _, chest in ipairs(chests) do
     local inserter = util.find_inserter_for_interface(loader, chest)
-    if inserter then
-      interface_inserters[inserter.unit_number] = nil
-    else
-      local main_chest_position = M.loader_position_for_interface(loader, chest)
+    if not inserter then
+      local main_chest_position = util.loader_position_for_interface(loader, chest)
       inserter = loader.surface.create_entity{
         name = util.interface_inserter_name_for_loader(loader),
         position = loader.position,
@@ -77,6 +78,14 @@ local function sync_interface_inserters(loader, buffer)
       inserter.drop_position = type == "unloader" and chest.position or main_chest_position
       inserter.direction = inserter.direction
     end
+  end
+end
+
+local function remove_interface_inserter(loader, chest, buffer)
+  local inserter = util.find_inserter_for_interface(loader, chest)
+  if inserter then
+    util.insert_or_spill(loader, inserter.held_stack, {loader.get_inventory(defines.inventory.chest), buffer})
+    inserter.destroy()
   end
 end
 
@@ -109,19 +118,20 @@ local function create_entities(proxy, rail)
     chest.connect_neighbour(ccd)
   end
 
-  -- place cargo wagon inserter
+  -- place cargo wagon inserters
   local inserter_name =
     "rail" .. type .. (allowed_items_setting == "any" and "-universal" or "") .. "-inserter"
-  local inserter = surface.create_entity{
-    name = inserter_name,
-    position = position,
-    direction = rail_direction,
-    force = force,
-  }
-  inserter.destructible = false
-  inserter.last_user = last_user
-
-  inserter_config.configure_or_register_inserter(inserter)
+  for i=1,num_inserters do
+    local inserter = surface.create_entity{
+      name = inserter_name,
+      position = position,
+      direction = rail_direction,
+      force = force,
+    }
+    inserter.destructible = false
+    inserter.last_user = last_user
+  end
+  inserter_config.configure_or_register_loader(chest)
 
   -- place structure
   local structure_name = "rail" .. type .. "-structure-horizontal"
@@ -175,31 +185,30 @@ local function on_railloader_proxy_built(proxy)
 end
 
 local function on_container_built(entity)
-  local loader = util.find_railloader_from_chest(entity)
-  if loader then
+  for _, loader in ipairs(util.find_railloaders_from_chest(entity)) do
     sync_interface_inserters(loader)
   end
 end
 
 local function on_built(event)
   local entity = event.created_entity
-  local type = string.match("^rail(u?n?loader)%-placement%-proxy$")
+  local type = string.match(entity.name, "^rail(u?n?loader)%-placement%-proxy$")
   if type then
     return on_railloader_proxy_built(entity)
-  elseif type == "container" then
+  elseif entity.type == "container" then
     return on_container_built(entity)
   end
 end
 
-local function on_railloader_mined(entity, type)
+local function on_railloader_mined(entity, buffer)
   local position = entity.position
   local entities = entity.surface.find_entities_filtered{
     area = entity.bounding_box,
   }
   for _, ent in ipairs(entities) do
     if ent.type == "inserter" then
-      if event.buffer then
-        event.buffer.insert(ent.held_stack)
+      if buffer then
+        buffer.insert(ent.held_stack)
       end
       ent.destroy()
     elseif string.find(ent.name, "^railu?n?loader%-structure") then
@@ -208,10 +217,9 @@ local function on_railloader_mined(entity, type)
   end
 end
 
-local function on_container_mined(event)
-  local loader = util.find_railloader_from_chest(event.entity)
-  if loader then
-    sync_interface_inserters(loader, event.buffer)
+local function on_container_mined(entity, buffer)
+  for _, loader in ipairs(util.find_railloaders_from_chest(entity)) do
+    remove_interface_inserter(loader, entity, buffer)
   end
 end
 
@@ -219,9 +227,9 @@ local function on_mined(event)
   local entity = event.entity
   local type = util.railloader_type(entity)
   if type then
-    return on_railloader_mined(entity, type)
+    return on_railloader_mined(entity, event.buffer)
   elseif entity.type == "container" then
-    return on_container_mined(event)
+    return on_container_mined(entity, event.buffer)
   end
 end
 
@@ -293,6 +301,7 @@ end
 
 script.on_init(on_init)
 script.on_load(on_load)
+script.on_configuration_changed(on_configuration_changed)
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)

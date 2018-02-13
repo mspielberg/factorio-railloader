@@ -104,3 +104,10 @@ of supported items for your own use.
     * Fix bug building new non-locking loaders.
     * Add partial support for preserving circuit connections in blueprints.
     * Add alert to map when robots cannot build a loader due to missing rails or an obstruction.
+* 0.2.5 (2018-02-09):
+    * Fix failure to join multiplayer maps with unconfigured loaders present.
+    * Fix crash when placing loaders set to "any" item type.
+* 0.3.0 (2018-02-13):
+    * New feature for increasing throughput: interface chests.
+    * Loaders no longer lock onto a single item. Instead they handle up to 5 item types per cargo wagon.
+    * Since this leads to increased message frequency when loaders reconfigure themselves, you can now turn these notifications off.
