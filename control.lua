@@ -265,7 +265,7 @@ local function on_blueprint(event)
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
       local rail = player.surface.find_entities_filtered{
-        name = "straight-rail",
+        type = "straight-rail",
         area = util.box_centered_at(container.position, 0.6),
       }[1]
       if rail then
