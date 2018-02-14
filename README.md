@@ -122,3 +122,5 @@ of supported items for your own use.
     * Loaders no longer lock onto a single item.  Instead they handle up to 5 item types per cargo wagon.
     * Since this leads to increased message frequency when loaders reconfigure themselves, you can now turn these notifications off.
     * Add support for Omnimatter's omnite ore.
+* 0.3.1 (2018-02-14):
+    * Fix crash when migrating from a save with unconfigured loaders.

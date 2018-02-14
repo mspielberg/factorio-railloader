@@ -26,6 +26,7 @@ add_migration{
   high = {0,3,0},
   task = function()
     global.unconfigured_loaders = {}
+    local t = global.unconfigured_loaders
     for _, e in ipairs(global.unconfigured_inserters) do
       local loader = e.surface.find_entities_filtered{
         type = "container",
