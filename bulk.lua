@@ -36,6 +36,8 @@ local items = {
   "slag",
   -- angelspetrochem
   "coal-crushed",
+  -- omnimatter
+  "omnite",
 }
 
 for i, item in ipairs(items) do
