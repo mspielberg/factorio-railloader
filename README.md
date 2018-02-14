@@ -18,17 +18,26 @@ my [request thread](https://forums.factorio.com/viewtopic.php?f=15&t=56820).
 
 ## How to use
 
-Place your rails and train stop first.  The Bulk Rail Loader and Unloader items
-will show a preview of the (un)loader and an image of a cargo wagon, to help
-position the loader correctly.
+Place your rails and train stop first.  The Bulk Rail Loader item
+will show a preview of the loader and an image of a cargo wagon, to help
+position the loader correctly.  The concrete pad of the Bulk Rail Unloader
+serves a similar purpose.
 
-The loader locks in the first item it sees of a supported type.  If you want to
-change what item a loader is handling, mine and rebuild it.  Note that if the
-mod options are changed to allow loaders to handle any type of item, the locking
-behavior is also disabled.
+Loaders are circuit-connectable chest entities that output their content.
+You can connect them to Logistic Train Network stops to manage automatic
+creation of transport orders.  Loaders are not circuit controllable, and
+will always load or unload as many items as possible while a cargo wagon
+is stopped.
 
-Loaders are circuit-connectable chest entities, ready for use with Logistic
-Train Network.
+## Boosting Throughput
+
+Rail loaders and unloaders can fit 4 inserters or loaders on each side, for an
+inherent 8 belts of throughput.  If this is insufficient, you can add any kind
+of 1x1 chests to the corners of the loaders, and they will automatically push or
+pull items into these chests.  You can then connect inserters or loaders to the
+chests for up to 12 belts of throughput, 6 per side.
+
+![Interface Chest Demo](https://github.com/mspielberg/factorio-railloader/raw/master/resources/interfacechests.jpg)
 
 ## What items are supported?
 
@@ -55,6 +64,7 @@ From Angel's mods:
 
 * All 6 primary ores from Angel's Refining, including refined variants up to
   purified crystals
+* Crushed stone and slag waste products from Angel's Refining
 * Processed ores from Angel's Smelting
 * Solid chemical intermediates from Angel's Petrochem
 
@@ -109,5 +119,6 @@ of supported items for your own use.
     * Fix crash when placing loaders set to "any" item type.
 * 0.3.0 (2018-02-13):
     * New feature for increasing throughput: interface chests.
-    * Loaders no longer lock onto a single item. Instead they handle up to 5 item types per cargo wagon.
+    * Loaders no longer lock onto a single item.  Instead they handle up to 5 item types per cargo wagon.
     * Since this leads to increased message frequency when loaders reconfigure themselves, you can now turn these notifications off.
+    * Add support for Omnimatter's omnite ore.
