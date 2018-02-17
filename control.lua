@@ -149,7 +149,7 @@ local function create_entities(proxy, rail)
   sync_interface_inserters(chest)
 end
 
-local function on_railloader_proxy_built(proxy)
+local function on_railloader_proxy_built(proxy, event)
   local surface = proxy.surface
   local direction = proxy.direction
   local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
@@ -194,7 +194,7 @@ local function on_built(event)
   local entity = event.created_entity
   local type = string.match(entity.name, "^rail(u?n?loader)%-placement%-proxy$")
   if type then
-    return on_railloader_proxy_built(entity)
+    return on_railloader_proxy_built(entity, event)
   elseif entity.type == "container" then
     return on_container_built(entity)
   end
