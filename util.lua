@@ -153,7 +153,7 @@ end
 function M.find_chests_from_railloader(loader)
   local position = loader.position
   local rail = loader.surface.find_entities_filtered{
-    name = "straight-rail",
+    type = "straight-rail",
     area = M.box_centered_at(position, 0.6),
   }[1]
   local is_horiz = rail.direction == defines.direction.east

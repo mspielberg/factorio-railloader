@@ -124,3 +124,5 @@ of supported items for your own use.
     * Add support for Omnimatter's omnite ore.
 * 0.3.1 (2018-02-14):
     * Fix crash when migrating from a save with unconfigured loaders.
+* 0.3.2 (2018-02-14):
+    * Fix crash when building on top of modded rails.
