@@ -126,3 +126,6 @@ of supported items for your own use.
     * Fix crash when migrating from a save with unconfigured loaders.
 * 0.3.2 (2018-02-14):
     * Fix crash when building on top of modded rails.
+* 0.3.3 (2018-02-19):
+    * Fix crash when build conditions are not met (colliding entities, rail not present).
+    * Add support for Pyanodons Coal Processing.

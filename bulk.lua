@@ -13,6 +13,10 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
+    -- pycoalprocessing
+    "%-dust$",
+    "%-powder$",
+    "sand$",
   },
   plates = {
     "plate",
@@ -38,6 +42,33 @@ local items = {
   "coal-crushed",
   -- omnimatter
   "omnite",
+  -- pycoalprocessing
+  "ash",
+  "gravel",
+  "coke",
+  "iron-oxide",
+  "active-carbon",
+  "zinc-chloride",
+  "soil",
+  "limestone",
+  "organics",
+  "coarse",
+  "lithium-peroxide",
+  "lime",
+  "fawogae-substrate",
+  "bonemeal",
+  "borax",
+  "ralesia",
+  "ralesia-seeds",
+  "rich-clay",
+  "boron-trioxide",
+  "niobium-concentrate",
+  "niobium-oxide",
+  "ppd",
+  "coal-briquette",
+  "calcium-carbide",
+  "crushed-iron",
+  "crushed-copper",
 }
 
 for i, item in ipairs(items) do
