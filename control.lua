@@ -161,6 +161,16 @@ local function create_entities(proxy)
     chest.connect_neighbour(ccd)
   end
 
+  -- protect rails
+  local rails = surface.find_entities_filtered{
+    type = "straight-rail",
+    area = chest.bounding_box,
+  }
+  for _, rail in ipairs(rails) do
+    rail.destructible = false
+    rail.minable = false
+  end
+
   -- place cargo wagon inserters
   local inserter_direction = (direction == defines.direction.east or direction == defines.direction.west) and
     defines.direction.north or defines.direction.east
@@ -242,6 +252,9 @@ local function on_railloader_mined(entity, buffer)
       ent.destroy()
     elseif string.find(ent.name, "^railu?n?loader%-structure") then
       ent.destroy()
+    elseif ent.type == "straight-rail" then
+      ent.destructible = true
+      ent.minable = true
     end
   end
 end
