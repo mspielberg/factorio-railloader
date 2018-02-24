@@ -131,3 +131,8 @@ of supported items for your own use.
     * Add support for Pyanodons Coal Processing.
 * 0.3.4 (2018-02-23):
     * Fix configuration on train arrival.
+* 0.3.5 (2018-02-23):
+    * Prevent loaders from being built when there is only one rail underneath, which could block connecting rails from being built, particularly when building a blueprint.
+    * Prevent loaders from being built over curved rails, which leads to odd "train driving through a wall" appearance.
+    * Give better messages when a loader can't be built.
+    * Prevent rails blocked by loaders from being damaged, destroyed, or mined, since they cannot be replaced without removing the loader.
