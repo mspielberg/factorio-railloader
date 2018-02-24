@@ -129,3 +129,5 @@ of supported items for your own use.
 * 0.3.3 (2018-02-19):
     * Fix crash when build conditions are not met (colliding entities, rail not present).
     * Add support for Pyanodons Coal Processing.
+* 0.3.4 (2018-02-23):
+    * Fix configuration on train arrival.
