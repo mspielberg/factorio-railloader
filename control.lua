@@ -23,7 +23,7 @@ local function on_configuration_changed(configuration_changed_data)
   end
 end
 
-local function abort_build(event)
+local function abort_build(event, msg)
   local entity = event.created_entity
   local item_name = next(entity.prototype.items_to_place_this)
   if event.player_index then
@@ -50,7 +50,7 @@ local function abort_build(event)
     local last_user = entity.last_user
     if last_user and last_user.valid then
       ghost.last_user = last_user
-      last_user.add_custom_alert(ghost, {type="item", name=item_name}, {"railloader.invalid-construction-site"}, true)
+      last_user.add_custom_alert(ghost, {type="item", name=item_name}, msg, true)
     end
   end
 end
@@ -83,21 +83,70 @@ local function remove_interface_inserter(loader, chest, buffer)
   end
 end
 
-local function create_entities(proxy, rail)
+local function can_place_loader(proxy)
+  local surface = proxy.surface
+  local direction = proxy.direction
+  local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
+  local bounding_box = util.box_centered_at(position, 2)
+
+  -- check that there are no curved rails
+  if surface.find_entities_filtered{type = "curved-rail", area = bounding_box}[1] then
+    return false, {"railloader.invalid-position-curved-rail"}
+  end
+
+  -- check that straight rails are present
+  local coord = (direction == defines.direction.east or direction == defines.direction.west) and
+    position.y or position.x
+  local expected_rail_positions = (coord % 2 == 0) and
+    {
+      util.moveposition(position, util.offset(direction, 0, -1)),
+      util.moveposition(position, util.offset(direction, 0,  1)),
+    } or
+    {
+      util.moveposition(position, util.offset(direction, 0, -2)),
+      position,
+      util.moveposition(position, util.offset(direction, 0,  2)),
+    }
+  log(serpent.line{position=position,coord=coord,expected_rail_positions=expected_rail_positions})
+
+  local rails = {}
+  for _, pos in ipairs(expected_rail_positions) do
+    log("checking for rail at "..serpent.line(pos))
+    local rail = surface.find_entities_filtered{
+      type = "straight-rail",
+      position = pos,
+    }[1]
+    if rail then
+      log("found rail")
+      rails[#rails+1] = rail
+    end
+  end
+
+  if #rails ~= #expected_rail_positions then
+    return false, {"railloader.invalid-position-need-rails"}
+  end
+
+  -- check that the opposite side is also free
+  local opposite_side_clear = surface.can_place_entity{
+    name = proxy.name,
+    position = util.moveposition(proxy.position, util.offset(direction, 3, 0)),
+    direction = util.opposite_direction(proxy.direction),
+    force = proxy.force,
+  }
+  if not opposite_side_clear then
+    return false, {"railloader.invalid-position-blocked"}
+  end
+
+  return true
+end
+
+local function create_entities(proxy)
   local type = util.railloader_type(proxy)
   local surface = proxy.surface
   local direction = proxy.direction
   local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
   local force = proxy.force
   local last_user = proxy.last_user
-
-  -- center over the rail
-  local rail_direction = rail.direction
-  if rail_direction == defines.direction.north then
-    position.x = rail.position.x
-  else
-    position.y = rail.position.y
-  end
 
   -- place chest
   local chest = surface.create_entity{
@@ -113,13 +162,15 @@ local function create_entities(proxy, rail)
   end
 
   -- place cargo wagon inserters
+  local inserter_direction = (direction == defines.direction.east or direction == defines.direction.west) and
+    defines.direction.north or defines.direction.east
   local inserter_name =
     "rail" .. type .. (allowed_items_setting == "any" and "-universal" or "") .. "-inserter"
   for i=1,num_inserters do
     local inserter = surface.create_entity{
       name = inserter_name,
       position = position,
-      direction = rail_direction,
+      direction = inserter_direction,
       force = force,
     }
     inserter.destructible = false
@@ -128,7 +179,7 @@ local function create_entities(proxy, rail)
 
   -- place structure
   local structure_name = "rail" .. type .. "-structure-horizontal"
-  if rail.direction == defines.direction.north then
+  if direction == defines.direction.east or direction == defines.direction.west then
     structure_name = "rail" .. type .. "-structure-vertical"
   end
   local placed = surface.create_entity{
@@ -146,31 +197,19 @@ local function on_railloader_proxy_built(proxy, event)
   local surface = proxy.surface
   local direction = proxy.direction
   local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
-  local force = proxy.force
 
-  -- check that rail is in the correct place
-  local rail = surface.find_entities_filtered{
-    area = util.box_centered_at(position, 0.6),
-    type = "straight-rail",
-  }[1]
-  if not rail then
-    abort_build(event)
+  local can_place, msg = can_place_loader(proxy)
+  if not can_place then
+    surface.create_entity{
+      name = "flying-text",
+      position = position,
+      text = msg,
+    }
+    abort_build(event, msg)
     return
   end
 
-  -- check that the opposite side is also free
-  local opposite_side_clear = surface.can_place_entity{
-    name = proxy.name,
-    position = util.moveposition(proxy.position, util.offset(direction, 3, 0)),
-    direction = util.opposite_direction(direction),
-    force = force,
-  }
-  if not opposite_side_clear then
-    abort_build(event)
-    return
-  end
-
-  create_entities(proxy, rail)
+  create_entities(proxy)
 
   proxy.destroy()
 end
