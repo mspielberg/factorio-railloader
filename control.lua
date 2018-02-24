@@ -6,12 +6,6 @@ local util = require "util"
 
 local num_inserters = 2
 
-local train_types = {
-  ["locomotive"] = true,
-  ["cargo-wagon"] = true,
-  ["fluid-wagon"] = true,
-}
-
 local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function on_init()
@@ -129,7 +123,6 @@ local function create_entities(proxy, rail)
       force = force,
     }
     inserter.destructible = false
-    inserter.last_user = last_user
   end
   inserter_config.configure_or_register_loader(chest)
 
@@ -165,13 +158,11 @@ local function on_railloader_proxy_built(proxy, event)
     return
   end
 
-  local rail_direction = rail.direction
-
   -- check that the opposite side is also free
   local opposite_side_clear = surface.can_place_entity{
     name = proxy.name,
     position = util.moveposition(proxy.position, util.offset(direction, 3, 0)),
-    direction = direction,
+    direction = util.opposite_direction(direction),
     force = force,
   }
   if not opposite_side_clear then
@@ -201,7 +192,6 @@ local function on_built(event)
 end
 
 local function on_railloader_mined(entity, buffer)
-  local position = entity.position
   local entities = entity.surface.find_entities_filtered{
     area = entity.bounding_box,
   }

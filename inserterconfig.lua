@@ -40,7 +40,7 @@ local function display_configuration_message(loader, items)
   end
   local msg = {"railloader." .. type .. "-configured-" .. #items}
   for i, item in ipairs(items) do
-    msg[i+1] = {"item-name." .. items[i]}
+    msg[i+1] = {"item-name." .. item}
   end
   loader.surface.create_entity{
     name = "flying-text",
@@ -51,7 +51,7 @@ end
 
 local function inserter_configuration_changes(inserter, items)
   local item_set = {}
-  for i,v in ipairs(items) do
+  for _, v in ipairs(items) do
     item_set[v] = true
   end
 
@@ -126,7 +126,7 @@ function M.on_train_changed_state(event)
       type = "container",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
-    if inserter then
+    if loader then
       M.configure_or_register_loader(loader)
     end
   end
@@ -189,7 +189,6 @@ local function replace_all_inserters(universal)
           force = e.force,
         }
         replacement.destructible = false
-        replacement.last_user = e.last_user
         replacement.held_stack.swap_stack(e.held_stack)
         if not universal then
           local loader = replacement.surface.find_entity(type .. "-chest", e.position)

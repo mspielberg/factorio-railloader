@@ -37,6 +37,13 @@ function M.is_empty_box(box)
   return size_x < 0.01 and size_y < 0.01
 end
 
+function M.opposite_direction(direction)
+  if direction >= 4 then
+    return direction - 4
+  end
+  return direction + 4
+end
+
 function M.orthogonal_direction(direction)
   if direction < 6 then
     return direction + 2
@@ -97,7 +104,7 @@ function M.find_railloaders_from_chest(chest)
     local es = chest.surface.find_entities_filtered{
       type = "container",
       position = position,
-      force = force,
+      force = chest.force,
     }
     for _, e in ipairs(es) do
       if M.is_railloader_chest(e) then
@@ -134,10 +141,10 @@ function M.find_inserter_for_interface(loader, interface)
 end
 
 function M.loader_position_for_interface(loader, interface)
-  lx = loader.position.x
-  ly = loader.position.y
-  ix = interface.position.x
-  iy = interface.position.y
+  local lx = loader.position.x
+  local ly = loader.position.y
+  local ix = interface.position.x
+  local iy = interface.position.y
 
   if ix == lx + 2.5 then
     return { x = lx + 1.5, y = iy }

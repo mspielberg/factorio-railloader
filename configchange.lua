@@ -1,5 +1,4 @@
 local inserter_config = require "inserterconfig"
-local util = require "util"
 local version = require "version"
 
 local M = {}

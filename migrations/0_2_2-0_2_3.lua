@@ -17,7 +17,6 @@ local function replace_all_inserters()
           force = e.force,
         }
         replacement.destructible = false
-        replacement.last_user = e.last_user
         replacement.held_stack.swap_stack(e.held_stack)
         e.destroy()
       end
