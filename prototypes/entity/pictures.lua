@@ -10,26 +10,6 @@ local function flatten(ts)
   return out
 end
 
-local function add_shift(offset, sheet)
-  local out = util.table.deepcopy(sheet)
-  log(serpent.block(out))
-  for _, layer in ipairs(out.layers) do
-    if not layer.shift then
-      layer.shift = {0, 0}
-    end
-    local shift = layer.shift
-    shift[1] = offset[1] + shift[1]
-    shift[2] = offset[2] + shift[2]
-    if layer.hr_version and layer.hr_version.shift then
-      local hr_shift = layer.hr_version.shift
-      hr_shift[1] = offset[1] + hr_shift[1]
-      hr_shift[2] = offset[2] + hr_shift[2]
-    end
-  end
-  log(serpent.block(out))
-  return out
-end
-
 local all_base_rail_pictures = rail_pictures()
 
 local function triple_rail_pictures(direction, layers)
@@ -182,10 +162,10 @@ local railloader_vertical = {
 }
 
 M.railloader_proxy_animations = {
-  north = add_shift({ 0  , -1.5}, railloader_horizontal),
-  east  = add_shift({ 1.5,  0  }, railloader_vertical),
-  south = add_shift({ 0  ,  1.5}, railloader_horizontal),
-  west  = add_shift({-1.5,  0  }, railloader_vertical),
+  north = railloader_vertical,
+  east = railloader_horizontal,
+  south = railloader_vertical,
+  west = railloader_horizontal,
 }
 
 M.railunloader_horizontal = {
@@ -233,10 +213,10 @@ local railunloader_proxy_vertical = {
 }
 
 M.railunloader_proxy_animations = {
-  north = add_shift({   0, -1.5}, railunloader_proxy_horizontal),
-  east  = add_shift({ 1.5,    0}, railunloader_proxy_vertical),
-  south = add_shift({   0,  1.5}, railunloader_proxy_horizontal),
-  west  = add_shift({-1.5,    0}, railunloader_proxy_vertical),
+  north = railunloader_proxy_vertical,
+  east = railunloader_proxy_horizontal,
+  south = railunloader_proxy_vertical,
+  west = railunloader_proxy_horizontal,
 }
 
 M.empty_sheet = {
