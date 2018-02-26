@@ -25,6 +25,7 @@ local function on_configuration_changed(configuration_changed_data)
   end
 end
 
+<<<<<<< HEAD
 local function recreate_ghost(entity)
   local ghost = entity.surface.create_entity{
     name = "entity-ghost",
@@ -56,6 +57,24 @@ local function abort_player_build(event)
     if not success then
       player.surface.spill_item_stack(player.position, {name = item_name, count = 1})
     end
+=======
+local function show_error(entity)
+  entity.surface.create_entity{
+    name = "flying-text",
+    position = entity.position,
+    text = {"railloader.invalid-position"},
+  }
+end
+
+local function abort_build(event)
+  local entity = event.created_entity
+  show_error(entity)
+  if event.player_index then
+    local player = game.players[event.player_index]
+    player.mine_entity(entity, true)
+  else
+    entity.order_deconstruction(entity.force)
+>>>>>>> 7f4bcaa... no longer place loaders on top of rails
   end
   if event.mod_name then
     -- Likely nanobots, Bluebuild or a similar automated player construction mod
@@ -85,7 +104,7 @@ local function abort_build(event, msg)
 end
 
 local function sync_interface_inserters(loader)
-  local type = util.railloader_type(loader)
+  local type = util.railloader_type(loader.name)
   local chests = util.find_chests_from_railloader(loader)
   for _, chest in ipairs(chests) do
     local inserter = util.find_inserter_for_interface(loader, chest)
@@ -112,28 +131,35 @@ local function remove_interface_inserter(loader, chest, buffer)
   end
 end
 
-local function can_place_loader(proxy)
-  local surface = proxy.surface
+local function rail_positions(proxy)
   local direction = proxy.direction
-  local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
-  local bounding_box = util.box_centered_at(position, 2)
+  local position = proxy.position
 
-  -- check that there are no curved rails
-  if surface.find_entities_filtered{type = "curved-rail", area = bounding_box}[1] then
-    return false, {"railloader.invalid-position-curved-rail"}
-  end
-
-  -- check that straight rails are present
-  local coord = (direction == defines.direction.east or direction == defines.direction.west) and
-    position.y or position.x
-  local expected_rail_positions = (coord % 2 == 0) and
-    {
-      util.moveposition(position, util.offset(direction, 0, -1)),
-      util.moveposition(position, util.offset(direction, 0,  1)),
-    } or
-    {
-      util.moveposition(position, util.offset(direction, 0, -2)),
+  if direction == defines.direction.north or direction == defines.direction.south then
+    if position.x % 2 ~= 1 then
+      return nil
+    end
+    if position.y % 2 == 1 then
+      return {
+        util.moveposition(position, {x = 0, y = -2}),
+        position,
+        util.moveposition(position, {x = 0, y =  2}),
+      }
+    else
+      return {
+        util.moveposition(position, {x = 0, y = -1}),
+        util.moveposition(position, {x = 0, y =  1}),
+      }
+    end
+  else
+    if position.y % 2 ~= 1 then
+      return nil
+    end
+    if position.x % 2 == 1 then
+      return {
+        util.moveposition(position, {x = -2, y = 0}),
       position,
+<<<<<<< HEAD
       util.moveposition(position, util.offset(direction, 0,  2)),
     }
 
@@ -145,34 +171,41 @@ local function can_place_loader(proxy)
     }[1]
     if rail then
       rails[#rails+1] = rail
+=======
+        util.moveposition(position, {x =  2, y = 0}),
+      }
+    else
+      return {
+        util.moveposition(position, {x = -1, y = 0}),
+        util.moveposition(position, {x =  1, y = 0}),
+      }
+>>>>>>> 7f4bcaa... no longer place loaders on top of rails
     end
   end
-
-  if #rails ~= #expected_rail_positions then
-    return false, {"railloader.invalid-position-need-rails"}
-  end
-
-  -- check that the opposite side is also free
-  local opposite_side_clear = surface.can_place_entity{
-    name = proxy.name,
-    position = util.moveposition(proxy.position, util.offset(direction, 3, 0)),
-    direction = util.opposite_direction(proxy.direction),
-    force = proxy.force,
-  }
-  if not opposite_side_clear then
-    return false, {"railloader.invalid-position-blocked"}
-  end
-
-  return true
 end
 
-local function create_entities(proxy)
-  local type = util.railloader_type(proxy)
+local function create_entities(proxy, rail_poss)
+  local type = util.railloader_type(proxy.name)
   local surface = proxy.surface
   local direction = proxy.direction
-  local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
+  if direction > 4 then
+    direction = direction - 4
+  end
+  local position = proxy.position
   local force = proxy.force
   local last_user = proxy.last_user
+
+  -- place rails
+  for _, rail_position in ipairs(rail_poss) do
+    local rail = surface.create_entity{
+      name = "straight-rail",
+      position = rail_position,
+      direction = direction,
+      force = force,
+    }
+    rail.destructible = false
+    rail.minable = false
+  end
 
   -- place chest
   local chest = surface.create_entity{
@@ -191,26 +224,14 @@ local function create_entities(proxy)
   end
   ghostconnections.remove_ghost(proxy)
 
-  -- protect rails
-  local rails = surface.find_entities_filtered{
-    type = "straight-rail",
-    area = chest.bounding_box,
-  }
-  for _, rail in ipairs(rails) do
-    rail.destructible = false
-    rail.minable = false
-  end
-
   -- place cargo wagon inserters
-  local inserter_direction = (direction == defines.direction.east or direction == defines.direction.west) and
-    defines.direction.north or defines.direction.east
   local inserter_name =
     "rail" .. type .. (allowed_items_setting == "any" and "-universal" or "") .. "-inserter"
   for i=1,num_inserters do
     local inserter = surface.create_entity{
       name = inserter_name,
       position = position,
-      direction = inserter_direction,
+      direction = direction,
       force = force,
     }
     inserter.destructible = false
@@ -218,9 +239,9 @@ local function create_entities(proxy)
   inserter_config.configure_or_register_loader(chest)
 
   -- place structure
-  local structure_name = "rail" .. type .. "-structure-horizontal"
+  local structure_name = "rail" .. type .. "-structure-vertical"
   if direction == defines.direction.east or direction == defines.direction.west then
-    structure_name = "rail" .. type .. "-structure-vertical"
+    structure_name = "rail" .. type .. "-structure-horizontal"
   end
   local placed = surface.create_entity{
     name = structure_name,
@@ -233,25 +254,22 @@ local function create_entities(proxy)
   sync_interface_inserters(chest)
 end
 
-local function on_railloader_proxy_built(proxy, event)
-  local surface = proxy.surface
-  local direction = proxy.direction
-  local position = util.moveposition(proxy.position, util.offset(direction, 1.5, 0))
-
-  local can_place, msg = can_place_loader(proxy)
-  if not can_place then
-    surface.create_entity{
-      name = "flying-text",
-      position = position,
-      text = msg,
-    }
-    abort_build(event, msg)
-    return
+local function on_railloader_proxy_built(event)
+  local proxy = event.created_entity
+  local rail_pos = rail_positions(proxy)
+  if not rail_pos then
+    return abort_build(event)
   end
-
-  create_entities(proxy)
-
+  create_entities(proxy, rail_pos)
   proxy.destroy()
+end
+
+local function on_ghost_built(ghost)
+  local rail_pos = rail_positions(ghost)
+  if not rail_pos then
+    show_error(ghost)
+    ghost.destroy()
+  end
 end
 
 local function on_container_built(entity)
@@ -262,10 +280,19 @@ end
 
 local function on_built(event)
   local entity = event.created_entity
+<<<<<<< HEAD
   local proxy_pattern = "^rail(u?n?loader)%-placement%-proxy$"
   local type = string.match(entity.name, proxy_pattern)
+=======
+  local type = util.railloader_type(entity.name)
+>>>>>>> 7f4bcaa... no longer place loaders on top of rails
   if type then
-    return on_railloader_proxy_built(entity, event)
+    return on_railloader_proxy_built(event)
+  elseif entity.type == "entity-ghost" then
+    type = util.railloader_type(entity.ghost_name)
+    if type then
+      return on_ghost_built(entity)
+    end
   elseif entity.type == "container" then
     return on_container_built(entity)
   end
@@ -284,8 +311,7 @@ local function on_railloader_mined(entity, buffer)
     elseif string.find(ent.name, "^railu?n?loader%-structure") then
       ent.destroy()
     elseif ent.type == "straight-rail" then
-      ent.destructible = true
-      ent.minable = true
+      ent.destroy()
     end
   end
 end
@@ -298,12 +324,16 @@ end
 
 local function on_mined(event)
   local entity = event.entity
-  local type = util.railloader_type(entity)
+  local type = util.railloader_type(entity.name)
   if type then
     return on_railloader_mined(entity, event.buffer)
   elseif entity.type == "container" then
     return on_container_mined(entity, event.buffer)
   end
+end
+
+local function is_straight_rail(entity)
+  return game.entity_prototypes[entity.name].type == "straight-rail"
 end
 
 local function on_blueprint(event)
@@ -339,7 +369,7 @@ local function on_blueprint(event)
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
       local rail = player.surface.find_entities_filtered{
         type = "straight-rail",
-        area = util.box_centered_at(container.position, 0.6),
+        area = container.bounding_box,
       }[1]
       if rail then
         directions[#directions+1] = rail.direction
@@ -347,18 +377,37 @@ local function on_blueprint(event)
     end
   end
 
+  local rail_positions_to_remove = {}
+  local function add_rail_positions(loader)
+    local t = rail_positions_to_remove
+    for offset=-2,2,0.5 do
+      local key = (loader.position.x + offset) .. "," .. (loader.position.y)
+      t[key] = true
+      k = (loader.position.x) .. "," .. (loader.position.y + offset)
+      t[key] = true
+    end
+  end
+
   local loader_index = 1
   for _, e in ipairs(entities) do
     if e.name == "railloader-chest" then
       e.name = "railloader-placement-proxy"
-      e.position = util.moveposition(e.position, util.offset(directions[loader_index], 0, -1.5))
-      e.direction = util.orthogonal_direction(directions[loader_index])
+      e.direction = directions[loader_index]
       loader_index = loader_index + 1
+      add_rail_positions(e)
     elseif e.name == "railunloader-chest" then
       e.name = "railunloader-placement-proxy"
-      e.position = util.moveposition(e.position, util.offset(directions[loader_index], 0, -1.5))
-      e.direction = util.orthogonal_direction(directions[loader_index])
+      e.direction = directions[loader_index]
       loader_index = loader_index + 1
+      add_rail_positions(e)
+    end
+  end
+
+  -- remove straight rails
+  for k, e in ipairs(entities) do
+    local key = e.position.x .. "," .. e.position.y
+    if is_straight_rail(e) and rail_positions_to_remove[key] then
+      entities[k] = nil
     end
   end
 

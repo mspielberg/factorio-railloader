@@ -11,8 +11,8 @@ data:extend{
     minable = { mining_time = 0.1, result = "railloader" },
     flags = {"player-creation", "placeable-neutral"},
     max_health = 800,
-    collision_box = {{-2, -2}, {2, 2}},
-    selection_box = {{-2, -2}, {2, 2}},
+    collision_box = {{-1.8, -1.8}, {1.8, 1.8}},
+    selection_box = {{-1.8, -1.8}, {1.8, 1.8}},
     fluid_box = {
       pipe_connections = {},
     },

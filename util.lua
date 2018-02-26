@@ -109,8 +109,8 @@ function M.find_railloaders_from_chest(chest)
   return out
 end
 
-function M.railloader_type(loader)
-  return string.match(loader.name, "^rail(u?n?loader)%-")
+function M.railloader_type(name)
+  return string.match(name, "^rail(u?n?loader)%-")
 end
 
 function M.loader_direction(loader)
@@ -124,7 +124,7 @@ function M.loader_direction(loader)
 end
 
 function M.interface_inserter_name_for_loader(loader)
-  return "rail" .. M.railloader_type(loader) .. "-interface-inserter"
+  return "rail" .. M.railloader_type(loader.name) .. "-interface-inserter"
 end
 
 function M.find_inserter_for_interface(loader, interface)
