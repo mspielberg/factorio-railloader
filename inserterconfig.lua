@@ -118,7 +118,8 @@ function M.on_train_changed_state(event)
   end
 
   local train = event.train
-  if train.state ~= defines.train_state.wait_station then
+  if train.state ~= defines.train_state.wait_station and
+    event.old_state ~= defines.train_state.wait_station then
     return
   end
   for _, wagon in ipairs(train.cargo_wagons) do
@@ -126,8 +127,10 @@ function M.on_train_changed_state(event)
       type = "container",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
-    if loader then
+    if loader and train.state == defines.train_state_wait_station then
       M.configure_or_register_loader(loader)
+    else
+      unregister_loader(loader)
     end
   end
 end

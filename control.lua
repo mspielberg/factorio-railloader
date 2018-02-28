@@ -1,4 +1,5 @@
 local configchange = require "configchange"
+local delaydestroy = require "delaydestroy"
 local ghostconnections = require "ghostconnections"
 local inserter_config = require "inserterconfig"
 local util = require "util"
@@ -25,39 +26,6 @@ local function on_configuration_changed(configuration_changed_data)
   end
 end
 
-<<<<<<< HEAD
-local function recreate_ghost(entity)
-  local ghost = entity.surface.create_entity{
-    name = "entity-ghost",
-    inner_name = entity.name,
-    position = entity.position,
-    direction = entity.direction,
-    force = entity.force,
-  }
-  for _, ccd in ipairs(ghostconnections.get_connections(entity)) do
-    ghost.connect_neighbour(ccd)
-  end
-  return ghost
-end
-
-local function abort_player_build(event)
-  local entity = event.created_entity
-  local item_name = next(entity.prototype.items_to_place_this)
-  local player = game.players[event.player_index]
-  local cursor = player.cursor_stack
-  entity.destroy()
-
-  if not event.mod_name and not cursor.valid_for_read then
-    -- clicked to place last item in cursor, replace it
-    cursor.set_stack{name = item_name, count = 1}
-  else
-    -- Let the engine figure out whether to place in partial stack in hand,
-    -- in quickbar, or in inventory.
-    local success = player.insert{name = item_name, count = 1}
-    if not success then
-      player.surface.spill_item_stack(player.position, {name = item_name, count = 1})
-    end
-=======
 local function show_error(entity)
   entity.surface.create_entity{
     name = "flying-text",
@@ -74,33 +42,7 @@ local function abort_build(event)
     player.mine_entity(entity, true)
   else
     entity.order_deconstruction(entity.force)
->>>>>>> 7f4bcaa... no longer place loaders on top of rails
   end
-  if event.mod_name then
-    -- Likely nanobots, Bluebuild or a similar automated player construction mod
-    recreate_ghost(entity)
-  end
-end
-
-local function abort_robot_build(event, msg)
-  local entity = event.created_entity
-  local item_name = next(entity.prototype.items_to_place_this)
-  local last_user = entity.last_user
-
-  entity.order_deconstruction(entity.force)
-  local ghost = recreate_ghost(entity)
-
-  if last_user and last_user.valid then
-    ghost.last_user = last_user
-    last_user.add_custom_alert(ghost, {type="item", name=item_name}, msg, true)
-  end
-end
-
-local function abort_build(event, msg)
-  if event.player_index then
-    return abort_player_build(event)
-  end
-  return abort_robot_build(event, msg)
 end
 
 local function sync_interface_inserters(loader)
@@ -158,20 +100,7 @@ local function rail_positions(proxy)
     if position.x % 2 == 1 then
       return {
         util.moveposition(position, {x = -2, y = 0}),
-      position,
-<<<<<<< HEAD
-      util.moveposition(position, util.offset(direction, 0,  2)),
-    }
-
-  local rails = {}
-  for _, pos in ipairs(expected_rail_positions) do
-    local rail = surface.find_entities_filtered{
-      type = "straight-rail",
-      position = pos,
-    }[1]
-    if rail then
-      rails[#rails+1] = rail
-=======
+        position,
         util.moveposition(position, {x =  2, y = 0}),
       }
     else
@@ -179,7 +108,6 @@ local function rail_positions(proxy)
         util.moveposition(position, {x = -1, y = 0}),
         util.moveposition(position, {x =  1, y = 0}),
       }
->>>>>>> 7f4bcaa... no longer place loaders on top of rails
     end
   end
 end
@@ -198,7 +126,7 @@ local function create_entities(proxy, rail_poss)
   -- place rails
   for _, rail_position in ipairs(rail_poss) do
     local rail = surface.create_entity{
-      name = "straight-rail",
+      name = "railloader-rail",
       position = rail_position,
       direction = direction,
       force = force,
@@ -280,12 +208,7 @@ end
 
 local function on_built(event)
   local entity = event.created_entity
-<<<<<<< HEAD
-  local proxy_pattern = "^rail(u?n?loader)%-placement%-proxy$"
-  local type = string.match(entity.name, proxy_pattern)
-=======
   local type = util.railloader_type(entity.name)
->>>>>>> 7f4bcaa... no longer place loaders on top of rails
   if type then
     return on_railloader_proxy_built(event)
   elseif entity.type == "entity-ghost" then
@@ -311,7 +234,10 @@ local function on_railloader_mined(entity, buffer)
     elseif string.find(ent.name, "^railu?n?loader%-structure") then
       ent.destroy()
     elseif ent.type == "straight-rail" then
-      ent.destroy()
+      local success = ent.destroy()
+      if not success then
+        delaydestroy.register_to_destroy(ent)
+      end
     end
   end
 end
@@ -330,10 +256,6 @@ local function on_mined(event)
   elseif entity.type == "container" then
     return on_container_mined(entity, event.buffer)
   end
-end
-
-local function is_straight_rail(entity)
-  return game.entity_prototypes[entity.name].type == "straight-rail"
 end
 
 local function on_blueprint(event)
@@ -377,37 +299,16 @@ local function on_blueprint(event)
     end
   end
 
-  local rail_positions_to_remove = {}
-  local function add_rail_positions(loader)
-    local t = rail_positions_to_remove
-    for offset=-2,2,0.5 do
-      local key = (loader.position.x + offset) .. "," .. (loader.position.y)
-      t[key] = true
-      k = (loader.position.x) .. "," .. (loader.position.y + offset)
-      t[key] = true
-    end
-  end
-
   local loader_index = 1
   for _, e in ipairs(entities) do
     if e.name == "railloader-chest" then
       e.name = "railloader-placement-proxy"
       e.direction = directions[loader_index]
       loader_index = loader_index + 1
-      add_rail_positions(e)
     elseif e.name == "railunloader-chest" then
       e.name = "railunloader-placement-proxy"
       e.direction = directions[loader_index]
       loader_index = loader_index + 1
-      add_rail_positions(e)
-    end
-  end
-
-  -- remove straight rails
-  for k, e in ipairs(entities) do
-    local key = e.position.x .. "," .. e.position.y
-    if is_straight_rail(e) and rail_positions_to_remove[key] then
-      entities[k] = nil
     end
   end
 
