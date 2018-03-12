@@ -13,7 +13,6 @@ data:extend{
     max_health = 800,
     collision_box = {{-1.8, -0.3}, {1.8, 0.3}},
     selection_box = {{-2, -3.5}, {2, 0.5}},
-    picture = pictures.empty_sheet,
     fluid_box = {
       pipe_connections = {},
     },

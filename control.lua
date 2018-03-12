@@ -1,4 +1,6 @@
 local configchange = require "configchange"
+local Event = require "event"
+local ghostconnections = require "ghostconnections"
 local inserter_config = require "inserterconfig"
 local util = require "util"
 
@@ -107,17 +109,14 @@ local function can_place_loader(proxy)
       position,
       util.moveposition(position, util.offset(direction, 0,  2)),
     }
-  log(serpent.line{position=position,coord=coord,expected_rail_positions=expected_rail_positions})
 
   local rails = {}
   for _, pos in ipairs(expected_rail_positions) do
-    log("checking for rail at "..serpent.line(pos))
     local rail = surface.find_entities_filtered{
       type = "straight-rail",
       position = pos,
     }[1]
     if rail then
-      log("found rail")
       rails[#rails+1] = rail
     end
   end
@@ -224,6 +223,16 @@ local function on_railloader_proxy_built(proxy, event)
   proxy.destroy()
 end
 
+local function on_railloader_proxy_ghost_built(ghost, event)
+  local function at_end_of_tick(_)
+    Event.unregister(defines.events.on_tick, at_end_of_tick)
+    local connections = ghostconnections.get_connections(ghost)
+    for _, conn in ipairs(connections) do
+      ghost.connect_neighbour
+  end
+  Event.register(defines.events.on_tick, at_end_of_tick)
+end
+
 local function on_container_built(entity)
   for _, loader in ipairs(util.find_railloaders_from_chest(entity)) do
     sync_interface_inserters(loader)
@@ -232,9 +241,15 @@ end
 
 local function on_built(event)
   local entity = event.created_entity
-  local type = string.match(entity.name, "^rail(u?n?loader)%-placement%-proxy$")
+  local proxy_pattern = "^rail(u?n?loader)%-placement%-proxy$"
+  local type = string.match(entity.name, proxy_pattern)
   if type then
     return on_railloader_proxy_built(entity, event)
+  elseif entity.name == "entity-ghost" then
+    type = string.match(entity.ghost_name, proxy_pattern)
+    if type then
+      return on_railloader_proxy_ghost_built(entity, event)
+    end
   elseif entity.type == "container" then
     return on_container_built(entity)
   end
