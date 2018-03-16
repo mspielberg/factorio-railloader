@@ -136,3 +136,6 @@ of supported items for your own use.
     * Prevent loaders from being built over curved rails, which leads to odd "train driving through a wall" appearance.
     * Give better messages when a loader can't be built.
     * Prevent rails blocked by loaders from being damaged, destroyed, or mined, since they cannot be replaced without removing the loader.
+* 0.3.6 (2018-03-16):
+    * Change how graphics are rendered.
+    * Fix crash on mining BRLs in Factorio 0.16.29.
