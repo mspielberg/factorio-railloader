@@ -13,10 +13,6 @@ data:extend{
     max_health = 800,
     collision_box = {{-1.8, -0.3}, {1.8, 0.3}},
     selection_box = {{-2, -3.5}, {2, 0.5}},
-<<<<<<< HEAD
-    picture = pictures.empty_sheet,
-=======
->>>>>>> 20165ba... start of library to track ghost connections
     fluid_box = {
       pipe_connections = {},
     },

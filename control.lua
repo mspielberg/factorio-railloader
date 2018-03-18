@@ -249,7 +249,7 @@ local function on_railloader_mined(entity, buffer)
   }
   for _, ent in ipairs(entities) do
     if ent.type == "inserter" then
-      if buffer then
+      if buffer and ent.held_stack.valid_for_read then
         buffer.insert(ent.held_stack)
       end
       ent.destroy()
