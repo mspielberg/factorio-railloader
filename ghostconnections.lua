@@ -3,17 +3,18 @@ local Event = require "event"
 local M = {}
 
 --[[
-  [position_key] = {
-    [defines.wire_type.green] = {
-      {x=..., y=...},
-      ...
-    },
-    [defines.wire_type.red] = {
-      ...
+  global.ghost_connections = {
+    [position_key] = {
+      [defines.wire_type.green] = {
+        {x=..., y=...},
+        ...
+      },
+      [defines.wire_type.red] = {
+        ...
+      }
     }
   }
   ]]
-local ghost_connections
 
 local function is_setup_bp(stack)
   return stack.valid and
@@ -49,7 +50,9 @@ local function on_put_item(event)
   if not is_setup_bp(player.cursor_stack) then
     return
   end
-  ghost_connections = {}
+  if not global.ghost_connections then
+    global.ghost_connections = {}
+  end
   local bp = player.cursor_stack
   local translate = bp_to_world(event.position, event.direction)
   local entities = bp.get_blueprint_entities()
@@ -60,7 +63,7 @@ local function on_put_item(event)
     if e.connections then
       local key = position_key(player.surface, e.position)
       local t = {}
-      ghost_connections[key] = t
+      global.ghost_connections[key] = t
       for source_circuit_id, wires in pairs(e.connections) do
         for wire_name, conns in pairs(wires) do
           for _, conn in ipairs(conns) do
@@ -79,7 +82,7 @@ local function on_put_item(event)
 end
 
 function M.get_connections(ghost)
-  local conns = ghost_connections[position_key(ghost.surface, ghost)]
+  local conns = global.ghost_connections[position_key(ghost.surface, ghost)]
   if not conns then
     return {}
   end

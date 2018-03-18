@@ -159,6 +159,9 @@ local function create_entities(proxy)
   for _, ccd in ipairs(proxy.circuit_connection_definitions) do
     chest.connect_neighbour(ccd)
   end
+  for _, ccd in ipairs(ghostconnections.get_connections(proxy)) do
+    chest.connect_neighbour(ccd)
+  end
 
   -- protect rails
   local rails = surface.find_entities_filtered{
@@ -223,16 +226,6 @@ local function on_railloader_proxy_built(proxy, event)
   proxy.destroy()
 end
 
-local function on_railloader_proxy_ghost_built(ghost, event)
-  local function at_end_of_tick(_)
-    Event.unregister(defines.events.on_tick, at_end_of_tick)
-    local connections = ghostconnections.get_connections(ghost)
-    for _, conn in ipairs(connections) do
-      ghost.connect_neighbour
-  end
-  Event.register(defines.events.on_tick, at_end_of_tick)
-end
-
 local function on_container_built(entity)
   for _, loader in ipairs(util.find_railloaders_from_chest(entity)) do
     sync_interface_inserters(loader)
@@ -245,11 +238,6 @@ local function on_built(event)
   local type = string.match(entity.name, proxy_pattern)
   if type then
     return on_railloader_proxy_built(entity, event)
-  elseif entity.name == "entity-ghost" then
-    type = string.match(entity.ghost_name, proxy_pattern)
-    if type then
-      return on_railloader_proxy_ghost_built(entity, event)
-    end
   elseif entity.type == "container" then
     return on_container_built(entity)
   end
