@@ -10,6 +10,7 @@ local num_inserters = 2
 local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function on_init()
+  ghostconnections.on_init()
   inserter_config.on_init()
 end
 
@@ -48,6 +49,9 @@ local function abort_build(event, msg)
       direction = entity.direction,
       force = entity.force,
     }
+    for _, ccd in ipairs(ghostconnections.get_connections(entity)) do
+      ghost.connect_neighbour(ccd)
+    end
     local last_user = entity.last_user
     if last_user and last_user.valid then
       ghost.last_user = last_user

@@ -55,9 +55,6 @@ local function bp_to_world(position, direction)
 end
 
 local function store_ghost(ghost)
-  if not global.ghosts then
-    global.ghosts = {}
-  end
   global.ghosts[position_key(ghost.surface, ghost.position)] = ghost
 end
 
@@ -130,6 +127,10 @@ local function on_put_item(event)
   end
 end
 
+function M.on_init()
+  global.ghosts = {}
+end
+
 -- returns an array of CircuitConnectionDefinition
 function M.get_connections(ghost)
   local out = {}
@@ -139,6 +140,9 @@ function M.get_connections(ghost)
   end
   for _, conn in ipairs(ghost_record.connections) do
     local target_entity = ghost.surface.find_entity("entity-ghost", conn.target_entity_position)
+    if not target_entity then
+      target_entity = ghost.surface.find_entity(conn.target_entity_name, conn.target_entity_position)
+    end
     if target_entity then
       out[#out+1] = {
         wire = conn.wire,
