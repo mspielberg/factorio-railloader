@@ -31,6 +31,13 @@ function M.box_centered_at(position, radius)
   }
 end
 
+function M.expand_box(box, delta)
+  return {
+    left_top = { x = box.left_top.x - delta, y = box.left_top.y - delta },
+    right_bottom = { x = box.right_bottom.x + delta, y = box.right_bottom.y + delta },
+  }
+end
+
 function M.is_empty_box(box)
   local size_x = box.right_bottom.x - box.left_top.x
   local size_y = box.right_bottom.y - box.left_top.y
@@ -85,31 +92,18 @@ function M.is_filter_inserter(inserter)
   return string.find(inserter.name, "loader%-inserter$") ~= nil
 end
 
-local railloader_from_chest_offsets = {
-    M.offset(defines.direction.east,  1.5,  2.5),
-    M.offset(defines.direction.east,  2.5,  1.5),
-    M.offset(defines.direction.east, -1.5,  2.5),
-    M.offset(defines.direction.east, -2.5,  1.5),
-    M.offset(defines.direction.east,  1.5, -2.5),
-    M.offset(defines.direction.east,  2.5, -1.5),
-    M.offset(defines.direction.east, -1.5, -2.5),
-    M.offset(defines.direction.east, -2.5, -1.5),
-}
-
 function M.find_railloaders_from_chest(chest)
   local out = {}
   local chest_position = chest.position
-  for _, offset in ipairs(railloader_from_chest_offsets) do
-    local position = M.moveposition(chest_position, offset)
-    local es = chest.surface.find_entities_filtered{
-      type = "container",
-      position = position,
-      force = chest.force,
-    }
-    for _, e in ipairs(es) do
-      if M.is_railloader_chest(e) then
-        out[#out+1] = e
-      end
+  local area = M.expand_box(chest.bounding_box, 1)
+  local es = chest.surface.find_entities_filtered{
+    type = "container",
+    area = area,
+    force = chest.force,
+  }
+  for _, e in ipairs(es) do
+    if M.is_railloader_chest(e) then
+      out[#out+1] = e
     end
   end
   return out
@@ -117,6 +111,16 @@ end
 
 function M.railloader_type(loader)
   return string.match(loader.name, "^rail(u?n?loader)%-")
+end
+
+function M.loader_direction(loader)
+  local rail = loader.surface.find_entities_filtered{
+    type = "straight-rail",
+    area = M.box_centered_at(loader.position, 0.6),
+  }[1]
+  if rail and rail.valid then
+    return rail.direction
+  end
 end
 
 function M.interface_inserter_name_for_loader(loader)
@@ -131,7 +135,7 @@ function M.find_inserter_for_interface(loader, interface)
     position = loader.position,
   }
   for _, inserter in ipairs(inserters) do
-    local target_interface_position = inserter[type == "railloader" and "pickup_position" or "drop_position"]
+    local target_interface_position = inserter[type == "loader" and "pickup_position" or "drop_position"]
     if target_interface_position.x == interface_position.x and
       target_interface_position.y == interface_position.y then
       return inserter
@@ -141,29 +145,19 @@ function M.find_inserter_for_interface(loader, interface)
 end
 
 function M.loader_position_for_interface(loader, interface)
-  local lx = loader.position.x
-  local ly = loader.position.y
-  local ix = interface.position.x
-  local iy = interface.position.y
-
-  if ix == lx + 2.5 then
-    return { x = lx + 1.5, y = iy }
-  elseif ix == lx - 2.5 then
-    return { x = lx - 1.5, y = iy }
-  elseif iy == ly + 2.5 then
-    return { x = ix, y = ly + 1.5 }
-  elseif iy == ly - 2.5 then
-    return { x = ix, y = ly - 1.5 }
+  local offset = { x = 1.5, y = 1.5 }
+  for _, axis in ipairs{"x", "y"} do
+    if interface.position[axis] < loader.position[axis] then
+      offset[axis] = offset[axis] * -1
+    end
   end
+  game.print(serpent.line{loader=loader.position, interface=interface.position, offset=offset})
+  return { x = loader.position.x + offset.x, y = loader.position.y + offset.y }
 end
 
 function M.find_chests_from_railloader(loader)
   local position = loader.position
-  local rail = loader.surface.find_entities_filtered{
-    type = "straight-rail",
-    area = M.box_centered_at(position, 0.6),
-  }[1]
-  local is_horiz = rail.direction == defines.direction.east
+  local is_horiz = M.loader_direction(loader) == defines.direction.east
   local area = {
     left_top = {
       x = position.x - (is_horiz and 2.5 or 1.5),
