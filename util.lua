@@ -151,7 +151,6 @@ function M.loader_position_for_interface(loader, interface)
       offset[axis] = offset[axis] * -1
     end
   end
-  game.print(serpent.line{loader=loader.position, interface=interface.position, offset=offset})
   return { x = loader.position.x + offset.x, y = loader.position.y + offset.y }
 end
 

@@ -61,11 +61,9 @@ local function store_ghost(ghost)
     global.ghosts = {}
   end
   global.ghosts[position_key(ghost.surface, ghost.position)] = ghost
-  game.print(serpent.line{surface=ghost.surface.name, position=ghost.position})
 end
 
 local function get_ghost(entity)
-  game.print(serpent.line{surface=entity.surface.name, position=entity.position})
   return global.ghosts[position_key(entity.surface, entity.position)]
 end
 
@@ -93,23 +91,21 @@ end
 
 local function on_put_item(event)
   local player = game.players[event.player_index]
-  if not is_setup_bp(player.cursor_stack) then
+  local bp = player.cursor_stack
+  if not is_setup_bp(bp) then
     return
   end
-  local bp = player.cursor_stack
-  local position = gridalign(bp, event.position)
-  local translate = bp_to_world(position, event.direction)
   local entities = bp.get_blueprint_entities()
   if not entities then
     return
   end
+  local position = gridalign(bp, event.position)
+  local translate = bp_to_world(position, event.direction)
   if not global.ghost_connections then
     global.ghost_connections = {}
   end
   for _, e in ipairs(bp.get_blueprint_entities()) do
     if e.connections and entity_filter and string.find(e.name, entity_filter) then
-      game.print("entity position = "..serpent.line(e.position))
-      game.print("translated = "..serpent.line(translate(e.position)))
       local ghost = {
         name = e.name,
         surface = player.surface,
@@ -136,14 +132,27 @@ end
 
 -- returns an array of CircuitConnectionDefinition
 function M.get_connections(ghost)
+  local out = {}
   local ghost_record = get_ghost(ghost)
   if not ghost_record then
-    return {}
+    return out
   end
   for _, conn in ipairs(ghost_record.connections) do
-    conn.target_entity = ghost.surface.find_entity("entity-ghost", conn.target_entity_position)
+    local target_entity = ghost.surface.find_entity("entity-ghost", conn.target_entity_position)
+    if target_entity then
+      out[#out+1] = {
+        wire = conn.wire,
+        target_entity = target_entity,
+        source_circuit_id = conn.source_circuit_id,
+        target_circuit_id = conn.target_circuit_id,
+      }
+    end
   end
-  return ghost_record.connections
+  return out
+end
+
+function M.remove_ghost(ghost)
+  global.ghosts[position_key(ghost.surface, ghost.position)] = nil
 end
 
 Event.register(defines.events.on_put_item, on_put_item)

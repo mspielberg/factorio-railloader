@@ -162,6 +162,7 @@ local function create_entities(proxy)
   for _, ccd in ipairs(ghostconnections.get_connections(proxy)) do
     chest.connect_neighbour(ccd)
   end
+  ghostconnections.remove_ghost(proxy)
 
   -- protect rails
   local rails = surface.find_entities_filtered{
