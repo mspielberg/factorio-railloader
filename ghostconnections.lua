@@ -90,6 +90,11 @@ local function gridalign(bp, position)
 end
 
 local function on_put_item(event)
+  if event.mod_name == "Bluebuild" then
+    -- Bluebuild fires on_put_item when cursor_stack holds an unrelated item
+    return
+  end
+
   local player = game.players[event.player_index]
   local bp = player.cursor_stack
   if not is_setup_bp(bp) then
