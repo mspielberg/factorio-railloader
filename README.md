@@ -74,8 +74,6 @@ of supported items for your own use.
 
 ## Known Issues
 
-* Loader configuration is not preserved when blueprinted.
-* Loader circuit connections are not recreated when building from a blueprint.
 * Loader ghosts can be placed in locations they cannot be built, either by
   blueprint or by shift-clicking.  Robots will make repeated trips attempting to
   build the loader until they are successful or the ghost is removed.  This
@@ -139,3 +137,7 @@ of supported items for your own use.
 * 0.3.6 (2018-03-16):
     * Change how graphics are rendered.
     * Fix crash on mining BRLs in Factorio 0.16.29.
+* 0.3.7 (2018-03-19):
+    * Revise unloader graphics.
+    * Improve handling of blueprint circuit connections.
+    * Improve Bluebuild compatibility.
