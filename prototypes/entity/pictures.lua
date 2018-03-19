@@ -188,9 +188,8 @@ M.railloader_proxy_animations = {
   west  = add_shift({-1.5,  0  }, railloader_vertical),
 }
 
-local railunloader_horizontal = {
+M.railunloader_horizontal = {
   layers = flatten{
-    triple_rail_pictures("horizontal", rail_only_layers),
     {
       {
         filename = "__railloader__/graphics/railunloader/structure-horizontal.png",
@@ -200,13 +199,12 @@ local railunloader_horizontal = {
         scale = 0.5,
       }
     },
-    cargo_wagon_layers.horizontal,
+    triple_rail_pictures("horizontal", rail_only_layers),
   }
 }
 
-local railunloader_vertical = {
+M.railunloader_vertical = {
   layers = flatten{
-    triple_rail_pictures("vertical", rail_only_layers),
     {
       {
         filename = "__railloader__/graphics/railunloader/structure-vertical.png",
@@ -216,15 +214,29 @@ local railunloader_vertical = {
         scale = 0.5,
       }
     },
+    triple_rail_pictures("vertical", rail_only_layers),
+  }
+}
+
+local railunloader_proxy_horizontal = {
+  layers = flatten{
+    M.railunloader_horizontal.layers,
+    cargo_wagon_layers.horizontal,
+  }
+}
+
+local railunloader_proxy_vertical = {
+  layers = flatten{
+    M.railunloader_vertical.layers,
     cargo_wagon_layers.vertical,
   }
 }
 
 M.railunloader_proxy_animations = {
-  north = add_shift({   0, -1.5}, railunloader_horizontal),
-  east  = add_shift({ 1.5,    0}, railunloader_vertical),
-  south = add_shift({   0,  1.5}, railunloader_horizontal),
-  west  = add_shift({-1.5,    0}, railunloader_vertical),
+  north = add_shift({   0, -1.5}, railunloader_proxy_horizontal),
+  east  = add_shift({ 1.5,    0}, railunloader_proxy_vertical),
+  south = add_shift({   0,  1.5}, railunloader_proxy_horizontal),
+  west  = add_shift({-1.5,    0}, railunloader_proxy_vertical),
 }
 
 M.empty_sheet = {

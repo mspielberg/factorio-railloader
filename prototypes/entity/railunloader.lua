@@ -37,13 +37,7 @@ data:extend{
     collision_mask = {},
     -- above floor, below corpses
     render_layer = "transport-belt-endings",
-    picture = {
-      filename = "__railloader__/graphics/railunloader/structure-horizontal.png",
-      priority = "extra-high",
-      width = 384,
-      height = 256,
-      scale = 0.5,
-    },
+    picture = pictures.railunloader_horizontal,
   },
   {
     type = "simple-entity",
@@ -54,13 +48,7 @@ data:extend{
     collision_mask = {},
     -- above floor, below corpses
     render_layer = "transport-belt-endings",
-    picture = {
-      filename = "__railloader__/graphics/railunloader/structure-vertical.png",
-      priority = "extra-high",
-      width = 256,
-      height = 384,
-      scale = 0.5,
-    },
+    picture = pictures.railunloader_vertical,
   },
 
   {
