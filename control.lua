@@ -1,4 +1,6 @@
 local configchange = require "configchange"
+local Event = require "event"
+local ghostconnections = require "ghostconnections"
 local inserter_config = require "inserterconfig"
 local util = require "util"
 
@@ -107,17 +109,14 @@ local function can_place_loader(proxy)
       position,
       util.moveposition(position, util.offset(direction, 0,  2)),
     }
-  log(serpent.line{position=position,coord=coord,expected_rail_positions=expected_rail_positions})
 
   local rails = {}
   for _, pos in ipairs(expected_rail_positions) do
-    log("checking for rail at "..serpent.line(pos))
     local rail = surface.find_entities_filtered{
       type = "straight-rail",
       position = pos,
     }[1]
     if rail then
-      log("found rail")
       rails[#rails+1] = rail
     end
   end
@@ -160,6 +159,10 @@ local function create_entities(proxy)
   for _, ccd in ipairs(proxy.circuit_connection_definitions) do
     chest.connect_neighbour(ccd)
   end
+  for _, ccd in ipairs(ghostconnections.get_connections(proxy)) do
+    chest.connect_neighbour(ccd)
+  end
+  ghostconnections.remove_ghost(proxy)
 
   -- protect rails
   local rails = surface.find_entities_filtered{
@@ -232,7 +235,8 @@ end
 
 local function on_built(event)
   local entity = event.created_entity
-  local type = string.match(entity.name, "^rail(u?n?loader)%-placement%-proxy$")
+  local proxy_pattern = "^rail(u?n?loader)%-placement%-proxy$"
+  local type = string.match(entity.name, proxy_pattern)
   if type then
     return on_railloader_proxy_built(entity, event)
   elseif entity.type == "container" then
