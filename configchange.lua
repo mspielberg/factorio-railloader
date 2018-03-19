@@ -64,4 +64,13 @@ add_migration{
   end,
 }
 
+add_migration{
+  name = "v0_3_7_add_ghost_registry",
+  low = {0,0,0},
+  high = {0,3,7},
+  task = function()
+    global.ghosts = {}
+  end,
+}
+
 return M
