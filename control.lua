@@ -1,5 +1,4 @@
 local configchange = require "configchange"
-local Event = require "event"
 local ghostconnections = require "ghostconnections"
 local inserter_config = require "inserterconfig"
 local util = require "util"
@@ -31,7 +30,7 @@ local function abort_build(event, msg)
   if event.player_index then
     local player = game.players[event.player_index]
     local cursor = player.cursor_stack
-    if event.revived or cursor.valid_for_read and cursor.name == item_name then
+    if event.revived or event.mod_name == "Bluebuild" or (cursor.valid_for_read and cursor.name == item_name) then
       -- nanobot build or cursor build
       player.insert{name = item_name, count = 1}
     else

@@ -1,5 +1,3 @@
-local Event = require "event"
-
 local M = {}
 
 --[[
@@ -65,9 +63,6 @@ end
 
 local function get_ghost(entity)
   return global.ghosts[position_key(entity.surface, entity.position)]
-end
-
-local function on_built_entity(event)
 end
 
 local function bp_bitshift(bp)
@@ -160,6 +155,6 @@ function M.remove_ghost(ghost)
   global.ghosts[position_key(ghost.surface, ghost.position)] = nil
 end
 
-Event.register(defines.events.on_put_item, on_put_item)
+script.on_event(defines.events.on_put_item, on_put_item)
 
 return M
