@@ -141,3 +141,4 @@ of supported items for your own use.
     * Revise unloader graphics.
     * Improve handling of blueprint circuit connections.
     * Improve Bluebuild compatibility.
+    * Marking a BRL for deconstruction also marks the underlying rails.
