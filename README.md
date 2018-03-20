@@ -29,13 +29,18 @@ creation of transport orders.  Loaders are not circuit controllable, and
 will always load or unload as many items as possible while a cargo wagon
 is stopped.
 
-## Boosting Throughput
+## Boosting Throughput with Interface Chests
 
-Rail loaders and unloaders can fit 4 inserters or loaders on each side, for an
-inherent 8 belts of throughput.  If this is insufficient, you can add any kind
-of 1x1 chests to the corners of the loaders, and they will automatically push or
-pull items into these chests.  You can then connect inserters or loaders to the
-chests for up to 12 belts of throughput, 6 per side.
+Rail loaders and unloaders can fit 4 inserters or loaders on each side, for
+an inherent 8 belts of throughput. If this is insufficient, you can add up to
+4 chests to the corners of the loaders, and they will automatically push or
+pull items into these chests. I recommend limiting these chests to just a few
+stacks to prevent them from getting too out of balance.
+
+With vanilla 1x1 chests, this system allows up to 12 belts of throughput, 6
+per side. However, chests can be of any size. Interface chests can also be
+logistics chests, if you wish to directly connect your bulk rail loaders to
+your logistics network.
 
 ![Interface Chest Demo](https://github.com/mspielberg/factorio-railloader/raw/master/resources/interfacechests.jpg)
 
@@ -142,3 +147,4 @@ of supported items for your own use.
     * Improve handling of blueprint circuit connections.
     * Improve Bluebuild compatibility.
     * Marking a BRL for deconstruction also marks the underlying rails.
+    * Add support for interface chests of any size.
