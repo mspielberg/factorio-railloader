@@ -341,6 +341,26 @@ local function on_blueprint(event)
   bp.set_blueprint_entities(entities)
 end
 
+local function on_marked_for_deconstruction(event, cancel)
+  local entity = event.entity
+  local type = util.railloader_type(entity)
+  if not type then
+    return
+  end
+  local rails = entity.surface.find_entities_filtered{
+    type = "straight-rail",
+    area = entity.bounding_box,
+  }
+  for _, rail in ipairs(rails) do
+    rail.minable = not cancel
+    rail.order_deconstruction(entity.force)
+  end
+end
+
+local function on_canceled_deconstruction(event)
+  on_marked_for_deconstruction(event, true)
+end
+
 local function on_setting_changed(event)
   allowed_items_setting = settings.global["railloader-allowed-items"].value
   inserter_config.on_setting_changed(event)
@@ -356,6 +376,8 @@ script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_e
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
 script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
+script.on_event(defines.events.on_marked_for_deconstruction, on_marked_for_deconstruction)
+script.on_event(defines.events.on_canceled_deconstruction, on_canceled_deconstruction)
 script.on_event(defines.events.on_train_changed_state, inserter_config.on_train_changed_state)
 
 script.on_event(defines.events.on_runtime_mod_setting_changed, on_setting_changed)
