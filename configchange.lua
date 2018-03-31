@@ -27,12 +27,14 @@ add_migration{
     global.unconfigured_loaders = {}
     local t = global.unconfigured_loaders
     for _, e in ipairs(global.unconfigured_inserters) do
-      local loader = e.surface.find_entities_filtered{
-        type = "container",
-        position = e.position,
-        force = e.force,
-      }[1]
-      t[#t+1] = loader
+      if e.valid then
+        local loader = e.surface.find_entities_filtered{
+          type = "container",
+          position = e.position,
+          force = e.force,
+        }[1]
+        t[#t+1] = loader
+      end
     end
     global.unconfigured_inserters = nil
     global.unconfigured_inserters_iter = nil
