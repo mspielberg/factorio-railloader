@@ -14,6 +14,8 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
+    -- Clowns-Extended-Minerals
+    "^clowns%-ore",
     -- pycoalprocessing
     "%-dust$",
     "%-powder$",
