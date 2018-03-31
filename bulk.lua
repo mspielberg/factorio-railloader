@@ -9,6 +9,7 @@ local patterns = {
     "^angels%-.*%-nugget$",
     "^angels%-.*%-pebbles$",
     "^angels%-.*%-slag$",
+    "^geode%-",
     -- angelssmelting
     "^processed%-",
     -- angelspetrochem
@@ -27,7 +28,7 @@ local patterns = {
 -- bulk items that don't fit the above patterns
 local items = {
   -- base
-  "coal", "landfill", "stone", "sulfur",
+  "coal", "landfill", "plastic-bar", "stone", "sulfur",
   -- bobores
   "quartz",
   -- bobplates
@@ -43,31 +44,11 @@ local items = {
   -- omnimatter
   "omnite",
   -- pycoalprocessing
-  "ash",
-  "gravel",
-  "coke",
-  "iron-oxide",
-  "active-carbon",
-  "zinc-chloride",
-  "soil",
-  "limestone",
-  "organics",
-  "coarse",
-  "lithium-peroxide",
-  "lime",
-  "fawogae-substrate",
-  "bonemeal",
-  "borax",
-  "ralesia",
-  "ralesia-seeds",
-  "rich-clay",
-  "boron-trioxide",
-  "niobium-concentrate",
-  "niobium-oxide",
-  "ppd",
-  "coal-briquette",
-  "calcium-carbide",
-  "crushed-iron",
+  "ash", "gravel", "coke", "iron-oxide", "active-carbon", "zinc-chloride",
+  "soil", "limestone", "organics", "coarse", "lithium-peroxide", "lime",
+  "fawogae-substrate", "bonemeal", "borax", "ralesia", "ralesia-seeds",
+  "rich-clay", "boron-trioxide", "niobium-concentrate", "niobium-oxide",
+  "ppd", "coal-briquette", "calcium-carbide", "crushed-iron",
   "crushed-copper",
 }
 
