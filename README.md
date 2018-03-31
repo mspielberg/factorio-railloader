@@ -58,6 +58,7 @@ From vanilla:
 
 * Coal, stone, copper ore, iron ore, uranium ore
 * Landfill
+* Plastic (realisticaly these are likely pellets, not shaped bars)
 * Sulfur
 
 From Bob's mods:
@@ -69,9 +70,13 @@ From Angel's mods:
 
 * All 6 primary ores from Angel's Refining, including refined variants up to
   purified crystals
-* Crushed stone and slag waste products from Angel's Refining
+* Geodes, crushed stone and slag waste products from Angel's Refining
 * Processed ores from Angel's Smelting
 * Solid chemical intermediates from Angel's Petrochem
+
+From MadClown's Extended AngelBob Minerals:
+
+* Additional ores and refined variants
 
 If you feel something that meets the above generic description is not included,
 let me know.  You can also edit `bulk.lua` if you would like to change the set
@@ -148,3 +153,6 @@ of supported items for your own use.
     * Improve Bluebuild compatibility.
     * Marking a BRL for deconstruction also marks the underlying rails.
     * Add support for interface chests of any size.
+* 0.3.8 (2018-03-31):
+    * Add support for plastic bars, Angel's geodes, and MadClown's Extended Minerals.
+    * Fix a rare migration bug from early BRL versions.
