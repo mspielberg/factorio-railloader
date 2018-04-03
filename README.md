@@ -58,7 +58,7 @@ From vanilla:
 
 * Coal, stone, copper ore, iron ore, uranium ore
 * Landfill
-* Plastic (realisticaly these are likely pellets, not shaped bars)
+* Plastic (realistically these are likely pellets, not shaped bars)
 * Sulfur
 
 From Bob's mods:
@@ -77,6 +77,15 @@ From Angel's mods:
 From MadClown's Extended AngelBob Minerals:
 
 * Additional ores and refined variants
+
+From Omnimatter:
+
+* Omnite ore
+
+From Pynandon's mods:
+
+* A huge variety of organics, stone, and chemical intermediates from Pyanodons
+  Coal Processing
 
 If you feel something that meets the above generic description is not included,
 let me know.  You can also edit `bulk.lua` if you would like to change the set
