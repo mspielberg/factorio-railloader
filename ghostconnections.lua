@@ -1,7 +1,7 @@
 local M = {}
 
 --[[
-  global.ghost_connections = {
+  global.ghosts = {
     ["surface@x,y"] = {
       {
         name = ...,
