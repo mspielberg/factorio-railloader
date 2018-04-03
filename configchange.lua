@@ -75,4 +75,13 @@ add_migration{
   end,
 }
 
+add_migration{
+  name = "v0_4_0_add_delayed_destroy_queue",
+  low = {0,0,0},
+  high = {0,4,0},
+  task = function()
+    global.entities_to_destroy = {}
+  end,
+}
+
 return M

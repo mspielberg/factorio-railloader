@@ -11,11 +11,13 @@ local num_inserters = 2
 local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function on_init()
+  delaydestroy.on_init()
   ghostconnections.on_init()
   inserter_config.on_init()
 end
 
 local function on_load()
+  delaydestroy.on_load()
   inserter_config.on_load()
 end
 
