@@ -1,4 +1,5 @@
 local inserter_config = require "inserterconfig"
+local util = require "util"
 local version = require "version"
 
 local M = {}
@@ -98,6 +99,46 @@ add_migration{
     global.unconfigured_loaders = new
     global.unconfigured_loaders_iter = nil
   end,
+}
+
+add_migration{
+  name = "v0_4_0_relocate_proxy_ghosts",
+  low = {0,0,0},
+  high = {0,4,0},
+  task = function()
+    for _, s in pairs(game.surfaces) do
+      local ghosts = s.find_entities_filtered{
+        name = "entity-ghost",
+      }
+      for _, g in ipairs(ghosts) do
+        if g.valid and g.ghost_name:find("^railu?n?loader%-placement%-proxy$") then
+          -- fix up any recorded circuit connections
+          local old_position_key = s.name .. "@" .. g.position.x .. "," .. g.position.y
+          local new_position = util.moveposition(g.position, util.offset(g.direction, 1.5, 0))
+          local new_position_key = s.name .. "@" .. new_position.x .. "," .. new_position.y
+          local connections = global.ghosts[old_position_key]
+          if connections then
+            global.ghosts[new_position_key] = connections
+            global.ghosts[old_position_key] = nil
+          end
+
+          --re-orient
+          g.teleport(new_position)
+          g.direction = util.orthogonal_direction(g.direction)
+
+          -- remove any underlying rail ghosts
+          local rail_ghosts = s.find_entities_filtered{
+            name = "entity-ghost",
+            ghost_type = "straight-rail",
+            area = g.bounding_box,
+          }
+          for _, rg in ipairs(rail_ghosts) do
+            rg.destroy()
+          end
+        end
+      end
+    end
+  end
 }
 
 return M
