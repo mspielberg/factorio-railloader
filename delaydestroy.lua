@@ -4,10 +4,8 @@ local M = {}
 
 local INTERVAL = 10
 
-local function task(q, key, entity)
-  if entity.destroy() then
-    q:unregister(entity, key)
-  end
+local function task(entity)
+  return entity.destroy()
 end
 
 local q = EntityQueue.new("entities_to_destroy", INTERVAL, task)

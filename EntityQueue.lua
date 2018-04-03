@@ -7,18 +7,20 @@ local M = {}
 
 function M:register(entity)
   global[self.name][entity.unit_number] = entity
+  global[self.iter_name] = nil
   Event.register_nth_tick(self.interval, self.on_tick)
 end
 
-function M:unregister(entity, key)
+local function unregister_helper(self, key)
   local queue = global[self.name]
-  if not key then
-    key = entity.unit_number
-  end
   queue[key] = nil
   if not next(queue) then
     Event.unregister_nth_tick(self.interval, self.on_tick)
   end
+end
+
+function M:unregister(entity)
+  unregister_helper(self, entity.unit_number)
 end
 
 function M:on_init()
@@ -49,10 +51,13 @@ local function create_on_tick(self)
       end
       global[iter_name] = k
       if not v.valid then
-        self:unregister(v)
+        unregister_helper(self, k)
       end
     until k and v and v.valid
-    self.task(self, k, v)
+    local should_unregister = self.task(v)
+    if should_unregister then
+      unregister_helper(self, k)
+    end
   end
 end
 

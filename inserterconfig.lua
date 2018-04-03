@@ -1,4 +1,5 @@
 local bulk = require "bulk"
+local EntityQueue = require "EntityQueue"
 local util = require "util"
 
 local M = {}
@@ -7,28 +8,6 @@ local INTERVAL = 60
 
 local allowed_items_setting = settings.global["railloader-allowed-items"].value
 local show_configuration_messages_setting = settings.global["railloader-show-configuration-messages"].value
-
-local on_tick -- forward reference
-
-local function register_loader(loader)
-  if allowed_items_setting == "any" then
-    return
-  end
-  local t = global.unconfigured_loaders
-  t[#t+1] = loader
-  -- reset iterator after adding a new item
-  global.unconfigured_loaders_iter = nil
-  script.on_event(defines.events.on_tick, on_tick)
-end
-
-local function unregister_loader(loader)
-  for i, e in ipairs(global.unconfigured_loaders) do
-    if e.valid and e.unit_number == loader.unit_number then
-      table.remove(global.unconfigured_loaders, i)
-      return
-    end
-  end
-end
 
 local function display_configuration_message(loader, items)
   if not next(items) then
@@ -112,6 +91,8 @@ local function configure_loader(loader)
   return false
 end
 
+local queue = EntityQueue.new("unconfigured_loaders", INTERVAL, configure_loader)
+
 function M.on_train_changed_state(event)
   if allowed_items_setting == "any" then
     return
@@ -127,52 +108,31 @@ function M.on_train_changed_state(event)
       type = "container",
       area = util.box_centered_at(wagon.position, 0.6),
     }[1]
-    if loader and train.state == defines.train_state_wait_station then
-      M.configure_or_register_loader(loader)
-    else
-      unregister_loader(loader)
+    if loader then
+      if train.state == defines.train_state.wait_station then
+        M.configure_or_register_loader(loader)
+      else
+        queue:unregister(loader)
+      end
     end
-  end
-end
-
-on_tick = function(event)
-  if event.tick % INTERVAL ~= 0 then
-    return
-  end
-
-  local loader
-  global.unconfigured_loaders_iter, loader = next(global.unconfigured_loaders, global.unconfigured_loaders_iter)
-  if not global.unconfigured_loaders_iter then
-    if not next(global.unconfigured_loaders) then
-      script.on_event(defines.events.on_tick, nil)
-    end
-    return
-  end
-  if not loader.valid then
-    table.remove(global.unconfigured_loaders, global.unconfigured_loaders_iter)
-    return
-  end
-  local success = configure_loader(loader)
-  if success then
-    unregister_loader(loader)
   end
 end
 
 function M.on_init()
-  global.unconfigured_loaders = {}
+  queue:on_init()
 end
 
 function M.on_load()
-  if global.unconfigured_loaders and next(global.unconfigured_loaders) then
-    script.on_event(defines.events.on_tick, on_tick)
-  end
+  queue:on_load()
 end
 
 function M.configure_or_register_loader(loader)
-  unregister_loader(loader)
+  if allowed_items_setting == "any" then
+    return
+  end
   local success = configure_loader(loader)
   if not success then
-    register_loader(loader)
+    queue:register(loader)
   end
 end
 
@@ -196,7 +156,7 @@ local function replace_all_inserters(universal)
         if not universal then
           local loader = replacement.surface.find_entity(type .. "-chest", e.position)
           if not loader then error("no loader found") end
-          register_loader(loader)
+          queue:register(loader)
         end
         e.destroy()
       end
