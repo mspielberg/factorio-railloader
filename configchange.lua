@@ -84,4 +84,20 @@ add_migration{
   end,
 }
 
+add_migration{
+  name = "v0_4_0_change_unconfigured_loader_queue_indexing",
+  low = {0,0,0},
+  high = {0,4,0},
+  task = function()
+    local new = {}
+    for _, v in pairs(global.unconfigured_loaders) do
+      if v.valid then
+        new[v.unit_number] = v
+      end
+    end
+    global.unconfigured_loaders = new
+    global.unconfigured_loaders_iter = nil
+  end,
+}
+
 return M
