@@ -1,29 +1,27 @@
+local EntityQueue = require "EntityQueue"
+
 local M = {}
 
-function M.on_init()
-  global.entities_to_destroy = {}
+local INTERVAL = 10
+
+local function task(q, key, entity)
+  if entity.destroy() then
+    q:unregister(entity, key)
+  end
 end
 
-local function on_tick(_)
-  local new_iter, entity = next(global.entities_to_destroy, global.entities_to_destroy_iter)
-  global.entities_to_destroy_iter = new_iter
-  if entity then
-    entity.destroy()
-  end
-  if not new_iter and not next(global.entities_to_destroy) then
-    script.on_event(defines.events.on_tick, nil)
-  end
+local q = EntityQueue.new("entities_to_destroy", INTERVAL, task)
+
+function M.on_init()
+  q:on_init()
+end
+
+function M.on_load()
+  q:on_load()
 end
 
 function M.register_to_destroy(entity)
-  local t = global.entities_to_destroy
-  if not t then
-    global.entities_to_destroy = {}
-    t = global.entities_to_destroy
-  end
-  t[#t+1] = entity
-  global.entities_to_destroy_iter = nil
-  script.on_event(defines.events.on_tick, on_tick)
+  q:register(entity)
 end
 
 return M
