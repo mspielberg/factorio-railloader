@@ -319,7 +319,7 @@ end
 
 local function on_marked_for_deconstruction(event, cancel)
   local entity = event.entity
-  local type = util.railloader_type(entity)
+  local type = util.railloader_type(entity.name)
   if not type then
     return
   end

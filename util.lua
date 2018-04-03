@@ -128,7 +128,7 @@ function M.interface_inserter_name_for_loader(loader)
 end
 
 function M.find_inserter_for_interface(loader, interface)
-  local type = M.railloader_type(loader)
+  local type = M.railloader_type(loader.name)
   local interface_position = interface.position
   local inserters = loader.surface.find_entities_filtered{
     name = M.interface_inserter_name_for_loader(loader),
