@@ -25,39 +25,63 @@ local function on_configuration_changed(configuration_changed_data)
   end
 end
 
-local function abort_build(event, msg)
+local function recreate_ghost(entity)
+  local ghost = entity.surface.create_entity{
+    name = "entity-ghost",
+    inner_name = entity.name,
+    position = entity.position,
+    direction = entity.direction,
+    force = entity.force,
+  }
+  for _, ccd in ipairs(ghostconnections.get_connections(entity)) do
+    ghost.connect_neighbour(ccd)
+  end
+  return ghost
+end
+
+local function abort_player_build(event)
   local entity = event.created_entity
   local item_name = next(entity.prototype.items_to_place_this)
-  if event.player_index then
-    local player = game.players[event.player_index]
-    local cursor = player.cursor_stack
-    if event.revived or event.mod_name == "Bluebuild" or (cursor.valid_for_read and cursor.name == item_name) then
-      -- nanobot build or cursor build
-      player.insert{name = item_name, count = 1}
-    else
-      -- last item in cursor, replace it
-      player.cursor_stack.set_stack{name = item_name, count = 1}
-    end
-    entity.destroy()
+  local player = game.players[event.player_index]
+  local cursor = player.cursor_stack
+  entity.destroy()
+
+  if not event.mod_name and not cursor.valid_for_read then
+    -- clicked to place last item in cursor, replace it
+    cursor.set_stack{name = item_name, count = 1}
   else
-    -- robot build
-    entity.order_deconstruction(entity.force)
-    local ghost = entity.surface.create_entity{
-      name = "entity-ghost",
-      inner_name = entity.name,
-      position = entity.position,
-      direction = entity.direction,
-      force = entity.force,
-    }
-    for _, ccd in ipairs(ghostconnections.get_connections(entity)) do
-      ghost.connect_neighbour(ccd)
-    end
-    local last_user = entity.last_user
-    if last_user and last_user.valid then
-      ghost.last_user = last_user
-      last_user.add_custom_alert(ghost, {type="item", name=item_name}, msg, true)
+    -- Let the engine figure out whether to place in partial stack in hand,
+    -- in quickbar, or in inventory.
+    local success = player.insert{name = item_name, count = 1}
+    if not success then
+      player.surface.spill_item_stack(player.position, {name = item_name, count = 1})
     end
   end
+  if event.mod_name then
+    -- Likely nanobots, Bluebuild or a similar automated player construction mod
+    recreate_ghost(entity)
+  end
+end
+
+local function abort_robot_build(event, msg)
+  local entity = event.created_entity
+  local item_name = next(entity.prototype.items_to_place_this)
+  local last_user = entity.last_user
+
+  entity.order_deconstruction(entity.force)
+  local ghost = recreate_ghost(entity)
+
+  if last_user and last_user.valid then
+    ghost.last_user = last_user
+    last_user.add_custom_alert(ghost, {type="item", name=item_name}, msg, true)
+  end
+end
+
+local function abort_build(event, msg)
+  if event.player_index then
+    return abort_player_build(event)
+  end
+  return abort_robot_build(event, msg)
 end
 
 local function sync_interface_inserters(loader)
