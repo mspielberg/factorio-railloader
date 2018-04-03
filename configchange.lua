@@ -141,4 +141,122 @@ add_migration{
   end
 }
 
+--[[
+  foreach player
+    foreach inventory
+      foreach slot
+  foreach surface
+    foreach entity
+      foreach inventory
+        foreach slot
+]]
+local function all_blueprints()
+  local next_player
+  do
+    local f, s, var = pairs(game.players)
+    next_player = function()
+      local player
+      var, player = f(s, var)
+      return player
+    end
+  end
+  local next_surface
+  do
+    local f, s, var = pairs(game.surfaces)
+    next_surface = function()
+      local surface
+      var, surface = f(s, var)
+      return surface
+    end
+  end
+
+  local max_inventory_id = 1
+  for _, inventory_id in pairs(defines.inventory) do
+    if inventory_id > max_inventory_id then
+      max_inventory_id = inventory_id
+    end
+  end
+
+  local done_with_players = false
+  local entity = next_player()
+  local entities
+  local entities_iter
+  local inventories_iter = 0
+  local inventory
+  local inventory_iter -- starting slot of inventory to examine on next execution
+
+  local iter
+  iter = function()
+    if inventory then
+      for i=inventory_iter,#inventory do
+        local stack = inventory[i]
+        if stack.valid_for_read then
+          log("slot "..i.." contains "..stack.name)
+        end
+        if stack.valid_for_read and stack.name == "blueprint" then
+          inventory_iter = i + 1
+          return stack
+        end
+      end
+    end
+
+    -- search for next inventory
+    if entity then
+      while true do
+        inventories_iter = inventories_iter + 1
+        if inventories_iter > max_inventory_id then
+          break
+        end
+        inventory = entity.get_inventory(inventories_iter)
+        if inventory and not inventory.is_empty() then
+          log("examining inventory "..inventories_iter.." of entity "..entity.name)
+          inventory_iter = 1
+          return iter()
+        end
+      end
+    end
+
+    -- ran out of inventories, look for next entity
+    if not done_with_players then
+      entity = next_player()
+      if not entity then
+        done_with_players = true
+        return iter()
+      end
+    end
+
+    if entities then
+      entities_iter, entity = next(entities, entities_iter)
+      if entity then
+        if entity.name == "item-on-ground" and entity.stack.name == "blueprint" then
+          return entity.stack
+        else
+          inventories_iter = 0
+          return iter()
+        end
+      end
+    end
+
+    local surface = next_surface()
+    if not surface then
+      return nil
+    end
+    entities = surface.find_entities()
+    return iter()
+  end
+
+  return iter
+end
+
+add_migration{
+  name = "v0_4_0_relocate_blueprint_proxies",
+  low = {0,0,0},
+  high = {0,4,0},
+  task = function()
+    for _, bp in all_blueprints() do
+      game.print("found blueprint")
+    end
+  end
+}
+
 return M
