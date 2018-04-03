@@ -94,7 +94,6 @@ end
 
 function M.find_railloaders_from_chest(chest)
   local out = {}
-  local chest_position = chest.position
   local area = M.expand_box(chest.bounding_box, 1)
   local es = chest.surface.find_entities_filtered{
     type = "container",
@@ -168,13 +167,12 @@ function M.find_chests_from_railloader(loader)
     },
   }
   local entities = loader.surface.find_entities_filtered{
-    type = "container",
     area = area,
     force = loader.force,
   }
   local out = {}
   for _, e in ipairs(entities) do
-    if not M.is_railloader_chest(e) then
+    if string.find(e.type, "container$") and not M.is_railloader_chest(e) then
       out[#out+1] = e
     end
   end

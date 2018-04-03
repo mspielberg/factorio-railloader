@@ -218,7 +218,7 @@ local function on_built(event)
     if type then
       return on_ghost_built(entity)
     end
-  elseif entity.type == "container" then
+  elseif string.find(entity.type, "container$") then
     return on_container_built(entity)
   end
 end
@@ -255,7 +255,7 @@ local function on_mined(event)
   local type = util.railloader_type(entity.name)
   if type then
     return on_railloader_mined(entity, event.buffer)
-  elseif entity.type == "container" then
+  elseif string.find(entity.type, "container$") then
     return on_container_mined(entity, event.buffer)
   end
 end
