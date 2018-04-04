@@ -11,23 +11,23 @@ fill or empty a cargo wagon in about 5 seconds.
 
 ![Bulk Rail Loaders in action](https://github.com/mspielberg/factorio-railloader/raw/master/resources/snapshot.jpg)
 
-This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
-any you find to the mod thread. Graphics are placeholder.
-If you would like to make pretty graphics, or know someone who would like to, see
-my [request thread](https://forums.factorio.com/viewtopic.php?f=15&t=56820).
+The Bulk Rail Loader and Unloader items will show a preview of the loader and
+an image of a cargo wagon, to help position the loader correctly. The
+concrete pad of the Bulk Rail Unloader serves a similar purpose.
 
-## How to use
+Note that rails are placed every other tile, but cargo wagons in stations
+stop every 7 tiles. Depending on the exact loader placement, it may appear
+with two or three rail segments underneath. You cannot place a BRL if it
+could not align with other rails.
 
-Place your rails and train stop first.  The Bulk Rail Loader item
-will show a preview of the loader and an image of a cargo wagon, to help
-position the loader correctly.  The concrete pad of the Bulk Rail Unloader
-serves a similar purpose.
-
-Loaders are circuit-connectable chest entities that output their content.
+BRLs are circuit-connectable chest entities that output their content.
 You can connect them to Logistic Train Network stops to manage automatic
 creation of transport orders.  Loaders are not circuit controllable, and
 will always load or unload as many items as possible while a cargo wagon
 is stopped.
+
+This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
+any you find to the mod thread.
 
 ## Boosting Throughput with Interface Chests
 
@@ -54,7 +54,7 @@ By default, this does not include plates, but a setting is available to enable
 them if you wish to abandon realism. You can even enable Bulk Rail Loaders to
 handle any item at all.
 
-From vanilla:
+From base:
 
 * Coal, stone, copper ore, iron ore, uranium ore
 * Landfill
@@ -165,3 +165,7 @@ of supported items for your own use.
 * 0.3.8 (2018-03-31):
     * Add support for plastic bars, Angel's geodes, and MadClown's Extended Minerals.
     * Fix a rare migration bug from early BRL versions.
+* 0.4.0 (2018-04-04):
+    * Major change: BRLs are now placed independently, instead of on top of existing rails.
+    * A best-effort is made to update blueprints in characters inventories, chests, blueprint books, etc.  You will have to re-create any blueprints exported to your library.
+    * Fix use of logistics chests as interface chests.
