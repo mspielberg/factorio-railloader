@@ -101,6 +101,11 @@ add_migration{
   end,
 }
 
+local function update_proxy_direction(entity)
+  local is_ns = entity.direction == defines.direction.east or defines.direction.west
+  entity.direction = is_ns and defines.direction.east or defines.direction.north
+end
+
 add_migration{
   name = "v0_4_0_relocate_proxy_ghosts",
   low = {0,0,0},
@@ -124,7 +129,7 @@ add_migration{
 
           --re-orient
           g.teleport(new_position)
-          g.direction = util.orthogonal_direction(g.direction)
+          update_proxy_direction(g)
 
           -- remove any underlying rail ghosts
           local rail_ghosts = s.find_entities_filtered{
@@ -253,26 +258,25 @@ add_migration{
   low = {0,0,0},
   high = {0,4,0},
   task = function()
-    for _, bp in all_blueprints() do
+    for bp in all_blueprints() do
       if bp.is_blueprint_setup() then
         local entities = bp.get_blueprint_entities()
         if entities then
           for _, e in ipairs(entities) do
             if e.name:find("^railu?n?%loader%-placement%-proxy") then
               e.position = util.moveposition(e.position, util.offset(e.direction, 1.5, 0))
-              local is_ns = e.direction == defines.direction.east or defines.direction.west
-              e.direction = is_ns and defines.direction.east or defines.direction.north
+              update_proxy_direction(e)
               for k, e2 in ipairs(entities) do
                 local prototype = game.entity_prototypes[e2.name]
                 if prototype.type == "straight-rail" then
-                  if (is_ns
+                  if (e.direction == defines.direction.north
                       and e2.position.x == e.position.x
                       and e2.position.y <= e.position.y + 2
                       and e2.position.y >= e.position.y - 2)
-                    or (not is_ns
+                    or (e.direction == defines.direction.east
                       and e2.position.y == e.position.y
-                      and e2.position.y <= e.position.y + 2
-                      and e2.position.y >= e.position.y - 2) then
+                      and e2.position.x <= e.position.x + 2
+                      and e2.position.x >= e.position.x - 2) then
                     entities[k] = nil
                   end
                 end
