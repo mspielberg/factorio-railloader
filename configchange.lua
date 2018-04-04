@@ -254,7 +254,34 @@ add_migration{
   high = {0,4,0},
   task = function()
     for _, bp in all_blueprints() do
-      game.print("found blueprint")
+      if bp.is_blueprint_setup() then
+        local entities = bp.get_blueprint_entities()
+        if entities then
+          for _, e in ipairs(entities) do
+            if e.name:find("^railu?n?%loader%-placement%-proxy") then
+              e.position = util.moveposition(e.position, util.offset(e.direction, 1.5, 0))
+              local is_ns = e.direction == defines.direction.east or defines.direction.west
+              e.direction = is_ns and defines.direction.east or defines.direction.north
+              for k, e2 in ipairs(entities) do
+                local prototype = game.entity_prototypes[e2.name]
+                if prototype.type == "straight-rail" then
+                  if (is_ns
+                      and e2.position.x == e.position.x
+                      and e2.position.y <= e.position.y + 2
+                      and e2.position.y >= e.position.y - 2)
+                    or (not is_ns
+                      and e2.position.y == e.position.y
+                      and e2.position.y <= e.position.y + 2
+                      and e2.position.y >= e.position.y - 2) then
+                    entities[k] = nil
+                  end
+                end
+              end
+            end
+          end
+          bp.set_blueprint_entities(entities)
+        end
+      end
     end
   end
 }
