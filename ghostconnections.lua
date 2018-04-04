@@ -1,3 +1,5 @@
+local util = require "util"
+
 local M = {}
 
 --[[
@@ -32,10 +34,6 @@ local function is_setup_bp(stack)
     stack.is_blueprint_setup()
 end
 
-local function position_key(surface, position)
-  return surface.name .. "@" .. position.x .. "," .. position.y
-end
-
 local function bp_to_world(position, direction)
   return function(bp_position)
     local world_offset
@@ -55,11 +53,11 @@ local function bp_to_world(position, direction)
 end
 
 local function store_ghost(ghost)
-  global.ghosts[position_key(ghost.surface, ghost.position)] = ghost
+  global.ghosts[util.position_key(ghost)] = ghost
 end
 
 local function get_ghost(entity)
-  return global.ghosts[position_key(entity.surface, entity.position)]
+  return global.ghosts[util.position_key(entity)]
 end
 
 local function bp_bitshift(bp)
@@ -156,7 +154,7 @@ function M.get_connections(ghost)
 end
 
 function M.remove_ghost(ghost)
-  global.ghosts[position_key(ghost.surface, ghost.position)] = nil
+  global.ghosts[util.position_key(ghost)] = nil
 end
 
 script.on_event(defines.events.on_put_item, on_put_item)

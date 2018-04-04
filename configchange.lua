@@ -117,19 +117,20 @@ add_migration{
       }
       for _, g in ipairs(ghosts) do
         if g.valid and g.ghost_name:find("^railu?n?loader%-placement%-proxy$") then
-          -- fix up any recorded circuit connections
-          local old_position_key = s.name .. "@" .. g.position.x .. "," .. g.position.y
+          local old_position_key = util.position_key(g)
+
+          --re-orient
           local new_position = util.moveposition(g.position, util.offset(g.direction, 1.5, 0))
-          local new_position_key = s.name .. "@" .. new_position.x .. "," .. new_position.y
+          g.teleport(new_position)
+          update_proxy_direction(g)
+
+          -- fix up any recorded circuit connections
+          local new_position_key = util.position_key(g)
           local connections = global.ghosts[old_position_key]
           if connections then
             global.ghosts[new_position_key] = connections
             global.ghosts[old_position_key] = nil
           end
-
-          --re-orient
-          g.teleport(new_position)
-          update_proxy_direction(g)
 
           -- remove any underlying rail ghosts
           local rail_ghosts = s.find_entities_filtered{
@@ -189,18 +190,40 @@ local function all_blueprints()
   local inventories_iter = 0
   local inventory
   local inventory_iter -- starting slot of inventory to examine on next execution
+  local item_inventory
+  local item_inventory_iter
 
   local iter
   iter = function()
+    if item_inventory then
+      for i=item_inventory_iter,#item_inventory do
+        local stack = item_inventory[i]
+        if stack.valid_for_read then
+          log("item-with-inventory slot " .. i .. " contains " .. stack.name)
+        end
+        if stack.valid_for_read and stack.name == "blueprint" then
+          item_inventory_iter = i + 1
+          return stack
+        end
+      end
+      item_inventory = nil
+    end
+
     if inventory then
       for i=inventory_iter,#inventory do
         local stack = inventory[i]
         if stack.valid_for_read then
-          log("slot "..i.." contains "..stack.name)
-        end
-        if stack.valid_for_read and stack.name == "blueprint" then
-          inventory_iter = i + 1
-          return stack
+          if stack.name == "blueprint" then
+            log("inventory slot " .. i .. " contains " .. stack.name)
+            inventory_iter = i + 1
+            return stack
+          elseif stack.is_item_with_inventory then
+            log("examining item-with-inventory " .. stack.name .. " in slot " .. i)
+            inventory_iter = i + 1
+            item_inventory = stack.get_inventory(defines.inventory.item_main)
+            item_inventory_iter = 1
+            return iter()
+          end
         end
       end
     end
@@ -214,7 +237,7 @@ local function all_blueprints()
         end
         inventory = entity.get_inventory(inventories_iter)
         if inventory and not inventory.is_empty() then
-          log("examining inventory "..inventories_iter.." of entity "..entity.name)
+          log("examining inventory " .. inventories_iter .. " of entity " .. entity.name .. " (" .. util.position_key(entity) .. ")")
           inventory_iter = 1
           return iter()
         end
@@ -234,6 +257,7 @@ local function all_blueprints()
       entities_iter, entity = next(entities, entities_iter)
       if entity then
         if entity.name == "item-on-ground" and entity.stack.name == "blueprint" then
+          log("found blueprint on ground (" .. util.position_key(entity) .. ")")
           return entity.stack
         else
           inventories_iter = 0
@@ -264,6 +288,7 @@ add_migration{
         if entities then
           for _, e in ipairs(entities) do
             if e.name:find("^railu?n?%loader%-placement%-proxy") then
+              log("updating " .. e.name .. " at " .. e.position.x .. "," .. e.position.y)
               e.position = util.moveposition(e.position, util.offset(e.direction, 1.5, 0))
               update_proxy_direction(e)
               for k, e2 in ipairs(entities) do
@@ -277,6 +302,7 @@ add_migration{
                       and e2.position.y == e.position.y
                       and e2.position.x <= e.position.x + 2
                       and e2.position.x >= e.position.x - 2) then
+                    log("removing " .. e2.name .. " at " .. e2.position.x .. "," .. e2.position.y)
                     entities[k] = nil
                   end
                 end

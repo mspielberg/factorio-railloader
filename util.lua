@@ -58,6 +58,10 @@ function M.orthogonal_direction(direction)
   return 0
 end
 
+function M.position_key(entity)
+  return entity.surface.name .. "@" .. entity.position.x .. "," .. entity.position.y
+end
+
 function M.railloader_inserters(entity, pattern)
   local out = {}
   local inserters = entity.surface.find_entities_filtered{
