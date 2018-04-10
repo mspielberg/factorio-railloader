@@ -169,3 +169,5 @@ of supported items for your own use.
     * Major change: BRLs are now placed independently, instead of on top of existing rails.
     * A best-effort is made to update blueprints in characters inventories, chests, blueprint books, etc.  You will have to re-create any blueprints exported to your library.
     * Fix use of logistics chests as interface chests.
+* 0.4.1 (2018-04-09):
+    * Fix crash when marking BRLs for deconstruction.
