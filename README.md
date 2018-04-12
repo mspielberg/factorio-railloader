@@ -171,3 +171,5 @@ of supported items for your own use.
     * Fix use of logistics chests as interface chests.
 * 0.4.1 (2018-04-09):
     * Fix crash when marking BRLs for deconstruction.
+* 0.4.2 (2018-04-12):
+    * Fix rare crash related to on_nth_tick() processing.
