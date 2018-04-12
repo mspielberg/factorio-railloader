@@ -1,10 +1,5 @@
 local M = {}
 
-local event_names = {}
-for name, id in pairs(defines.events) do
-  event_names[id] = name
-end
-
 --[[
   handlers[event_id] = { [handler1] = true, [handler2] = true, ... }
 ]]

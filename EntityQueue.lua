@@ -13,9 +13,11 @@ end
 
 local function unregister_helper(self, key)
   local queue = global[self.name]
-  queue[key] = nil
-  if not next(queue) then
-    Event.unregister_nth_tick(self.interval, self.on_tick)
+  if queue[key] then
+    queue[key] = nil
+    if not next(queue) then
+      Event.unregister_nth_tick(self.interval, self.on_tick)
+    end
   end
 end
 
@@ -29,7 +31,7 @@ end
 
 function M:on_load()
   if global[self.name] and next(global[self.name]) then
-    Event.register(self.interval, self.on_tick)
+    Event.register_nth_tick(self.interval, self.on_tick)
   end
 end
 
@@ -40,17 +42,13 @@ local function create_on_tick(self)
     local k, v
     repeat
       k, v = next(queue, global[iter_name])
-      if not k then
-        -- start again at beginning of iteration
-        k, v = next(queue)
-        if not k then
-          -- table is empty
-          Event.unregister_nth_tick(self.interval, self.on_tick)
-          return
-        end
-      end
       global[iter_name] = k
-      if not v.valid then
+      if not k and not next(queue) then
+        -- table is empty
+        Event.unregister_nth_tick(self.interval, self.on_tick)
+        return
+      end
+      if v and not v.valid then
         unregister_helper(self, k)
       end
     until k and v and v.valid
