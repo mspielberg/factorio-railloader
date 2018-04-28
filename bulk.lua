@@ -51,7 +51,11 @@ local items = {
   "fawogae-substrate", "bonemeal", "borax", "ralesia", "ralesia-seeds",
   "rich-clay", "boron-trioxide", "niobium-concentrate", "niobium-oxide",
   "ppd", "coal-briquette", "calcium-carbide", "crushed-iron",
-  "crushed-copper",
+  "crushed-copper", "raw-borax", "niobium-ore",
+  -- pyfusionenergy
+  "regolite-rock", "kimberlite-rock",
+  -- pyhightech
+  "phosphate-rock", "molybdenum-ore", "rare-earth-ore",
 }
 
 for i, item in ipairs(items) do
