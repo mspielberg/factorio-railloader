@@ -3,9 +3,14 @@ local M = {}
 local patterns = {
   ore = {
     -- generic
-    "%-ore$",
+    "crushed",
+    "dust",
+    "ore",
+    "powder",
+    "rock",
+    "sand",
+    "slag",
     -- angelsrefining
-    "^angels%-ore",
     "^angels%-.*%-nugget$",
     "^angels%-.*%-pebbles$",
     "^angels%-.*%-slag$",
@@ -14,12 +19,6 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
-    -- Clowns-Extended-Minerals
-    "^clowns%-ore",
-    -- pycoalprocessing
-    "%-dust$",
-    "%-powder$",
-    "sand$",
   },
   plates = {
     "plate",
@@ -36,22 +35,16 @@ local items = {
   -- bobplates
   "carbon", "salt", "lithium-chloride", "lithium-perchlorate",
   "sodium-hydroxide", "calcium-chloride", "lead-oxide", "alumina",
-  "tungsten-oxide", "powdered-tungsten", "silicon-powder", "silicon-nitride",
-  "cobalt-oxide", "silicon-carbide", "silver-nitrate", "silver-oxide",
-  -- angelsrefining
-  "stone-crushed",
-  "slag",
-  -- angelspetrochem
-  "coal-crushed",
+  "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
+  "silver-nitrate", "silver-oxide",
   -- omnimatter
   "omnite",
   -- pycoalprocessing
   "ash", "gravel", "coke", "iron-oxide", "active-carbon", "zinc-chloride",
   "soil", "limestone", "organics", "coarse", "lithium-peroxide", "lime",
-  "fawogae-substrate", "bonemeal", "borax", "ralesia", "ralesia-seeds",
-  "rich-clay", "boron-trioxide", "niobium-concentrate", "niobium-oxide",
-  "ppd", "coal-briquette", "calcium-carbide", "crushed-iron",
-  "crushed-copper",
+  "fawogae-substrate", "bonemeal", "borax", "raw-borax", "ralesia",
+  "ralesia-seeds", "rich-clay", "boron-trioxide", "niobium-concentrate",
+  "niobium-oxide", "ppd", "coal-briquette", "calcium-carbide",
 }
 
 for i, item in ipairs(items) do
@@ -65,8 +58,7 @@ local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function item_matches_patterns(item_name, group)
   for _, pat in ipairs(patterns[group]) do
-    if string.match(item_name, pat) then
-      log("{item="..item_name..", pattern="..pat.."}")
+    if string.find(item_name, pat) then
       return true
     end
   end
