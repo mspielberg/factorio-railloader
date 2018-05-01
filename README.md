@@ -173,3 +173,6 @@ of supported items for your own use.
     * Fix crash when marking BRLs for deconstruction.
 * 0.4.2 (2018-04-12):
     * Fix rare crash related to on_nth_tick() processing.
+* 0.4.3 (2018-04-30):
+    * Update bulk materials list for PyIndustry mods.
+    * Add workaround for Creative Mode's Instant Deconstruction.
