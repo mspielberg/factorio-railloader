@@ -260,6 +260,12 @@ local function on_mined(event)
   end
 end
 
+local function on_robot_pre_mined(event)
+  if event.instant_deconstruction then
+    on_mined(event)
+  end
+end
+
 local function on_blueprint(event)
   local player = game.players[event.player_index]
   local bp = player.blueprint_to_setup
@@ -330,6 +336,7 @@ script.on_configuration_changed(on_configuration_changed)
 
 script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
 script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
+script.on_event(defines.events.on_robot_pre_mined, on_robot_pre_mined)
 script.on_event(defines.events.on_entity_died, on_mined)
 script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
 script.on_event(defines.events.on_train_changed_state, inserter_config.on_train_changed_state)
