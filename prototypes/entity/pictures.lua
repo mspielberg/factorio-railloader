@@ -110,11 +110,29 @@ local cargo_wagon_layers = {
   },
   vertical = {
     {
+      filename = wheels_layer.filenames[1],
+      width = wheels_layer.width,
+      height = wheels_layer.height,
+      y = 0,
+      frame_count = 1,
+      shift = {0, 2.5},
+      --[[
+      hr_version = {
+        filename = wheels_layer.hr_version.filenames[3],
+        width = wheels_layer.hr_version.width,
+        height = wheels_layer.hr_version.height,
+        frame_count = 1,
+        shift = {-2, -0.25},
+        scale = 0.5,
+      },
+      ]]
+    },
+    {
       filename = wagon_layer.filenames[1],
       width = wagon_layer.width,
       height = wagon_layer.height,
       frame_count = 1,
-      shift = wagon_layer.shift,
+      shift = {0, 0},
       --[[
       hr_version = {
         filename = wagon_layer.hr_version.filenames[1],
