@@ -136,6 +136,23 @@ function M.configure_or_register_loader(loader)
   end
 end
 
+local function configure_cargo_wagon_inserter_control_behavior(inserter)
+  local behavior = inserter.get_or_create_control_behavior()
+  behavior.circuit_condition = {
+    condition = {
+      comparator = "=",
+      first_signal = {type = "virtual", name = "railloader-disable"},
+    }
+  }
+end
+
+function M.configure_cargo_wagon_inserters_control_behavior(loader)
+  local inserters = util.railloader_cargo_wagon_inserters(loader)
+  for _, inserter in ipairs(inserters) do
+    configure_cargo_wagon_inserter_control_behavior(inserter)
+  end
+end
+
 local function replace_all_inserters(universal)
   local from_qualifier = universal and "" or "-universal"
   local to_qualifier = universal and "-universal" or ""
@@ -153,6 +170,11 @@ local function replace_all_inserters(universal)
         }
         replacement.destructible = false
         replacement.held_stack.swap_stack(e.held_stack)
+        for _, ccd in ipairs(e.circuit_connection_definitions) do
+          replacement.connect_neighbour(ccd)
+        end
+        configure_cargo_wagon_inserter_control_behavior(replacement)
+
         if not universal then
           local loader = replacement.surface.find_entity(type .. "-chest", e.position)
           if not loader then error("no loader found") end

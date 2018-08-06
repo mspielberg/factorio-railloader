@@ -165,7 +165,15 @@ local function create_entities(proxy, rail_poss)
       force = force,
     }
     inserter.destructible = false
+    for _, wire_type in ipairs{"red", "green"} do
+      inserter.connect_neighbour{
+        target_entity = chest,
+        wire = defines.wire_type[wire_type],
+      }
+    end
+    inserter_config.configure_cargo_wagon_inserters_control_behavior(inserter)
   end
+
   inserter_config.configure_or_register_loader(chest)
 
   -- place structure

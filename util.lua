@@ -84,6 +84,18 @@ function M.railloader_filter_inserters(entity)
   return M.railloader_inserters(entity, "^railu?n?loader%-inserter$")
 end
 
+function M.railloader_universal_inserters(entity)
+  return M.railloader_inserters(entity, "^railu?n?loader%-universal%-inserter$")
+end
+
+function M.railloader_cargo_wagon_inserters(entity)
+  local filter_inserters = M.railloader_filter_inserters(entity)
+  if next(filter_inserters) then
+    return filter_inserters
+  end
+  return M.railloader_universal_inserters(entity)
+end
+
 function M.railloader_interface_inserters(entity)
   return M.railloader_inserters(entity, "^railu?n?loader%-interface%-inserter$")
 end
