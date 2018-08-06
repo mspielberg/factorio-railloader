@@ -358,4 +358,36 @@ add_migration{
   end,
 }
 
+add_migration{
+  name = "v0_5_0_circuit_connect_inserters",
+  low = {0,0,0},
+  high = {0,5,0},
+  task = function()
+    for _,s in pairs(game.surfaces) do
+      for _, chest in ipairs(s.find_entities_filtered{type="container"}) do
+        local type = util.railloader_type(chest.name)
+        if type then
+          for _, inserter_name in ipairs{"rail"..type.."-inserter", "rail"..type.."-universal-inserter"} do
+            for _, inserter in ipairs(s.find_entities_filtered{name = inserter_name, position = chest.position}) do
+              for _, wire_type in ipairs{"red", "green"} do
+                inserter.connect_neighbour{
+                  target_entity = chest,
+                  wire = defines.wire_type[wire_type],
+                }
+              end
+              local behavior = inserter.get_or_create_control_behavior()
+              behavior.circuit_condition = {
+                condition = {
+                  comparator = "=",
+                  first_signal = {type = "virtual", name = "railloader-disable"},
+                }
+              }
+            end
+          end
+        end
+      end
+    end
+  end
+}
+
 return M
