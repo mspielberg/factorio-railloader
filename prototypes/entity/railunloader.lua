@@ -78,6 +78,9 @@ data:extend{
     hand_base_picture = pictures.empty_sheet,
     hand_open_picture = pictures.empty_sheet,
     hand_closed_picture = pictures.empty_sheet,
+    -- circuit_wire_connection_points = circuitconnectors["railloader-inserter"].points,
+    -- circuit_connector_sprites = circuitconnectors["railloader-inserter"].sprites,
+    circuit_wire_max_distance = 0.5,
   },
 
   -- interactable inventory
@@ -112,8 +115,8 @@ data:extend{
     inventory_size = 320,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = pictures.empty_sheet,
-    circuit_wire_connection_point = circuit_connector_definitions["chest"].points,
-    circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
+    -- circuit_wire_connection_point = circuit_connector_definitions["chest"].points,
+    -- circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
     circuit_wire_max_distance = default_circuit_wire_max_distance
   },
 }
