@@ -2,8 +2,8 @@ data:extend{
   {
     type = "technology",
     name = "railloader",
-    icon_size = 32,
-    icon = "__railloader__/graphics/icons/railloader.png",
+    icon_size = 128,
+    icon = "__railloader__/graphics/technology/railloader.png",
     effects = {
       {
         type = "unlock-recipe",
