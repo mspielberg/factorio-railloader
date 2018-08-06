@@ -9,3 +9,5 @@ require "prototypes.recipe.railloader"
 require "prototypes.recipe.railunloader"
 
 require "prototypes.technology.railloader"
+
+require "prototypes.signal"
