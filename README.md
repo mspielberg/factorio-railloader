@@ -20,11 +20,11 @@ stop every 7 tiles. Depending on the exact loader placement, it may appear
 with two or three rail segments underneath. You cannot place a BRL if it
 could not align with other rails.
 
-BRLs are circuit-connectable chest entities that output their content.
-You can connect them to Logistic Train Network stops to manage automatic
-creation of transport orders.  Loaders are not circuit controllable, and
-will always load or unload as many items as possible while a cargo wagon
-is stopped.
+BRLs are circuit-connectable chest entities that output their content. You
+can connect them to Logistic Train Network stops to manage automatic creation
+of transport orders. Sending a BRL the special "Disable rail loader" signal
+will stop the BRL from loading/unloading a cargo wagon. Due to their speed,
+you are likely to load or unload a few more items than expected.
 
 This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
 any you find to the mod thread.
@@ -176,3 +176,6 @@ of supported items for your own use.
 * 0.4.3 (2018-04-30):
     * Update bulk materials list for PyIndustry mods.
     * Add workaround for Creative Mode's Instant Deconstruction.
+* 0.5.0 (2018-08-06):
+    * Add circuit control via virtual signal.
+    * Replace technology icon.
