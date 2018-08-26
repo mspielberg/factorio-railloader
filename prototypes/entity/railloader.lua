@@ -1,7 +1,6 @@
 local circuitconnectors = require "prototypes.entity.circuitconnectors"
 local pictures = require "prototypes.entity.pictures"
 
-log(serpent.block(circuit_connector_definitions["inserter"]))
 data:extend{
   -- buildable entity, immediately replaced by scripting
   {
