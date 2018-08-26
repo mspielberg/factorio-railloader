@@ -12,6 +12,7 @@ data:extend{
         icon_size = 128,
         scale = 0.25,
       },
-    }
+    },
+    order = "railloader-enable",
   }
 }
