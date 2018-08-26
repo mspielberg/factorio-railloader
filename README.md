@@ -179,3 +179,6 @@ of supported items for your own use.
 * 0.5.0 (2018-08-06):
     * Add circuit control via virtual signal.
     * Replace technology icon.
+* 0.5.1 (2018-08-26):
+    * Fix crash experienced with PickerTweaks.
+    * Add compatibility recipe for xander-mod.
