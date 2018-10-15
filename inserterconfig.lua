@@ -136,7 +136,7 @@ function M.configure_or_register_loader(loader)
   end
 end
 
-local function configure_cargo_wagon_inserter_control_behavior(inserter)
+local function configure_inserter_control_behavior(inserter)
   local behavior = inserter.get_or_create_control_behavior()
   behavior.circuit_condition = {
     condition = {
@@ -146,11 +146,14 @@ local function configure_cargo_wagon_inserter_control_behavior(inserter)
   }
 end
 
-function M.configure_cargo_wagon_inserters_control_behavior(loader)
-  local inserters = util.railloader_cargo_wagon_inserters(loader)
-  for _, inserter in ipairs(inserters) do
-    configure_cargo_wagon_inserter_control_behavior(inserter)
+function M.connect_and_configure_inserter_control_behavior(inserter, chest)
+  for _, wire_type in ipairs{"red", "green"} do
+    inserter.connect_neighbour{
+      target_entity = chest,
+      wire = defines.wire_type[wire_type],
+    }
   end
+  configure_inserter_control_behavior(inserter)
 end
 
 local function replace_all_inserters(universal)

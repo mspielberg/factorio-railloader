@@ -49,20 +49,21 @@ end
 
 local function sync_interface_inserters(loader)
   local type = util.railloader_type(loader.name)
-  local chests = util.find_chests_from_railloader(loader)
-  for _, chest in ipairs(chests) do
-    local inserter = util.find_inserter_for_interface(loader, chest)
+  local interface_chests = util.find_chests_from_railloader(loader)
+  for _, interface_chest in ipairs(interface_chests) do
+    local inserter = util.find_inserter_for_interface(loader, interface_chest)
     if not inserter then
-      local main_chest_position = util.loader_position_for_interface(loader, chest)
+      local main_chest_position = util.loader_position_for_interface(loader, interface_chest)
       inserter = loader.surface.create_entity{
         name = util.interface_inserter_name_for_loader(loader),
         position = loader.position,
         force = loader.force,
       }
       inserter.destructible = false
-      inserter.pickup_position = type == "loader" and chest.position or main_chest_position
-      inserter.drop_position = type == "unloader" and chest.position or main_chest_position
+      inserter.pickup_position = type == "loader" and interface_chest.position or main_chest_position
+      inserter.drop_position = type == "unloader" and interface_chest.position or main_chest_position
       inserter.direction = inserter.direction
+      inserter_config.connect_and_configure_inserter_control_behavior(inserter, loader)
     end
   end
 end
@@ -165,13 +166,7 @@ local function create_entities(proxy, rail_poss)
       force = force,
     }
     inserter.destructible = false
-    for _, wire_type in ipairs{"red", "green"} do
-      inserter.connect_neighbour{
-        target_entity = chest,
-        wire = defines.wire_type[wire_type],
-      }
-    end
-    inserter_config.configure_cargo_wagon_inserters_control_behavior(inserter)
+    inserter_config.connect_and_configure_inserter_control_behavior(inserter)
   end
 
   inserter_config.configure_or_register_loader(chest)
