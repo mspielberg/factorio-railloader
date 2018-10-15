@@ -166,7 +166,7 @@ local function create_entities(proxy, rail_poss)
       force = force,
     }
     inserter.destructible = false
-    inserter_config.connect_and_configure_inserter_control_behavior(inserter)
+    inserter_config.connect_and_configure_inserter_control_behavior(inserter, chest)
   end
 
   inserter_config.configure_or_register_loader(chest)
