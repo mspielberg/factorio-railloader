@@ -184,3 +184,5 @@ of supported items for your own use.
     * Add compatibility recipe for xander-mod.
 * 0.5.2 (2018-10-14):
     * Interface chest transfer is now stopped when the "Disable rail loader" signal is sent.
+* 0.5.3 (2018-10-15):
+    * Fix crash bug on building BRL.
