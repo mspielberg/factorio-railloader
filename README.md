@@ -182,3 +182,5 @@ of supported items for your own use.
 * 0.5.1 (2018-08-26):
     * Fix crash experienced with PickerTweaks.
     * Add compatibility recipe for xander-mod.
+* 0.5.2 (2018-10-14):
+    * Interface chest transfer is now stopped when the "Disable rail loader" signal is sent.
