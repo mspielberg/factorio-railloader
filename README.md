@@ -186,3 +186,5 @@ of supported items for your own use.
     * Interface chest transfer is now stopped when the "Disable rail loader" signal is sent.
 * 0.5.3 (2018-10-15):
     * Fix crash bug on building BRL.
+* 0.5.4 (2018-10-17):
+    * Fix crash bug on changing permitted items setting on an existing map.
