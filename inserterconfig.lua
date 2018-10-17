@@ -176,7 +176,7 @@ local function replace_all_inserters(universal)
         for _, ccd in ipairs(e.circuit_connection_definitions) do
           replacement.connect_neighbour(ccd)
         end
-        configure_cargo_wagon_inserter_control_behavior(replacement)
+        configure_inserter_control_behavior(replacement)
 
         if not universal then
           local loader = replacement.surface.find_entity(type .. "-chest", e.position)
