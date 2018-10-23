@@ -28,7 +28,6 @@ local function triple_rail_pictures(direction, layers)
         height = l.height,
         frame_count = 1,
         shift = shift,
-        --[[
         hr_version = {
           filename = l.hr_version.filename,
           width = l.hr_version.width,
@@ -37,7 +36,6 @@ local function triple_rail_pictures(direction, layers)
           shift = shift,
           scale = 0.5,
         }
-        ]]
       }
     end
   end
@@ -59,7 +57,6 @@ local cargo_wagon_layers = {
       y = wheels_layer.height * 8,
       frame_count = 1,
       shift = {-2, -0.25},
-      --[[
       hr_version = {
         filename = wheels_layer.hr_version.filenames[3],
         width = wheels_layer.hr_version.width,
@@ -68,7 +65,6 @@ local cargo_wagon_layers = {
         shift = {-2, -0.25},
         scale = 0.5,
       },
-      ]]
     },
     -- right wheel
     {
@@ -78,7 +74,6 @@ local cargo_wagon_layers = {
       y = wheels_layer.height * 8,
       frame_count = 1,
       shift = {2, -0.25},
-      --[[
       hr_version = {
         filename = wheels_layer.hr_version.filenames[7],
         width = wheels_layer.hr_version.width,
@@ -87,7 +82,6 @@ local cargo_wagon_layers = {
         shift = {2, -0.25},
         scale = 0.5,
       },
-      ]]
     },
     -- wagon body
     {
@@ -96,7 +90,6 @@ local cargo_wagon_layers = {
       height = wagon_layer.height,
       frame_count = 1,
       shift = wagon_layer.shift,
-      --[[
       hr_version = {
         filename = wagon_layer.hr_version.filenames[3],
         height = wagon_layer.hr_version.height,
@@ -105,7 +98,6 @@ local cargo_wagon_layers = {
         shift = wagon_layer.shift,
         scale = 0.5,
       }
-      ]]
     },
   },
   vertical = {
@@ -116,16 +108,14 @@ local cargo_wagon_layers = {
       y = 0,
       frame_count = 1,
       shift = {0, 2.5},
-      --[[
       hr_version = {
-        filename = wheels_layer.hr_version.filenames[3],
+        filename = wheels_layer.hr_version.filenames[1],
         width = wheels_layer.hr_version.width,
         height = wheels_layer.hr_version.height,
         frame_count = 1,
-        shift = {-2, -0.25},
+        shift = {0, 2.5},
         scale = 0.5,
       },
-      ]]
     },
     {
       filename = wagon_layer.filenames[1],
@@ -133,16 +123,14 @@ local cargo_wagon_layers = {
       height = wagon_layer.height,
       frame_count = 1,
       shift = {0, 0},
-      --[[
       hr_version = {
         filename = wagon_layer.hr_version.filenames[1],
         height = wagon_layer.hr_version.height,
         width = wagon_layer.hr_version.width,
         frame_count = 1,
-        shift = wagon_layer.shift,
+        shift = {0, 0},
         scale = 0.5,
       }
-      ]]
     }
   },
 }
