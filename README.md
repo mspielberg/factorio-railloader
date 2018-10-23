@@ -188,3 +188,6 @@ of supported items for your own use.
     * Fix crash bug on building BRL.
 * 0.5.4 (2018-10-17):
     * Fix crash bug on changing permitted items setting on an existing map.
+* 0.5.5 (2018-10-23):
+    * Use high-res rail and wagon sprites.
+    * Layer unloader platform below belts.
