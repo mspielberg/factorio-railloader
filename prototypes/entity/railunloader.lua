@@ -35,8 +35,8 @@ data:extend{
     icon_size = 32,
     flags = {},
     collision_mask = {},
-    -- above floor, below corpses
-    render_layer = "transport-belt-endings",
+    -- above rails
+    render_layer = "floor",
     picture = pictures.railunloader_horizontal,
   },
   {
@@ -46,8 +46,8 @@ data:extend{
     icon_size = 32,
     flags = {},
     collision_mask = {},
-    -- above floor, below corpses
-    render_layer = "transport-belt-endings",
+    -- above rails
+    render_layer = "floor",
     picture = pictures.railunloader_vertical,
   },
 
