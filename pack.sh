@@ -28,6 +28,7 @@ cd "$tmpdir"
 include=$(
 cat <<- END
 	$canon_name/LICENSE
+	$canon_name/changelog.txt
 	$canon_name/info.json
 	$canon_name/*.lua
 	$canon_name/*.md

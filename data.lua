@@ -1,7 +1,9 @@
+require "prototypes.entity.pump"
 require "prototypes.entity.rail"
 require "prototypes.entity.railloader"
 require "prototypes.entity.railunloader"
 
+require "prototypes.item.pump"
 require "prototypes.item.railloader"
 require "prototypes.item.railunloader"
 
