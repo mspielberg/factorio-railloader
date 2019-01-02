@@ -19,6 +19,11 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
+    -- pyrawores
+    "^(low%-|high%-)grade%-",
+    "^reduced%-",
+    "^sintered%-",
+    "%-rejects$",
   },
   plates = {
     "plate",
@@ -40,11 +45,22 @@ local items = {
   -- omnimatter
   "omnite",
   -- pycoalprocessing
-  "ash", "gravel", "coke", "iron-oxide", "active-carbon", "zinc-chloride",
-  "soil", "limestone", "organics", "coarse", "lithium-peroxide", "lime",
-  "fawogae-substrate", "bonemeal", "borax", "raw-borax", "ralesia",
-  "ralesia-seeds", "rich-clay", "boron-trioxide", "niobium-concentrate",
-  "niobium-oxide", "ppd", "coal-briquette", "calcium-carbide",
+  "active-carbon", "ash", "bonemeal", "borax", "boron-trioxide",
+  "calcium-carbide", "coal-briquette", "coarse", "coke",
+  "fawogae-substrate", "gravel", "iron-oxide", "lime", "limestone",
+  "lithium-peroxide", "niobium-concentrate", "niobium-oxide", "organics",
+  "ppd", "ralesia", "ralesia-seeds", "raw-borax", "rich-clay", "soil",
+  "zinc-chloride",
+  -- pyrawores
+  "ammonium-chloride", "clean-nexelit", "coarse-coal", "concentrated-ti",
+  "concentrated-zinc", "crystalized-sodium-aluminate",
+  "gold-concentrate", "gold-precipitate", "gold-precipitate-2",
+  "high-chromite", "high-tin-concentrate", "high-tin-mix",
+  "iron-concentrate", "p2s5", "processed-chromite", "purified-gold",
+  "purified-quartz", "purified-zinc", "pyrite", "raw-coal", "redhot-coke",
+  "salt", "sl-concentrate", "sodium-aluminate", "sodium-bisulfate",
+  "sodium-carbonate", "sodium-hydroxide", "sodium-sulfate", "sponge-iron",
+  "starch", "tin-concentrate", "ti-residue", "unslimed-iron", "yellow-cake",
 }
 
 for i, item in ipairs(items) do
