@@ -226,18 +226,18 @@ M.railunloader_proxy_animations = {
 }
 
 M.empty_sheet = {
-  filename = "__core__/graphics/empty.png",
+  filename = "__core__/graphics/add-icon.png",
   priority = "very-low",
-  width = 0,
-  height = 0,
+  width = 1,
+  height = 1,
 }
 
 M.empty_animation = {
-  filename = "__core__/graphics/empty.png",
+  filename = "__core__/graphics/add-icon.png",
   priority = "very-low",
-  width = 0,
-  height = 0,
-  frame_count = 1,
+  width = 1,
+  height = 1,
+  frame_count = 0,
 }
 
 return M

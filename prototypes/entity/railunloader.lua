@@ -18,7 +18,7 @@ data:extend{
     },
     energy_usage = "0kW",
     energy_source = {
-      usage_priority = "secondary-input",
+      type = "void",
     },
     pumping_speed = 0,
     animations = pictures.railunloader_proxy_animations,
@@ -62,8 +62,8 @@ data:extend{
     stack = true,
     max_health = 800,
     filter_count = 5,
-    energy_per_movement = 4000,
-    energy_per_rotation = 4000,
+    energy_per_movement = "4kJ",
+    energy_per_rotation = "4kJ",
     energy_source = {
       type = "electric",
       usage_priority = "secondary-input",
@@ -81,6 +81,7 @@ data:extend{
     -- circuit_wire_connection_points = circuitconnectors["railloader-inserter"].points,
     -- circuit_connector_sprites = circuitconnectors["railloader-inserter"].sprites,
     circuit_wire_max_distance = 0.5,
+    draw_circuit_wires = false,
   },
 
   -- interactable inventory
