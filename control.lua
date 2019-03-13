@@ -297,9 +297,11 @@ local function on_blueprint(event)
     }
   end
 
+  local found_railloader = false
   local directions = {}
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
+      found_railloader = true
       local rail = player.surface.find_entities_filtered{
         type = "straight-rail",
         area = container.bounding_box,
@@ -309,6 +311,9 @@ local function on_blueprint(event)
       end
     end
   end
+
+  -- don't call set_blueprint_entities() if there are no BRLs, because that discards cargo-wagon filters
+  if not found_railloader then return end
 
   local loader_index = 1
   for _, e in ipairs(entities) do
