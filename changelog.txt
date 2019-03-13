@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.1
+Date: 13.03.2019
+  Changes:
+    - Preserve cargo wagon filters in blueprints, unless there is a BRL in the BP. (https://forums.factorio.com/viewtopic.php?f=190&t=56850&start=200#p411860)
+---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: 26.02.2019
   Changes:
