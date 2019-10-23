@@ -42,6 +42,11 @@ local items = {
   "sodium-hydroxide", "calcium-chloride", "lead-oxide", "alumina",
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
+  -- Krastorio
+  "enriched-copper", "enriched-iron", "imersite", "k-coke", "k-lithium",
+  "k-lithium-chloride", "k-quartz", "k-raw-chunk", "k-silicon",
+  "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
+  "raw-minerals", "steel-billet",
   -- omnimatter
   "omnite",
   -- pycoalprocessing
