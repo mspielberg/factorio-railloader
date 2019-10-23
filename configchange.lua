@@ -318,47 +318,6 @@ add_migration{
 }
 
 add_migration{
-  name = "v0_4_3_remove_orphan_structures",
-  low = {0,0,0},
-  high = {0,4,3},
-  task = function()
-    for _,s in pairs(game.surfaces) do
-      for _,e in ipairs(s.find_entities_filtered{type="simple-entity"}) do
-        local type = util.railloader_type(e.name)
-        if type then
-          local proto = game.entity_prototypes["rail" .. type .. "-chest"]
-          local brl = s.find_entity(proto.name, e.position)
-          if not brl then
-            local area = {
-              left_top = {
-                e.position.x + proto.collision_box.left_top.x,
-                e.position.y + proto.collision_box.left_top.y,
-              },
-              right_bottom = {
-                e.position.x + proto.collision_box.right_bottom.x,
-                e.position.y + proto.collision_box.right_bottom.y,
-              },
-            }
-            for _, ent in ipairs(s.find_entities_filtered{area = area}) do
-              if ent.type == "inserter" then
-                ent.destroy()
-              elseif string.find(ent.name, "^railu?n?loader%-structure") then
-                ent.destroy()
-              elseif ent.type == "straight-rail" then
-                local success = ent.destroy()
-                if not success then
-                  delaydestroy.register_to_destroy(ent)
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end,
-}
-
-add_migration{
   name = "v0_5_0_circuit_connect_inserters",
   low = {0,0,0},
   high = {0,5,0},
@@ -419,6 +378,47 @@ add_migration{
       end
     end
   end
+}
+
+add_migration{
+  name = "remove_orphan_structures",
+  low = {0,0,0},
+  high = {99,0,0},
+  task = function()
+    for _,s in pairs(game.surfaces) do
+      for _,e in ipairs(s.find_entities_filtered{type="simple-entity"}) do
+        local type = util.railloader_type(e.name)
+        if type then
+          local proto = game.entity_prototypes["rail" .. type .. "-chest"]
+          local brl = s.find_entity(proto.name, e.position)
+          if not brl then
+            local area = {
+              left_top = {
+                e.position.x + proto.collision_box.left_top.x,
+                e.position.y + proto.collision_box.left_top.y,
+              },
+              right_bottom = {
+                e.position.x + proto.collision_box.right_bottom.x,
+                e.position.y + proto.collision_box.right_bottom.y,
+              },
+            }
+            for _, ent in ipairs(s.find_entities_filtered{area = area}) do
+              if ent.type == "inserter" then
+                ent.destroy()
+              elseif string.find(ent.name, "^railu?n?loader%-structure") then
+                ent.destroy()
+              elseif ent.type == "straight-rail" then
+                local success = ent.destroy()
+                if not success then
+                  delaydestroy.register_to_destroy(ent)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end,
 }
 
 return M
