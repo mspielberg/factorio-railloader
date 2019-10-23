@@ -7,13 +7,16 @@ local M = {}
 
 function M:register(entity)
   global[self.name][entity.unit_number] = entity
-  global[self.iter_name] = nil
   Event.register_nth_tick(self.interval, self.on_tick)
 end
 
 local function unregister_helper(self, key)
   local queue = global[self.name]
   if queue[key] then
+    -- ensure iter always holds a valid key
+    if key == global[self.iter_name] then
+      global[self.iter_name] = next(queue, key)
+    end
     queue[key] = nil
     if not next(queue) then
       Event.unregister_nth_tick(self.interval, self.on_tick)
@@ -30,7 +33,11 @@ function M:on_init()
 end
 
 function M:on_load()
-  if global[self.name] and next(global[self.name]) then
+  local queue = global[self.name]
+  if queue and next(queue) then
+    if not queue[global[iter_name]] then
+      global[iter_name] = nil
+    end
     Event.register_nth_tick(self.interval, self.on_tick)
   end
 end
