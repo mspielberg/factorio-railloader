@@ -37,7 +37,7 @@ local function show_error(entity)
 end
 
 local function abort_build(event)
-  local entity = event.created_entity
+  local entity = event.created_entity or event.entity
   show_error(entity)
   if event.player_index then
     local player = game.players[event.player_index]
@@ -188,7 +188,7 @@ local function create_entities(proxy, rail_poss)
 end
 
 local function on_railloader_proxy_built(event)
-  local proxy = event.created_entity
+  local proxy = event.created_entity or event.entity
   local rail_pos = rail_positions(proxy)
   if not rail_pos then
     return abort_build(event)
@@ -212,7 +212,7 @@ local function on_container_built(entity)
 end
 
 local function on_built(event)
-  local entity = event.created_entity
+  local entity = event.created_entity or event.entity
   local type = util.railloader_type(entity.name)
   if type then
     return on_railloader_proxy_built(event)
@@ -342,11 +342,12 @@ script.on_init(on_init)
 script.on_load(on_load)
 script.on_configuration_changed(on_configuration_changed)
 
-script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_entity}, on_built)
-script.on_event({defines.events.on_player_mined_entity, defines.events.on_robot_mined_entity}, on_mined)
-script.on_event(defines.events.on_robot_pre_mined, on_robot_pre_mined)
-script.on_event(defines.events.on_entity_died, on_mined)
-script.on_event(defines.events.on_player_setup_blueprint, on_blueprint)
-script.on_event(defines.events.on_train_changed_state, inserter_config.on_train_changed_state)
+local es = defines.events
+script.on_event({es.on_built_entity, es.on_robot_built_entity, es.script_raised_built, es.script_raised_revive}, on_built)
+script.on_event({es.on_player_mined_entity, es.on_robot_mined_entity, es.script_raised_destroy}, on_mined)
+script.on_event(es.on_robot_pre_mined, on_robot_pre_mined)
+script.on_event(es.on_entity_died, on_mined)
+script.on_event(es.on_player_setup_blueprint, on_blueprint)
+script.on_event(es.on_train_changed_state, inserter_config.on_train_changed_state)
 
 script.on_event(defines.events.on_runtime_mod_setting_changed, on_setting_changed)
