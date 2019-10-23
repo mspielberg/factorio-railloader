@@ -26,9 +26,6 @@ of transport orders. Sending a BRL the special "Disable rail loader" signal
 will stop the BRL from loading/unloading a cargo wagon. Due to their speed,
 you are likely to load or unload a few more items than expected.
 
-This mod should be considered __ALPHA__ quality.  Expect bugs, and please report
-any you find to the mod thread.
-
 ## Boosting Throughput with Interface Chests
 
 Rail loaders and unloaders can fit 4 inserters or loaders on each side, for
@@ -61,36 +58,23 @@ From base:
 * Plastic (realistically these are likely pellets, not shaped bars)
 * Sulfur
 
-From Bob's mods:
+From mods:
 
-* All ores, including quartz
-* Solid chemical intermediates (salt, lithium chloride, etc.)
+* Items named "ore", "powder", "sand", "gravel", etc.
 
-From Angel's mods:
+The following mods and mod sets have specific additional support:
 
-* All 6 primary ores from Angel's Refining, including refined variants up to
-  purified crystals
-* Geodes, crushed stone and slag waste products from Angel's Refining
-* Processed ores from Angel's Smelting
-* Solid chemical intermediates from Angel's Petrochem
+* Angel's Mods
+* Bob's Mods
+* Krastorio
+* MadClown's Extended AngelBob Minerals
+* Py's Mods (pycoalprocessing, pyrawores)
+* Xander-Mod
 
-From MadClown's Extended AngelBob Minerals:
-
-* Additional ores and refined variants
-
-From Omnimatter:
-
-* Omnite ore
-
-From Pyanodon's mods:
-
-* A huge variety of organics, stone, and chemical intermediates from Pyanodons
-  Coal Processing
-* Raw and processed ores from Pyanodons Raw Ores
-
-If you feel something that meets the above generic description is not included,
-let me know.  You can also edit `bulk.lua` if you would like to change the set
-of supported items for your own use.
+If you feel something that meets the above generic description is not
+included, let me know.  You can also edit `bulk.lua` if you would like
+to change the set of supported items for your own use, or change the
+mod setting to allow any item.
 
 ## Acknowledgements
 
