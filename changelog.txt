@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.3
+Date: 23.10.2019
+  Bugfixes:
+    - Fix occassional crash on loading a save. (https://mods.factorio.com/mod/railloader/discussion/5d715061bd8faf000d69692c)
+  Compatibility:
+    - Add support for Construction Drones. (https://mods.factorio.com/mod/railloader/discussion/5db05825af3b46000ca50571)
+---------------------------------------------------------------------------------------------------
 Version: 0.6.2
 Date: 23.10.2019
   Compatibility:
