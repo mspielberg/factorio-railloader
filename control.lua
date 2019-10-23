@@ -1,5 +1,6 @@
 local configchange = require "configchange"
 local delaydestroy = require "delaydestroy"
+local endoftick = require "endoftick"
 local ghostconnections = require "ghostconnections"
 local inserter_config = require "inserterconfig"
 local util = require "util"
@@ -18,6 +19,7 @@ end
 
 local function on_load()
   delaydestroy.on_load()
+  endoftick.on_load()
   inserter_config.on_load()
 end
 
@@ -194,7 +196,7 @@ local function on_railloader_proxy_built(event)
     return abort_build(event)
   end
   create_entities(proxy, rail_pos)
-  proxy.destroy()
+  endoftick.register(function() proxy.destroy() end)
 end
 
 local function on_ghost_built(ghost)
