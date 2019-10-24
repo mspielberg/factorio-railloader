@@ -34,8 +34,9 @@ end
 
 function M:on_load()
   local queue = global[self.name]
+  local iter_name = self.iter_name
   if queue and next(queue) then
-    if not queue[global[iter_name]] then
+    if global[iter_name] and not queue[global[iter_name]] then
       global[iter_name] = nil
     end
     Event.register_nth_tick(self.interval, self.on_tick)
@@ -46,6 +47,9 @@ local function create_on_tick(self)
   self.on_tick = function()
     local queue = global[self.name]
     local iter_name = self.iter_name
+    if not queue[global[iter_name]] then
+      global[iter_name] = nil
+    end
     local k, v
     repeat
       k, v = next(queue, global[iter_name])
