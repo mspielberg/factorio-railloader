@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.5
+Date: 02.01.2020
+  Bugfixes:
+    - Fix circuit connections being lost when placing ghosts from a blueprint book. (https://mods.factorio.com/mod/railloader/discussion/5e0e7572632854000c90100c)
+    - Fix ghosts created by horizontal BPLs being killed being in vertical orientation.
+---------------------------------------------------------------------------------------------------
 Version: 0.6.4
 Date: 24.10.2019
   Bugfixes:
