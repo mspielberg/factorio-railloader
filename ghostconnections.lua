@@ -30,7 +30,7 @@ local entity_filter = "railu?n?loader%-placement%-proxy"
 local function is_setup_bp(stack)
   return stack.valid and
     stack.valid_for_read and
-    stack.is_blueprint and
+    (stack.is_blueprint or stack.is_blueprint_book) and
     stack.is_blueprint_setup()
 end
 
