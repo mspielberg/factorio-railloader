@@ -255,10 +255,31 @@ local function on_container_mined(entity, buffer)
   end
 end
 
+local died_direction
+
+local function on_post_entity_died(event)
+  local ghost = event.ghost
+  if ghost then
+    local loader_type = util.railloader_type(ghost.ghost_name)
+    if loader_type then
+      local new_ghost = ghost.surface.create_entity{
+        name = "entity-ghost",
+        inner_name = "rail" .. loader_type .. "-placement-proxy",
+        force = ghost.force,
+        direction = died_direction,
+        position = ghost.position,
+      }
+      new_ghost.last_user = ghost.last_user
+      ghost.destroy()
+    end
+  end
+end
+
 local function on_mined(event)
   local entity = event.entity
   local type = util.railloader_type(entity.name)
   if type then
+    died_direction = util.loader_direction(entity)
     return on_railloader_mined(entity, event.buffer)
   elseif string.find(entity.type, "container$") then
     return on_container_mined(entity, event.buffer)
@@ -349,6 +370,7 @@ script.on_event({es.on_built_entity, es.on_robot_built_entity, es.script_raised_
 script.on_event({es.on_player_mined_entity, es.on_robot_mined_entity, es.script_raised_destroy}, on_mined)
 script.on_event(es.on_robot_pre_mined, on_robot_pre_mined)
 script.on_event(es.on_entity_died, on_mined)
+script.on_event(es.on_post_entity_died, on_post_entity_died, {{filter = "type", type = "container"}})
 script.on_event(es.on_player_setup_blueprint, on_blueprint)
 script.on_event(es.on_train_changed_state, inserter_config.on_train_changed_state)
 
