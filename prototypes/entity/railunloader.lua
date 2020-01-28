@@ -91,7 +91,7 @@ data:extend{
     icon = "__railloader__/graphics/icons/railunloader.png",
     icon_size = 32,
     flags = {"player-creation"},
-    minable = {mining_time = 4, result = "railunloader"},
+    minable = {mining_time = 0.5, result = "railunloader"},
     placeable_by = {item = "railunloader", count = 1},
     max_health = 800,
     corpse = "big-remnants",

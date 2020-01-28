@@ -89,7 +89,7 @@ data:extend{
     icon = "__railloader__/graphics/icons/railloader.png",
     icon_size = 32,
     flags = {"player-creation"},
-    minable = {mining_time = 4, result = "railloader"},
+    minable = {mining_time = 0.5, result = "railloader"},
     placeable_by = {item = "railloader", count = 1},
     max_health = 800,
     corpse = "big-remnants",
