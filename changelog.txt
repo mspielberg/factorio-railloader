@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: ???
+  Bugfixes:
+    - Fix chest limits not being captured in blueprints. (https://mods.factorio.com/mod/railloader/discussion/5d268dac053899000c257e3d)
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 28.01.2020
   Changes:

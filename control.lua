@@ -117,7 +117,7 @@ local function rail_positions(proxy)
   end
 end
 
-local function create_entities(proxy, rail_poss)
+local function create_entities(proxy, tags, rail_poss)
   local type = util.railloader_type(proxy.name)
   local surface = proxy.surface
   local direction = proxy.direction
@@ -147,6 +147,9 @@ local function create_entities(proxy, rail_poss)
     force = force,
   }
   chest.last_user = last_user
+  if tags and tags.bar then
+    chest.get_inventory(defines.inventory.chest).set_bar(tags.bar)
+  end
 
   -- recreate circuit connections
   for _, ccd in ipairs(proxy.circuit_connection_definitions) do
@@ -191,11 +194,12 @@ end
 
 local function on_railloader_proxy_built(event)
   local proxy = event.created_entity or event.entity
+  local tags = event.tags
   local rail_pos = rail_positions(proxy)
   if not rail_pos then
     return abort_build(event)
   end
-  create_entities(proxy, rail_pos)
+  create_entities(proxy, tags, rail_pos)
   endoftick.register(function() proxy.destroy() end)
 end
 
@@ -321,7 +325,7 @@ local function on_blueprint(event)
   end
 
   local found_railloader = false
-  local directions = {}
+  local meta = {}
   for _, container in ipairs(containers) do
     if container.name == "railloader-chest" or container.name == "railunloader-chest" then
       found_railloader = true
@@ -330,7 +334,10 @@ local function on_blueprint(event)
         area = container.bounding_box,
       }[1]
       if rail then
-        directions[#directions+1] = rail.direction
+        meta[#meta+1] = {
+          direction = rail.direction,
+          bar = container.get_inventory(defines.inventory.chest).get_bar(),
+        }
       end
     end
   end
@@ -342,11 +349,13 @@ local function on_blueprint(event)
   for _, e in ipairs(entities) do
     if e.name == "railloader-chest" then
       e.name = "railloader-placement-proxy"
-      e.direction = directions[loader_index]
+      e.direction = meta[loader_index].direction
+      e.tags = { bar = meta[loader_index].bar }
       loader_index = loader_index + 1
     elseif e.name == "railunloader-chest" then
       e.name = "railunloader-placement-proxy"
-      e.direction = directions[loader_index]
+      e.direction = meta[loader_index].direction
+      e.tags = { bar = meta[loader_index].bar }
       loader_index = loader_index + 1
     end
   end
