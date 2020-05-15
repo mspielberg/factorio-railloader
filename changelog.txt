@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
-Date: ???
+Date: 2020-05-15
   Minor Features:
     - Add support for Krastorio 2 Raw rare metals. (https://mods.factorio.com/mod/railloader/discussion/5e8a749d4aae55000c01ce6a)
     - Add support for Hard crafting. (https://mods.factorio.com/mod/railloader/discussion/5ebcc3e0eb3366000dd1de8f)
