@@ -2,6 +2,10 @@
 
 ZIP='7z'
 
+function realpath() {
+    (cd "$1"; pwd -P)
+}
+
 function canon_name() {
 	dir="$(realpath "$(dirname "$0")")"
 
