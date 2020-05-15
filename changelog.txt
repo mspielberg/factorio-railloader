@@ -5,6 +5,8 @@ Date: ???
     - Add support for Krastorio 2 Raw rare metals. (https://mods.factorio.com/mod/railloader/discussion/5e8a749d4aae55000c01ce6a)
   Bugfixes:
     - Fix chest limits not being captured in blueprints. (https://mods.factorio.com/mod/railloader/discussion/5d268dac053899000c257e3d)
+  Translation:
+    - Add Russian translations for mod setting. (https://mods.factorio.com/mod/railloader/discussion/5dd90ea6e9a034000bc139a2)
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 28.01.2020
