@@ -5,15 +5,14 @@ local patterns = {
     -- generic
     "crushed",
     "dust",
+    "nugget",
     "ore",
+    "pebble",
     "powder",
     "rock",
     "sand",
     "slag",
     -- angelsrefining
-    "^angels%-.*%-nugget$",
-    "^angels%-.*%-pebbles$",
-    "^angels%-.*%-slag$",
     "^geode%-",
     -- angelssmelting
     "^processed%-",
@@ -42,12 +41,14 @@ local items = {
   "sodium-hydroxide", "calcium-chloride", "lead-oxide", "alumina",
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
+  -- hardCrafting
+  "dirt",
   -- Krastorio
   "enriched-copper", "enriched-iron", "imersite", "k-coke", "k-lithium",
   "k-lithium-chloride", "k-quartz", "k-raw-chunk", "k-silicon",
   "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
   "raw-minerals", "steel-billet",
-  -- Krastorio 2
+  -- Krastorio2
   "raw-rare-metals",
   -- omnimatter
   "omnite",
