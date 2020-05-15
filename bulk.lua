@@ -47,6 +47,8 @@ local items = {
   "k-lithium-chloride", "k-quartz", "k-raw-chunk", "k-silicon",
   "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
   "raw-minerals", "steel-billet",
+  -- Krastorio 2
+  "raw-rare-metals",
   -- omnimatter
   "omnite",
   -- pycoalprocessing
