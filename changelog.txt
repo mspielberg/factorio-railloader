@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.4
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix crash when Krastorio 2 is installed. (https://mods.factorio.com/mod/railloader/discussion/5ed15251c11b79000d48ffbd)
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2020-05-29
