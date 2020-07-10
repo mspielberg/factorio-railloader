@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix rockets being considered bulk items. (https://mods.factorio.com/mod/railloader/discussion/5f08a40fcb64f44c9e8a2e3a)
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.5
 Date: 2020-08-03
