@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.6
-Date: ????
+Date: 2020-09-27
   Bugfixes:
     - Fix rockets being considered bulk items. (https://mods.factorio.com/mod/railloader/discussion/5f08a40fcb64f44c9e8a2e3a)
     - Fix BRLs built from blueprints losing wire connections. (https://mods.factorio.com/mod/railloader/discussion/5f272e8006da6e78396bb917)
