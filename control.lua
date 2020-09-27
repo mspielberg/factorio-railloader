@@ -13,7 +13,6 @@ local allowed_items_setting = settings.global["railloader-allowed-items"].value
 
 local function on_init()
   delaydestroy.on_init()
-  ghostconnections.on_init()
   inserter_config.on_init()
 end
 
@@ -158,7 +157,6 @@ local function create_entities(proxy, tags, rail_poss)
   for _, ccd in ipairs(ghostconnections.get_connections(proxy)) do
     chest.connect_neighbour(ccd)
   end
-  ghostconnections.remove_ghost(proxy)
 
   -- place cargo wagon inserters
   local inserter_name =
