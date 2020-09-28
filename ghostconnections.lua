@@ -17,7 +17,7 @@ function M.get_connections(entity)
 
   local out = {}
   for _, ghost in pairs(ghosts) do
-    for _, ccd in pairs(ghost.circuit_connection_definitions) do
+    for _, ccd in ipairs(ghost.circuit_connection_definitions) do
       if ccd.target_entity == entity then
         out[#out+1] = {
           wire = ccd.wire,
