@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2020-09-28
+  Bugfixes:
+    - Fix crash when building BRLs near ghosts that can't be connected to circuits. (https://mods.factorio.com/mod/railloader/discussion/5f710ee59ff30cab71614860)
+---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 2020-09-27
   Bugfixes:
