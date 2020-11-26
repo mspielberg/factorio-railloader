@@ -390,6 +390,15 @@ add_migration{
 }
 
 add_migration{
+  name = "v1_1_0_add_previous_blueprint_global",
+  low = {0,0,0},
+  high = {1,1,0},
+  task = function()
+    global.previous_opened_blueprint_for = {}
+  end
+}
+
+add_migration{
   name = "remove_orphan_structures",
   low = {0,0,0},
   high = {99,0,0},
