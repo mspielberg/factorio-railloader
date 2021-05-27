@@ -331,18 +331,38 @@ local function get_blueprint_to_setup(player_index)
   end
 end
 
+local function find_railloaders_in_area(surface, area)
+  local containers = surface.find_entities_filtered{
+    area = area,
+    type = "container",
+  }
+  local out = {}
+  for _, container in ipairs(containers) do
+    if container.name == "railloader-chest" or container.name == "railunloader-chest" then
+      out[#out+1] = container
+    end
+  end
+  return out
+end
+
 local function on_blueprint(event)
   local bp = get_blueprint_to_setup(event.player_index)
   if not bp then return end
   local player = game.players[event.player_index]
   local entities = bp.get_blueprint_entities()
 
-  for index, entity in pairs(event.mapping.get()) do
-    local bp_entity = entities[index]
+  local railloader_chests = find_railloaders_in_area(player.surface, event.area)
+  if not next(railloader_chests) then return end
+
+  local chest_index = 1
+  for _, bp_entity in pairs(entities) do
     if bp_entity.name == "railloader-chest" or bp_entity.name == "railunloader-chest" then
+      local chest_entity = railloader_chests[chest_index]
+      chest_index = chest_index + 1
+
       local rail = player.surface.find_entities_filtered{
         type = "straight-rail",
-        area = entity.bounding_box,
+        area = chest_entity.bounding_box,
       }[1]
       if rail then
         bp_entity.name = (bp_entity.name == "railloader-chest")
@@ -351,7 +371,7 @@ local function on_blueprint(event)
         -- base direction on direction of rail
         bp_entity.direction = rail.direction
         -- preserve chest limit
-        bp_entity.tags = { bar = entity.get_inventory(defines.inventory.chest).get_bar() }
+        bp_entity.tags = { bar = chest_entity.get_inventory(defines.inventory.chest).get_bar() }
       end
     end
   end

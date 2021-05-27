@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: X.X.X
+Date: XXXX-XX-XX
+  Bugfixes:
+    - Fix blueprinting when another mod mutates created blueprints (e.g. Miniloader). (https://mods.factorio.com/mod/railloader/discussion/604fe0bdeaf2f133c6113193)
+---------------------------------------------------------------------------------------------------
 Version: 1.1.2
 Date: 2020-11-29
   Changes:
