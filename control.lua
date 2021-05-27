@@ -197,7 +197,6 @@ local function on_railloader_proxy_built(event)
     return abort_build(event)
   end
   create_entities(proxy, tags, rail_pos)
-  create_entities(proxy, rail_pos)
   proxy.destroy()
 end
 
