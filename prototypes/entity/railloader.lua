@@ -111,7 +111,7 @@ data:extend{
     collision_mask = {"item-layer", "object-layer", "water-tile"},
     selection_priority = 255,
     fast_replaceable_group = "railloader",
-    inventory_size = 320,
+    inventory_size = settings.startup["railloader-capacity"].value,
     vehicle_impact_sound =  { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
     picture = pictures.empty_sheet,
     -- circuit_wire_connection_point = circuit_connector_definitions["chest"].points,

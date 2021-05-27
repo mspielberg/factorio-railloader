@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: X.X.X
 Date: XXXX-XX-XX
+  Minor Features:
+    - Add setting for BRL inventory capacity. (https://mods.factorio.com/mod/railloader/discussion/5fed0ae5ae469395d491dfc5)
   Bugfixes:
     - Fix blueprinting when another mod mutates created blueprints (e.g. Miniloader). (https://mods.factorio.com/mod/railloader/discussion/604fe0bdeaf2f133c6113193)
 ---------------------------------------------------------------------------------------------------
