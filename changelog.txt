@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
-Version: X.X.X
-Date: XXXX-XX-XX
+Version: 1.1.3
+Date: 2021-05-26
   Minor Features:
     - Add setting for BRL inventory capacity. (https://mods.factorio.com/mod/railloader/discussion/5fed0ae5ae469395d491dfc5)
   Bugfixes:
