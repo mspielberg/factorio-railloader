@@ -48,6 +48,8 @@ local items = {
   "sodium-hydroxide", "calcium-chloride", "lead-oxide", "alumina",
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
+  -- bzcarbon
+  "flake-graphite", "rough-diamond"
   -- bzzirconium
   "zircon",
   -- hardCrafting
