@@ -48,8 +48,18 @@ local items = {
   "sodium-hydroxide", "calcium-chloride", "lead-oxide", "alumina",
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
+  -- bzcarbon
+  "flake-graphite", "rough-diamond", "fullerenes", "nanotubes", "graphene",
+  -- bzlead
+  "enriched-lead", 
+  -- bzsilicon
+  "silica",
+  -- bztitanium
+  "enriched-titanium",
+  -- bztungsten
+  "enriched-tungsten", 
   -- bzzirconium
-  "zircon",
+  "zircon", "zirconia", "enriched-zircon", "zirconium-tungstate",  
   -- hardCrafting
   "dirt",
   -- Krastorio
@@ -58,7 +68,7 @@ local items = {
   "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
   "raw-minerals", "steel-billet",
   -- Krastorio2
-  "raw-rare-metals",
+  "raw-rare-metals", "lithium", "lithium-chloride", "silicon", "enriched-rare-metals",
   -- omnimatter
   "omnite",
   -- pycoalprocessing
@@ -91,6 +101,8 @@ local items = {
   "moondrop-diesel", "moondrop-fueloil", "moondrop-gas", "moondrop-kerosene",
   "moss", "rennea", "saps", "sea-sponge", "seaweed", "shell", "sporopollenin",
   "sugar", "yaedols", "nisi", "sic", "green-sic",
+  -- Rich Rocks Requiem
+  "rrr-rich-rocks", "rrr-raw-minerals", 
 }
 
 for i, item in ipairs(items) do
