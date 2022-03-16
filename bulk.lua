@@ -93,6 +93,8 @@ local items = {
   "moondrop-diesel", "moondrop-fueloil", "moondrop-gas", "moondrop-kerosene",
   "moss", "rennea", "saps", "sea-sponge", "seaweed", "shell", "sporopollenin",
   "sugar", "yaedols", "nisi", "sic", "green-sic",
+  -- space-exploration
+  "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
 }
 
 for i, item in ipairs(items) do
