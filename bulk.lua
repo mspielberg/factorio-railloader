@@ -49,7 +49,7 @@ local items = {
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
   -- bzcarbon
-  "flake-graphite", "rough-diamond"
+  "flake-graphite", "rough-diamond",
   -- bzzirconium
   "zircon",
   -- hardCrafting
