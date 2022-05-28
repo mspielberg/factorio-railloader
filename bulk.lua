@@ -31,7 +31,7 @@ local patterns = {
     "%-spore",
     "%-leaves$",
     -- fluidless mining and ore washing
-    "gangue"
+    "gangue",
   },
   plates = {
     "plate",
