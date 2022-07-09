@@ -112,6 +112,8 @@ local items = {
   "nickel-nitrate", "nxzngd", "oxidized-pan-fiber", "plutonium-oxide",
   "rhodamine-b", "self-assembly-monolayer", "sodium-citrate",
   "sodium-cyanate", "ti-n", "uranium-oxide", "vitreloy", "yellow-dextrine",
+  -- space-exploration
+  "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
 }
 
 for i, item in ipairs(items) do
