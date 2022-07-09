@@ -20,6 +20,8 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
+    -- Fluidless_Mining_and_Ore_Washing
+    "%-gangue$",
     -- pyrawores
     "^(low%-|high%-)grade%-",
     "^reduced%-",
