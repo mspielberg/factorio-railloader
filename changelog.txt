@@ -5,6 +5,8 @@ Date: 2021-01-09
     - Added bulk item list for bz mods.
     - Update bulk item list for Krastorio 2.
     - Added bulk item list for Rich Rocks Requiem.
+  Bugfixes:
+    - Fix crash when blueprinting BRLs that are owned by a different force. (https://mods.factorio.com/mod/railloader/discussion/62c87c9c7308a6dee94d4d60)
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Date: 2021-05-27
