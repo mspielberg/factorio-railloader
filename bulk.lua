@@ -20,6 +20,8 @@ local patterns = {
     "^processed%-",
     -- angelspetrochem
     "^solid%-",
+    -- Fluidless_Mining_and_Ore_Washing
+    "%-gangue$",
     -- pyrawores
     "^(low%-|high%-)grade%-",
     "^reduced%-",
@@ -30,10 +32,17 @@ local patterns = {
     "%-seeds",
     "%-spore",
     "%-leaves$",
+    -- pyalternative-energy
+    "^am%-",
+    "^cm%-",
+    "^pu%-",
+    "^u%-",
   },
   plates = {
     "plate",
     "ingot",
+    -- pymods
+    "%-alloy$",
   }
 }
 
@@ -89,20 +98,34 @@ local items = {
   "sodium-carbonate", "sodium-hydroxide", "sodium-sulfate", "sponge-iron",
   "starch", "tin-concentrate", "ti-residue", "unslimed-iron", "yellow-cake",
   -- pyfusionenergy
-  "calcinates", "boron-carbide",
+  "calcinates", "boron-carbide", "molybdenum-oxide",
   -- pypetroleumhandling
   "carbon-black", "guar", "soot",
   -- pyhightech
   "cadaveric-arum", "clay", "moondrop", "urea", "ree-concentrate", "reo",
-  "phenol", "raw-fiber", "lithium-niobate",
+  "phenol", "raw-fiber", "lithium-niobate", "zinc-acetate",
+  "lard", "skin", "meat",
   -- pyalienlife
-  "bonemeal", "bones", "cellulose", "chitin", "cobalt-extract",
-  "cobalt-fluoride", "dried-grod", "grod", "lignin", "manure",
+  "bonemeal", "bones", "brain", "cellulose", "chitin", "cobalt-extract",
+  "cobalt-fluoride", "cobalt-oxide", "dingrit-spike", "dried-grod", "grod",
+  "guts", "keratin", "lignin", "manure",
   "moondrop-diesel", "moondrop-fueloil", "moondrop-gas", "moondrop-kerosene",
   "moss", "rennea", "saps", "sea-sponge", "seaweed", "shell", "sporopollenin",
   "sugar", "yaedols", "nisi", "sic", "green-sic",
+  -- pyalternativeenergy
+  "americium-oxide", "ammonium-mixture", "animal-eye", "arsenic",
+  "citric-acid", "crmoni", "crude-salt", "czts-slab",
+  "eg-si", "erbium", "ernico", "er-oxalate", "er-oxide", "eva",
+  "gaas", "lead-acetate", "lithium", "high-energy-waste-1",
+  "impure-er-oxide", "intermetallics", "inverse-opal",
+  "lithium-niobate-nano", "mositial-nx", "nbalti", "neodymium-oxide",
+  "nickel-nitrate", "nxzngd", "oxidized-pan-fiber", "plutonium-oxide",
+  "rhodamine-b", "self-assembly-monolayer", "sodium-citrate",
+  "sodium-cyanate", "ti-n", "uranium-oxide", "vitreloy", "yellow-dextrine",
+  -- space-exploration
+  "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
   -- Rich Rocks Requiem
-  "rrr-rich-rocks", "rrr-raw-minerals", 
+  "rrr-rich-rocks", "rrr-raw-minerals",
 }
 
 for i, item in ipairs(items) do
