@@ -58,9 +58,17 @@ local items = {
   "tungsten-oxide", "silicon-nitride", "cobalt-oxide", "silicon-carbide",
   "silver-nitrate", "silver-oxide",
   -- bzcarbon
-  "flake-graphite", "rough-diamond",
+  "flake-graphite", "rough-diamond", "fullerenes", "nanotubes", "graphene",
+  -- bzlead
+  "enriched-lead", 
+  -- bzsilicon
+  "silica",
+  -- bztitanium
+  "enriched-titanium",
+  -- bztungsten
+  "enriched-tungsten", 
   -- bzzirconium
-  "zircon",
+  "zircon", "zirconia", "enriched-zircon", "zirconium-tungstate",  
   -- hardCrafting
   "dirt",
   -- Krastorio
@@ -69,7 +77,7 @@ local items = {
   "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
   "raw-minerals", "steel-billet",
   -- Krastorio2
-  "raw-rare-metals",
+  "raw-rare-metals", "lithium", "lithium-chloride", "silicon", "enriched-rare-metals",
   -- omnimatter
   "omnite",
   -- pycoalprocessing
@@ -116,6 +124,8 @@ local items = {
   "sodium-cyanate", "ti-n", "uranium-oxide", "vitreloy", "yellow-dextrine",
   -- space-exploration
   "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
+  -- Rich Rocks Requiem
+  "rrr-rich-rocks", "rrr-raw-minerals",
 }
 
 for i, item in ipairs(items) do
