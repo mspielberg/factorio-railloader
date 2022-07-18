@@ -119,7 +119,7 @@ local function create_entities(proxy, tags, rail_poss)
   local type = util.railloader_type(proxy.name)
   local surface = proxy.surface
   local direction = proxy.direction
-  if direction > 4 then
+  if direction >= 4 then
     direction = direction - 4
   end
   local position = proxy.position
@@ -161,10 +161,12 @@ local function create_entities(proxy, tags, rail_poss)
   local inserter_name =
     "rail" .. type .. (allowed_items_setting == "any" and "-universal" or "") .. "-inserter"
   for i=1,num_inserters do
+    -- alternate direction to support half-size wagons sticking out both sides of the (un)loader
+    local inserter_direction = (direction + (i-1) * 4) % 8
     local inserter = surface.create_entity{
       name = inserter_name,
       position = position,
-      direction = direction,
+      direction = inserter_direction,
       force = force,
     }
     inserter.destructible = false
