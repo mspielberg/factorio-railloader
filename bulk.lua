@@ -180,6 +180,16 @@ function M.acceptable_items(inventories, limit)
   return out
 end
 
+function M.add_bulk_item(item)
+  items[item] = true
+  acceptable_item_cache = {}
+end
+
+function M.add_bulk_item_pattern(pattern)
+  patterns.ore[#patterns+1] = pattern
+  acceptable_item_cache = {}
+end
+
 function M.on_setting_changed()
   allowed_items_setting = settings.global["railloader-allowed-items"].value
   acceptable_item_cache = {}

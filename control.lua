@@ -1,3 +1,4 @@
+local bulk = require "bulk"
 local configchange = require "configchange"
 local delaydestroy = require "delaydestroy"
 local ghostconnections = require "ghostconnections"
@@ -370,6 +371,13 @@ local function on_setting_changed(event)
   allowed_items_setting = settings.global["railloader-allowed-items"].value
   inserter_config.on_setting_changed(event)
 end
+
+-- setup remotes
+
+remote.add_interface("railloader", {
+  add_bulk_item = bulk.add_bulk_item,
+  add_bulk_item_pattern = bulk.add_bulk_item_pattern,
+})
 
 -- setup event handlers
 
