@@ -344,20 +344,23 @@ local function on_blueprint(event)
         type = "container",
         position = bp_entity.position,
       }[1]
+      if not chest_entity then goto continue end
+
       local rail = player.surface.find_entities_filtered{
         type = "straight-rail",
         area = chest_entity.bounding_box,
       }[1]
-      if chest_entity and rail then
-        bp_entity.name = (bp_entity.name == "railloader-chest")
-          and "railloader-placement-proxy"
-          or "railunloader-placement-proxy"
-        -- base direction on direction of rail
-        bp_entity.direction = rail.direction
-        -- preserve chest limit
-        bp_entity.tags = { bar = chest_entity.get_inventory(defines.inventory.chest).get_bar() }
-      end
+      if not rail then goto continue end
+
+      bp_entity.name = (bp_entity.name == "railloader-chest")
+        and "railloader-placement-proxy"
+        or "railunloader-placement-proxy"
+      -- base direction on direction of rail
+      bp_entity.direction = rail.direction
+      -- preserve chest limit
+      bp_entity.tags = { bar = chest_entity.get_inventory(defines.inventory.chest).get_bar() }
     end
+    ::continue::
   end
 
   bp.set_blueprint_entities(entities)
