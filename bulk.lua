@@ -67,7 +67,7 @@ local items = {
   "k-tantalum", "k-titanium", "menarite", "raw-imersite", "raw-menarite",
   "raw-minerals", "steel-billet",
   -- Krastorio2
-  "raw-rare-metals",
+  "raw-rare-metals", "raw-imersite"
   -- omnimatter
   "omnite",
   -- pycoalprocessing
