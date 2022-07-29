@@ -113,7 +113,7 @@ local items = {
   "rhodamine-b", "self-assembly-monolayer", "sodium-citrate",
   "sodium-cyanate", "ti-n", "uranium-oxide", "vitreloy", "yellow-dextrine",
   -- space-exploration
-  "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
+  "item=se-core-fragment-omni", "item=se-core-fragment-coal", "item=se-core-fragment-mineral-water", "item=se-core-fragment-crude-oil", "item=se-core-fragment-stone", "item=se-core-fragment-iron-ore", "item=se-core-fragment-copper-ore", "item=se-core-fragment-rare-metals", "item=se-core-fragment-uranium-ore", "item=se-core-fragment-se-vulcanite", "item=se-vulcanite", "item=se-vulcanite-crushed", "item=se-core-fragment-se-cryonite", "item=se-cryonite", "item=se-cryonite-powder", "item=se-core-fragment-imersite", "item=se-core-fragment-se-beryllium-ore", "item=se-beryllium-ore", "item=se-beryllium-sulfate", "item=se-beryllium-powder", "item=se-core-fragment-se-holmium-ore", "item=se-holmium-ore", "item=se-holmium-ore-crushed", "item=se-holmium-chloride", "item=se-holmium-powder", "item=se-core-fragment-se-iridium-ore", "item=se-iridium-ore", "item=se-iridium-ore-crushed", "item=se-iridium-powder", "item=se-core-fragment-se-vitamelange", "item=se-vitamelange", "item=se-vitamelange-nugget", "item=se-naquium-ore", "item=se-naquium-ore-crushed", "item=se-naquium-refined"
 }
 
 for i, item in ipairs(items) do
