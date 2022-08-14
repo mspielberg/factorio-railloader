@@ -123,7 +123,7 @@ local items = {
   "rhodamine-b", "self-assembly-monolayer", "sodium-citrate",
   "sodium-cyanate", "ti-n", "uranium-oxide", "vitreloy", "yellow-dextrine",
   -- space-exploration
-  "vulcanite", "cryonite", "vitamelange", "water-ice", "methane-ice",
+  "se-water-ice", "se-methane-ice", "se-vulcanite", "se-cryonite", "se-vitamelange", "se-beryllium-sulfate", "se-holmium-chloride", "se-naquium-refined",
   -- Rich Rocks Requiem
   "rrr-rich-rocks", "rrr-raw-minerals",
 }
