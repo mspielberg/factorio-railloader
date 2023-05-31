@@ -80,6 +80,7 @@ data:extend{
     -- circuit_connector_sprites = circuitconnectors["railloader-inserter"].sprites,
     circuit_wire_max_distance = 0.5,
     draw_circuit_wires = false,
+    allow_custom_vectors = true
   },
 
   -- interactable inventory

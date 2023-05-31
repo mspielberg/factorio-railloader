@@ -93,7 +93,55 @@ end
 
 local queue = EntityQueue.new("unconfigured_loaders", INTERVAL, configure_loader)
 
+-- Put back items on hand.
+-- Does only work if the loader inventory has some room.
+-- This is very likely since it was unloaded just before.
+local function ensure_inserter_put_back_items_from_hand(loader, inserter)
+  if inserter.held_stack.count > 0 and inserter.pickup_target == loader then
+    inserter.pickup_position = inserter.drop_position -- assumed to be position where a cargo wagon is
+    inserter.drop_position = loader.position
+    inserter.drop_target = loader
+  end
+end
+
+-- Ensure inserter is turned back to normal operation: move things from loader to train
+local function ensure_inserter_load_items(loader, inserter)
+  if inserter.pickup_target ~= loader then
+    inserter.drop_position = inserter.pickup_position -- assumed to be position where a cargo wagon is
+    inserter.pickup_position = loader.position
+    inserter.pickup_target = loader
+  end
+end
+
+local function manage_internal_inserters_for_train(train, manage_inserter)
+  for _, wagon in ipairs(train.cargo_wagons) do
+    local loader = wagon.surface.find_entities_filtered {
+      type = "container",
+      name = "railloader-chest",
+      area = util.box_centered_at(wagon.position, 0.6),
+    }[1]
+    if loader then
+      local inserters = util.railloader_cargo_wagon_inserters(loader)
+      if inserters then
+        for _, inserter in ipairs(inserters) do
+          manage_inserter(loader, inserter)
+        end
+      end
+    end
+  end
+end
+
+local function manage_internal_inserters(event)
+  if event.train.state == defines.train_state.on_the_path then
+    manage_internal_inserters_for_train(event.train, ensure_inserter_put_back_items_from_hand)
+  elseif event.train.state == defines.train_state.arrive_station then
+    manage_internal_inserters_for_train(event.train, ensure_inserter_load_items)
+  end
+end
+
 function M.on_train_changed_state(event)
+  manage_internal_inserters(event)
+
   if allowed_items_setting == "any" then
     return
   end
