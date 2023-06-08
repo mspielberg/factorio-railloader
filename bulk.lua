@@ -24,8 +24,7 @@ local patterns = {
     "%-gangue$",
     -- pyrawores
     "^grade%-",
-    "^low%-grade%-",
-    "^high%-grade%-",
+    "%-grade%-",
     "^reduced%-",
     "^sintered%-",
     "%-rejects$",
