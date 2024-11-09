@@ -6,7 +6,9 @@
 	"author": "Therax",
 	"homepage": "https://forums.factorio.com/viewtopic.php?f=93&t=56850",
 	"description": "Bulk train loader/unloader with buffer.",
-	"dependencies": [],
+	"dependencies": [
+		"? angelsaddons-storage >= 0.0.4"
+	],
 	"package": {
 		"ignore":[
 			"resources/*"

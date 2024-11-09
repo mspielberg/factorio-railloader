@@ -1,6 +1,13 @@
 local Recipe = require "prototypes.recipe.Recipe"
 
 local possible_ingredients = {
+  -- Angel's addons storage
+  {
+    {"rail", 3},
+    {"iron-gear-wheel", 8},
+    {"silo", 1},
+    {"electronic-circuit", 2},
+  },
   -- xander-mod
   {
     {"rail", 3},
