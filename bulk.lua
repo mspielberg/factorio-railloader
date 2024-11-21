@@ -23,7 +23,8 @@ local patterns = {
     -- Fluidless_Mining_and_Ore_Washing
     "%-gangue$",
     -- pyrawores
-    "^(low%-|high%-)grade%-",
+    "^grade%-",
+    "%-grade%-",
     "^reduced%-",
     "^sintered%-",
     "%-rejects$",
