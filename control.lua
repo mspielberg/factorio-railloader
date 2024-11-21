@@ -332,39 +332,48 @@ local function get_blueprint_to_setup(player_index)
   end
 end
 
+-- Function to find railloaders within a given area
+local function find_railloaders_in_area(surface, area)
+	-- Find and return all railloader-chest and railunloader-chest entities in the given area
+	return surface.find_entities_filtered{
+		area = area,
+		name = {"railloader-chest", "railunloader-chest"}
+	}
+end
+
 local function on_blueprint(event)
-  local bp = get_blueprint_to_setup(event.player_index)
-  if not bp then return end
-  local player = game.players[event.player_index]
-  local entities = bp.get_blueprint_entities()
-  if not entities then return end
-
-  for _, bp_entity in pairs(entities) do
-    if bp_entity.name == "railloader-chest" or bp_entity.name == "railunloader-chest" then
-      local chest_entity = player.surface.find_entities_filtered{
-        type = "container",
-        position = bp_entity.position,
-      }[1]
-      if not chest_entity then goto continue end
-
-      local rail = player.surface.find_entities_filtered{
-        type = "straight-rail",
-        area = chest_entity.bounding_box,
-      }[1]
-      if not rail then goto continue end
-
-      bp_entity.name = (bp_entity.name == "railloader-chest")
-        and "railloader-placement-proxy"
-        or "railunloader-placement-proxy"
-      -- base direction on direction of rail
-      bp_entity.direction = rail.direction
-      -- preserve chest limit
-      bp_entity.tags = { bar = chest_entity.get_inventory(defines.inventory.chest).get_bar() }
-    end
-    ::continue::
-  end
-
-  bp.set_blueprint_entities(entities)
+	local bp = get_blueprint_to_setup(event.player_index)
+	if not bp then return end
+	local player = game.players[event.player_index]
+	local entities = bp.get_blueprint_entities()
+	
+	local railloader_chests = find_railloaders_in_area(player.surface, event.area)
+	if not next(railloader_chests) then return end
+	
+	local chest_index = 1
+	local update_bp = false
+	for _, bp_entity in pairs(entities) do
+		if bp_entity.name == "railloader-chest" or bp_entity.name == "railunloader-chest" then
+			local chest_entity = railloader_chests[chest_index]
+			chest_index = chest_index + 1
+			
+			local rail = player.surface.find_entities_filtered{
+				type = "straight-rail",
+				area = chest_entity.bounding_box,
+			}[1]
+			if rail then
+				bp_entity.name = (bp_entity.name == "railloader-chest")
+					and "railloader-placement-proxy"
+					or "railunloader-placement-proxy"
+				-- base direction on direction of rail
+				bp_entity.direction = rail.direction
+				-- preserve chest limit
+				bp_entity.tags = { bar = chest_entity.get_inventory(defines.inventory.chest).get_bar() }
+				update_bp = true
+			end
+		end
+	end
+	if update_bp then bp.set_blueprint_entities(entities) end
 end
 
 local function on_setting_changed(event)
